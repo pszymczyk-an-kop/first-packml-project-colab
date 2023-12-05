@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Refactors>
+  <Renames>
+    <RenamedType>
+      <Type guid="8d63ff81-3bc4-421f-8810-eb0a34af2cf8">FBEM</Type>
+      <From>fbEM</From>
+      <To>fbSliderEM</To>
+    </RenamedType>
+  </Renames>
+</Refactors>
