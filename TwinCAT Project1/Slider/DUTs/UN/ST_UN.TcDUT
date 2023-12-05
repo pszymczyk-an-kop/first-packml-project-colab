@@ -3,7 +3,6 @@
   <DUT Name="ST_UN" Id="{b541f9c8-4108-4c9f-8b61-c12477f47d23}">
     <Declaration><![CDATA[TYPE ST_UN :
 STRUCT
-	em : ARRAY[1..Counters.packmlEmLast] OF ST_EM;
 END_STRUCT
 END_TYPE
 ]]></Declaration>
