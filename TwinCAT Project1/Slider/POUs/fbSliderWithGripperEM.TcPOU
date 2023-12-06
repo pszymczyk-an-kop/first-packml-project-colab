@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="fbSliderWithGripperEM" Id="{262a0099-d26a-4a20-85d1-5e68be47c9f0}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK fbSliderWithGripperEM EXTENDS fbEM
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[// TEST
+em.Config.Data.Q[10] := true;]]></ST>
+    </Implementation>
+    <LineIds Name="fbSliderWithGripperEM">
+      <LineId Id="10" Count="0" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

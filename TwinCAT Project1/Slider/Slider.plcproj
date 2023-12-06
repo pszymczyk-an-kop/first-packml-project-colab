@@ -36,6 +36,9 @@
     <Compile Include="DUTs\EM\ST_EM.TcDUT">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DUTs\EM\ST_MACHINE.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="DUTs\UN\ST_UN.TcDUT">
       <SubType>Code</SubType>
     </Compile>
@@ -56,10 +59,13 @@
     <Compile Include="POUs\fbSliderEM.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="POUs\MAIN.TcPOU">
+    <Compile Include="POUs\fbSliderWithGripperEM.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="POUs\POU.TcPOU">
+    <Compile Include="POUs\fbXYMoverEM.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\MAIN.TcPOU">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

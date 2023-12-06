@@ -1,10 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <DUT Name="E_Function" Id="{175e4159-9dd0-4f87-a565-d2b736e86ca1}">
-    <Declaration><![CDATA[{attribute 'qualified_only'}
+    <Declaration><![CDATA[// Enumerator containing general function of module
+{attribute 'qualified_only'}
 {attribute 'strict'}
 TYPE E_Function :
 (
+	None,
 	eSlider,
 	eSliderWithGripper,
 	eXYMover

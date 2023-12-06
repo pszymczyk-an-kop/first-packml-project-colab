@@ -4,25 +4,55 @@
     <Declaration><![CDATA[PROGRAM MAIN
 VAR
 	un : ST_UN;
+	
+	// Arrays with 'em' universal structure and 'fbEM' containing ST_MACHINE structure which contains of references to fbEM function block
 	em : ARRAY[1..Counters.packmlEmLast] OF ST_EM;
-	fbEM : ARRAY[1..Counters.packmlEmLast] OF fbEM;
+	fbEM : ARRAY[1..Counters.packmlEmLast] OF ST_MACHINE;
 	
+	// Array containing all instances fo fbSliderEM with its own iterator
+	SliderEM : ARRAY[0..Counters.SliderEMNo] OF fbSliderEM;
+	iSliderEM : DINT := 0;
+	
+	// Array containing all instances fo fbSliderWithGripperEM with its own iterator
+	SliderWithGripperEM : ARRAY[0..Counters.SliderWithGripperEMNo] OF fbSliderWithGripperEM;
+	iSliderWithGripperEM : DINT := 0;
+	
+	// Array containing all instances fo fbXYMoverEM with its own iterator
+	XYMoverEM : ARRAY[0..Counters.XYMoverEMNo] OF fbXYMoverEM;
+	iXYMoverEM : DINT := 0;
+	
+	// Flag of initial config, used to set configuration data only once
 	InitialConfig : BOOL := TRUE;
-	i : DINT;
 	
-	machine : INT;
+	// FOR iterator
+	i : DINT;
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[IF InitialConfig THEN
+	// Specifing module type of each module in array
 	em[1].Config.Functionality := E_Function.eSlider;
 	em[2].Config.Functionality := E_Function.eSliderWithGripper;
 	em[3].Config.Functionality := E_Function.eXYMover;
 
+	// FOR loop to specify config for each module
 	FOR i := 1 TO Counters.packmlEmLast DO
 		em[i].Config.Data.I REF= GVL.aInput[i];
 		em[i].Config.Data.Q REF= GVL.aOutput[i];
-		fbEM[i](em := em[i], un := un);
+	
+		CASE em[i].Config.Functionality OF
+			E_Function.eSlider:
+				fbEM[i].fbEM REF= SliderEM[iSliderEM];
+				iSliderEM := iSliderEM + 1;
+			E_Function.eSliderWithGripper:
+				fbEM[i].fbEM REF= SliderWithGripperEM[iSliderWithGripperEM];
+				iSliderWithGripperEM := iSliderWithGripperEM + 1;
+			E_Function.eXYMover:
+				fbEM[i].fbEM REF= XYMoverEM[iXYMoverEM];
+				iXYMoverEM := iXYMoverEM + 1;
+		END_CASE
+		
+		fbEM[i].fbEM(em := em[i], un := un);
 	END_FOR
 	
 	InitialConfig := FALSE;
@@ -31,12 +61,25 @@ END_IF
 ]]></ST>
     </Implementation>
     <LineIds Name="MAIN">
-      <LineId Id="125" Count="2" />
+      <LineId Id="125" Count="0" />
+      <LineId Id="223" Count="0" />
+      <LineId Id="126" Count="1" />
       <LineId Id="122" Count="0" />
+      <LineId Id="224" Count="0" />
       <LineId Id="102" Count="0" />
       <LineId Id="157" Count="0" />
-      <LineId Id="119" Count="1" />
-      <LineId Id="172" Count="0" />
+      <LineId Id="199" Count="0" />
+      <LineId Id="201" Count="0" />
+      <LineId Id="200" Count="0" />
+      <LineId Id="184" Count="1" />
+      <LineId Id="187" Count="0" />
+      <LineId Id="212" Count="0" />
+      <LineId Id="188" Count="1" />
+      <LineId Id="213" Count="0" />
+      <LineId Id="190" Count="1" />
+      <LineId Id="214" Count="0" />
+      <LineId Id="119" Count="0" />
+      <LineId Id="203" Count="1" />
       <LineId Id="154" Count="0" />
       <LineId Id="135" Count="1" />
       <LineId Id="134" Count="0" />

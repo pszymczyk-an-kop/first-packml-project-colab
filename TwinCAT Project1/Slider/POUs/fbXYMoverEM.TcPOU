@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="fbXYMoverEM" Id="{542faac4-2fc2-4de1-969d-21d2b14af459}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK fbXYMoverEM EXTENDS fbEM
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[// TEST
+em.Config.Data.Q[6] := true;]]></ST>
+    </Implementation>
+    <LineIds Name="fbXYMoverEM">
+      <LineId Id="11" Count="0" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <DUT Name="E_Status" Id="{02e5105c-7e33-4838-8848-6543bca7cf3f}">
-    <Declaration><![CDATA[{attribute 'qualified_only'}
+    <Declaration><![CDATA[// Enumerator contains packml state, unfortunatly named status
+{attribute 'qualified_only'}
 {attribute 'strict'}
 TYPE E_Status :
 (

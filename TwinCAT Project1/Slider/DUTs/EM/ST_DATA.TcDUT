@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <DUT Name="ST_DATA" Id="{4b08263e-2e2c-477b-952f-548e1e6a345d}">
-    <Declaration><![CDATA[TYPE ST_DATA :
+    <Declaration><![CDATA[// Structure data contains inputs/outputs/axies
+TYPE ST_DATA :
 STRUCT
 	I : REFERENCE TO ARRAY[1..10] OF BOOL;
 	Q : REFERENCE TO ARRAY[1..10] OF BOOL;
