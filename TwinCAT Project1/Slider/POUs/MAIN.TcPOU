@@ -10,16 +10,16 @@ VAR
 	fbEM : ARRAY[1..Counters.packmlEmLast] OF ST_MACHINE;
 	
 	// Array containing all instances fo fbSliderEM with its own iterator
-	SliderEM : ARRAY[0..Counters.SliderEMNo] OF fbSliderEM;
-	iSliderEM : DINT := 0;
+	SliderEM : ARRAY[1..Counters.SliderEMNo] OF fbSliderEM;
+	iSliderEM : DINT := 1;
 	
 	// Array containing all instances fo fbSliderWithGripperEM with its own iterator
-	SliderWithGripperEM : ARRAY[0..Counters.SliderWithGripperEMNo] OF fbSliderWithGripperEM;
-	iSliderWithGripperEM : DINT := 0;
+	SliderWithGripperEM : ARRAY[1..Counters.SliderWithGripperEMNo] OF fbSliderWithGripperEM;
+	iSliderWithGripperEM : DINT := 1;
 	
 	// Array containing all instances fo fbXYMoverEM with its own iterator
-	XYMoverEM : ARRAY[0..Counters.XYMoverEMNo] OF fbXYMoverEM;
-	iXYMoverEM : DINT := 0;
+	XYMoverEM : ARRAY[1..Counters.XYMoverEMNo] OF fbXYMoverEM;
+	iXYMoverEM : DINT := 1;
 	
 	// Flag of initial config, used to set configuration data only once
 	InitialConfig : BOOL := TRUE;
@@ -58,8 +58,16 @@ END_VAR
 	InitialConfig := FALSE;
 END_IF
 
+FOR i := 1 TO Counters.packmlEmLast DO
+	fbEM[i].fbEM(em := em[i], un := un);
+END_FOR
 ]]></ST>
     </Implementation>
+    <Action Name="Init" Id="{240e2975-4539-4594-8253-c4c38cfa784d}">
+      <Implementation>
+        <ST><![CDATA[// Tutaj planuje przenieść tą inicjalizację a w samym mainie logikę]]></ST>
+      </Implementation>
+    </Action>
     <LineIds Name="MAIN">
       <LineId Id="125" Count="0" />
       <LineId Id="223" Count="0" />
@@ -83,8 +91,13 @@ END_IF
       <LineId Id="154" Count="0" />
       <LineId Id="135" Count="1" />
       <LineId Id="134" Count="0" />
-      <LineId Id="169" Count="0" />
+      <LineId Id="226" Count="0" />
+      <LineId Id="268" Count="1" />
+      <LineId Id="225" Count="0" />
       <LineId Id="133" Count="0" />
+    </LineIds>
+    <LineIds Name="MAIN.Init">
+      <LineId Id="1" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>

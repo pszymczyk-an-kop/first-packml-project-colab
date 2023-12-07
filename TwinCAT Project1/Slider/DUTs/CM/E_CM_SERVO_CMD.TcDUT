@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="E_CM_SERVO_CMD" Id="{a3626df1-5559-4a7b-a73e-274b60c7b13e}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE E_CM_SERVO_CMD :
+(
+	idle := 0,
+	reset,
+	powerDisable,
+	powerEnable,
+	brakeDisable,
+	brakeEnable,
+	halt,
+	moveVel,
+	moveRel,
+	moveAbs,
+	moveMod,
+	moveHome,
+	jogP,
+	jogN,
+	jogStop
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

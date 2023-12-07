@@ -18,6 +18,21 @@
     <LibraryReferences>{9753d3b6-499e-4ec7-bf79-92aa3fd2912f}</LibraryReferences>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="DUTs\CM\E_CM_SERVO_CMD.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DUTs\CM\servo\fbCmServo.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DUTs\CM\ST_CM_SERVO.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DUTs\CM\ST_CM_SERVO_CMD.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DUTs\CM\ST_CM_SERVO_STS.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="DUTs\EM\E_CMD.TcDUT">
       <SubType>Code</SubType>
     </Compile>
@@ -71,7 +86,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DUTs" />
+    <Folder Include="DUTs\CM\servo" />
     <Folder Include="DUTs\EM" />
+    <Folder Include="DUTs\CM" />
     <Folder Include="DUTs\UN" />
     <Folder Include="GVLs" />
     <Folder Include="VISUs" />

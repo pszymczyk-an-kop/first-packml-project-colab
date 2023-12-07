@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="fbCmServo" Id="{151b75ed-c7e6-4971-a72d-672ff46a970f}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK fbCmServo
+VAR_IN_OUT
+	em : ST_EM;
+	cm : ST_CM_SERVO;
+END_VAR
+VAR
+	
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <LineIds Name="fbCmServo">
+      <LineId Id="9" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
