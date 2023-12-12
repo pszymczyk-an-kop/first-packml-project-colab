@@ -8,118 +8,70 @@ VAR
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[IF em.Config.Functionality = E_Function.eSlider THEN
-	IF em.Cmd = E_CMD.stop
-	AND NOT (em.Status = E_Status.stopped
-	OR em.Status = E_Status.stopping
-	OR em.Status = E_Status.clearing
-	OR em.Status = E_Status.aborted
-	OR em.Status = E_Status.aborting) THEN
-		State := 15;
-	END_IF
-	
-	IF em.Cmd = E_CMD.abort
-	AND NOT (em.Status = E_Status.aborted
-	OR em.Status = E_Status.aborting) THEN
-		State := 5;
-	END_IF
-
 	CASE State OF
-		0:	IF em.Config.Data.I[1] OR em.Config.Data.I[2] THEN
-				State := 1;
-			ELSE
-				em.Status := E_Status.undefined;
-				State := 20;
-			END_IF
-			
-		1:	IF em.Config.Data.I[2] THEN
-				bSliderSide := TRUE;
-			END_IF
-			State := 40;
-		
-		5:	em.Status := E_Status.aborting;
+		0:	em.Status := E_Status.idle;
 			em.Config.Data.Q[1] := FALSE;
-			em.Config.Data.Q[2] := FALSE;
-			State := 10;
-			
-		10:	IF em.Cmd = E_CMD.clear THEN
-				em.Status := E_Status.clearing;
-				State := 20;
-			END_IF
-			
-		15: em.Status := E_Status.stopping;
-			em.Config.Data.Q[1] := FALSE;
-			em.Config.Data.Q[2] := FALSE;
-			State := 20;
-			
-		20:	em.Status := E_Status.stopped;
-			State := 30;
-			
-		30:	IF em.Cmd = E_CMD.reset THEN
-				em.Status := E_Status.resetting;
-				em.Config.Data.Q[1] := FALSE;
-				em.Config.Data.Q[2] := TRUE;
-				State := 35;
-			END_IF
-			
-		35:	IF em.Config.Data.I[1] THEN
-				em.Config.Data.Q[2] := FALSE;
-				bSliderSide := FALSE;
-				State := 40;
-			END_IF
-			
-		40:	em.Status := E_Status.idle;
+			em.Config.Data.Q[2] := TRUE;
 			IF em.Cmd = E_CMD.start THEN
-				State := 45;
+				State := 10;
 			END_IF
 			
-		45:	em.Status := E_Status.Starting;
-			State := 50;
-			
-			// Execute direction
-		50:	em.Status := E_Status.execute;
-			IF bSliderSide THEN
-				em.Config.Data.Q[2] := TRUE;
-				State := 60;
-			ELSIF em.Config.Data.I[3] THEN
-				em.Config.Data.Q[1] := TRUE;
-				State := 60;
+		10:	em.Status := E_Status.execute;
+			IF em.Config.Data.I[3] AND em.Config.Data.I[1] THEN
+				State := 20;
 			END_IF
 			
-			// Main execute
-		60:	IF em.Cmd = E_CMD.hold THEN
-				em.Status := E_Status.holding;
+			IF em.Config.Data.I[3] AND em.Config.Data.I[2] THEN
 				State := 200;
-			ELSIF em.Cmd = E_CMD.suspend THEN
-				em.Status := E_Status.suspending;
-				State := 300;
 			END_IF
 			
-			IF em.Config.Data.Q[2] AND em.Config.Data.I[1] THEN
-				em.Config.Data.Q[2] := FALSE;
-				bSliderSide := FALSE;
-				State := 50;
+			IF em.Cmd = E_CMD.abort THEN
+				State := 99;
 			END_IF
 			
-			IF em.Config.Data.Q[1] AND em.Config.Data.I[2] THEN
-				em.Config.Data.Q[1] := FALSE;
-				bSliderSide := TRUE;
-				State := 50;
+		20:	em.Config.Data.Q[1] := FALSE;
+			em.Config.Data.Q[2] := TRUE;
+			IF em.Config.Data.I[2] THEN
+				State := 30;
 			END_IF
 			
-		200:em.Status := E_Status.held;
+			IF em.Cmd = E_CMD.abort THEN
+				State := 99;
+			END_IF
+			
+		30:	IF NOT em.Config.Data.I[3] THEN
+				State := 10;
+			END_IF
+			
+			IF em.Cmd = E_CMD.abort THEN
+				State := 99;
+			END_IF
+			
+		99:	em.Status := E_Status.aborted;
 			em.Config.Data.Q[1] := FALSE;
 			em.Config.Data.Q[2] := FALSE;
-			IF em.Cmd = E_CMD.unhold THEN
-				em.Status := E_Status.unholding;
-				State := 50;
+			IF em.Config.Data.I[1] THEN
+				State := 0;
 			END_IF
 			
-		300:em.Status := E_Status.suspended;
-			em.Config.Data.Q[1] := FALSE;
+			IF em.Cmd = E_CMD.reset THEN
+				State := 500;
+			END_IF
+			
+		200:em.Config.Data.Q[1] := TRUE;
 			em.Config.Data.Q[2] := FALSE;
-			IF em.Cmd = E_CMD.unsuspend THEN
-				em.Status := E_Status.unsuspending;
-				State := 50;
+			IF em.Config.Data.I[1] THEN
+				State := 30;
+			END_IF
+			
+			IF em.Cmd = E_CMD.abort THEN
+				State := 99;
+			END_IF
+			
+		500:em.Config.Data.Q[1] := TRUE;
+			em.Config.Data.Q[2] := FALSE;
+			IF em.Config.Data.i[1] THEN
+				State := 0;
 			END_IF
 	END_CASE
 END_IF
@@ -140,94 +92,7 @@ em.SequenceStep := State;
 ]]></ST>
     </Implementation>
     <LineIds Name="fbSliderEM">
-      <LineId Id="144" Count="0" />
-      <LineId Id="325" Count="0" />
-      <LineId Id="357" Count="0" />
-      <LineId Id="359" Count="0" />
-      <LineId Id="361" Count="0" />
-      <LineId Id="363" Count="1" />
-      <LineId Id="327" Count="1" />
-      <LineId Id="334" Count="1" />
-      <LineId Id="365" Count="1" />
-      <LineId Id="336" Count="1" />
-      <LineId Id="326" Count="0" />
-      <LineId Id="146" Count="0" />
-      <LineId Id="254" Count="0" />
-      <LineId Id="321" Count="0" />
-      <LineId Id="155" Count="0" />
-      <LineId Id="320" Count="0" />
-      <LineId Id="157" Count="0" />
-      <LineId Id="258" Count="0" />
-      <LineId Id="348" Count="0" />
-      <LineId Id="350" Count="1" />
-      <LineId Id="349" Count="0" />
-      <LineId Id="353" Count="0" />
-      <LineId Id="338" Count="4" />
-      <LineId Id="158" Count="0" />
-      <LineId Id="185" Count="0" />
-      <LineId Id="160" Count="0" />
-      <LineId Id="162" Count="0" />
-      <LineId Id="161" Count="0" />
-      <LineId Id="329" Count="0" />
-      <LineId Id="331" Count="2" />
-      <LineId Id="330" Count="0" />
-      <LineId Id="163" Count="0" />
-      <LineId Id="319" Count="0" />
-      <LineId Id="165" Count="3" />
-      <LineId Id="170" Count="0" />
-      <LineId Id="263" Count="0" />
-      <LineId Id="347" Count="0" />
-      <LineId Id="169" Count="0" />
-      <LineId Id="259" Count="1" />
-      <LineId Id="269" Count="0" />
-      <LineId Id="356" Count="0" />
-      <LineId Id="261" Count="1" />
-      <LineId Id="172" Count="0" />
-      <LineId Id="268" Count="0" />
-      <LineId Id="174" Count="1" />
-      <LineId Id="177" Count="0" />
-      <LineId Id="302" Count="2" />
-      <LineId Id="182" Count="0" />
-      <LineId Id="375" Count="0" />
-      <LineId Id="178" Count="0" />
-      <LineId Id="370" Count="0" />
-      <LineId Id="265" Count="0" />
-      <LineId Id="374" Count="0" />
-      <LineId Id="270" Count="0" />
-      <LineId Id="272" Count="0" />
-      <LineId Id="373" Count="0" />
-      <LineId Id="266" Count="0" />
-      <LineId Id="204" Count="0" />
-      <LineId Id="376" Count="0" />
-      <LineId Id="205" Count="0" />
-      <LineId Id="213" Count="0" />
-      <LineId Id="207" Count="0" />
-      <LineId Id="210" Count="0" />
-      <LineId Id="214" Count="0" />
-      <LineId Id="212" Count="0" />
-      <LineId Id="208" Count="0" />
-      <LineId Id="274" Count="1" />
-      <LineId Id="279" Count="0" />
-      <LineId Id="278" Count="0" />
-      <LineId Id="281" Count="0" />
-      <LineId Id="277" Count="0" />
-      <LineId Id="217" Count="1" />
-      <LineId Id="221" Count="0" />
-      <LineId Id="282" Count="0" />
-      <LineId Id="222" Count="0" />
-      <LineId Id="244" Count="0" />
-      <LineId Id="283" Count="1" />
-      <LineId Id="294" Count="0" />
-      <LineId Id="305" Count="1" />
-      <LineId Id="309" Count="0" />
-      <LineId Id="307" Count="1" />
-      <LineId Id="310" Count="0" />
-      <LineId Id="312" Count="5" />
-      <LineId Id="311" Count="0" />
-      <LineId Id="151" Count="0" />
-      <LineId Id="147" Count="0" />
-      <LineId Id="229" Count="4" />
-      <LineId Id="235" Count="8" />
+      <LineId Id="463" Count="81" />
       <LineId Id="228" Count="0" />
     </LineIds>
   </POU>
