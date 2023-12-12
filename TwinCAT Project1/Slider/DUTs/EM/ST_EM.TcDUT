@@ -7,6 +7,7 @@ STRUCT
 	Config : ST_CONFIG;
 	Cmd : E_CMD;
 	Status : E_Status;
+	SequenceStep : INT;
 END_STRUCT
 END_TYPE
 ]]></Declaration>

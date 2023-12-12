@@ -71,6 +71,9 @@
     <Compile Include="POUs\fbEM.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="POUs\fbSignalSimSlider.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="POUs\fbSliderEM.TcPOU">
       <SubType>Code</SubType>
     </Compile>

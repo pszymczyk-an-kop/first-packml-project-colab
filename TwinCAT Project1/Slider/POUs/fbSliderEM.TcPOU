@@ -8,24 +8,33 @@ VAR
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[IF em.Config.Functionality = E_Function.eSlider THEN
-	IF em.Cmd = E_CMD.stop THEN
+	IF em.Cmd = E_CMD.stop
+	AND NOT (em.Status = E_Status.stopped
+	OR em.Status = E_Status.stopping
+	OR em.Status = E_Status.clearing
+	OR em.Status = E_Status.aborted
+	OR em.Status = E_Status.aborting) THEN
 		State := 15;
 	END_IF
 	
-	IF em.Cmd = E_CMD.abort THEN
+	IF em.Cmd = E_CMD.abort
+	AND NOT (em.Status = E_Status.aborted
+	OR em.Status = E_Status.aborting) THEN
 		State := 5;
 	END_IF
 
 	CASE State OF
 		0:	IF em.Config.Data.I[1] OR em.Config.Data.I[2] THEN
-				IF em.Config.Data.I[2] THEN
-					bSliderSide := TRUE;
-				END_IF
-				State := 40;
+				State := 1;
 			ELSE
 				em.Status := E_Status.undefined;
 				State := 20;
 			END_IF
+			
+		1:	IF em.Config.Data.I[2] THEN
+				bSliderSide := TRUE;
+			END_IF
+			State := 40;
 		
 		5:	em.Status := E_Status.aborting;
 			em.Config.Data.Q[1] := FALSE;
@@ -49,10 +58,12 @@ END_VAR]]></Declaration>
 				em.Status := E_Status.resetting;
 				em.Config.Data.Q[1] := FALSE;
 				em.Config.Data.Q[2] := TRUE;
+				State := 35;
 			END_IF
 			
-			IF em.Config.Data.I[1] THEN
+		35:	IF em.Config.Data.I[1] THEN
 				em.Config.Data.Q[2] := FALSE;
+				bSliderSide := FALSE;
 				State := 40;
 			END_IF
 			
@@ -64,15 +75,18 @@ END_VAR]]></Declaration>
 		45:	em.Status := E_Status.Starting;
 			State := 50;
 			
-		50:	IF bSliderSide THEN
+			// Execute direction
+		50:	em.Status := E_Status.execute;
+			IF bSliderSide THEN
 				em.Config.Data.Q[2] := TRUE;
-			ELSE
+				State := 60;
+			ELSIF em.Config.Data.I[3] THEN
 				em.Config.Data.Q[1] := TRUE;
+				State := 60;
 			END_IF
-			State := 60;
 			
-		60:	em.Status := E_Status.execute;
-			IF em.Cmd = E_CMD.hold THEN
+			// Main execute
+		60:	IF em.Cmd = E_CMD.hold THEN
 				em.Status := E_Status.holding;
 				State := 200;
 			ELSIF em.Cmd = E_CMD.suspend THEN
@@ -81,23 +95,15 @@ END_VAR]]></Declaration>
 			END_IF
 			
 			IF em.Config.Data.Q[2] AND em.Config.Data.I[1] THEN
-				em.Status := E_Status.completing;
 				em.Config.Data.Q[2] := FALSE;
 				bSliderSide := FALSE;
-				State := 70;
+				State := 50;
 			END_IF
 			
 			IF em.Config.Data.Q[1] AND em.Config.Data.I[2] THEN
-				em.Status := E_Status.completing;
 				em.Config.Data.Q[1] := FALSE;
 				bSliderSide := TRUE;
-				State := 70;
-			END_IF
-		
-		70:	em.Status := E_Status.completed;
-			IF em.Cmd = E_CMD.reset THEN
-				em.Status := E_Status.resetting;
-				State := 40;
+				State := 50;
 			END_IF
 			
 		200:em.Status := E_Status.held;
@@ -118,12 +124,11 @@ END_VAR]]></Declaration>
 	END_CASE
 END_IF
 
+em.SequenceStep := State;
 
 
 
 
-
-em.Config.Data.Q[3] := TRUE;
 
 
 
@@ -137,18 +142,26 @@ em.Config.Data.Q[3] := TRUE;
     <LineIds Name="fbSliderEM">
       <LineId Id="144" Count="0" />
       <LineId Id="325" Count="0" />
+      <LineId Id="357" Count="0" />
+      <LineId Id="359" Count="0" />
+      <LineId Id="361" Count="0" />
+      <LineId Id="363" Count="1" />
       <LineId Id="327" Count="1" />
-      <LineId Id="334" Count="3" />
+      <LineId Id="334" Count="1" />
+      <LineId Id="365" Count="1" />
+      <LineId Id="336" Count="1" />
       <LineId Id="326" Count="0" />
       <LineId Id="146" Count="0" />
       <LineId Id="254" Count="0" />
-      <LineId Id="323" Count="1" />
       <LineId Id="321" Count="0" />
-      <LineId Id="252" Count="0" />
       <LineId Id="155" Count="0" />
       <LineId Id="320" Count="0" />
       <LineId Id="157" Count="0" />
       <LineId Id="258" Count="0" />
+      <LineId Id="348" Count="0" />
+      <LineId Id="350" Count="1" />
+      <LineId Id="349" Count="0" />
+      <LineId Id="353" Count="0" />
       <LineId Id="338" Count="4" />
       <LineId Id="158" Count="0" />
       <LineId Id="185" Count="0" />
@@ -163,9 +176,11 @@ em.Config.Data.Q[3] := TRUE;
       <LineId Id="165" Count="3" />
       <LineId Id="170" Count="0" />
       <LineId Id="263" Count="0" />
+      <LineId Id="347" Count="0" />
       <LineId Id="169" Count="0" />
       <LineId Id="259" Count="1" />
       <LineId Id="269" Count="0" />
+      <LineId Id="356" Count="0" />
       <LineId Id="261" Count="1" />
       <LineId Id="172" Count="0" />
       <LineId Id="268" Count="0" />
@@ -173,33 +188,34 @@ em.Config.Data.Q[3] := TRUE;
       <LineId Id="177" Count="0" />
       <LineId Id="302" Count="2" />
       <LineId Id="182" Count="0" />
+      <LineId Id="375" Count="0" />
       <LineId Id="178" Count="0" />
+      <LineId Id="370" Count="0" />
       <LineId Id="265" Count="0" />
+      <LineId Id="374" Count="0" />
       <LineId Id="270" Count="0" />
       <LineId Id="272" Count="0" />
+      <LineId Id="373" Count="0" />
       <LineId Id="266" Count="0" />
-      <LineId Id="203" Count="3" />
+      <LineId Id="204" Count="0" />
+      <LineId Id="376" Count="0" />
+      <LineId Id="205" Count="0" />
       <LineId Id="213" Count="0" />
       <LineId Id="207" Count="0" />
       <LineId Id="210" Count="0" />
       <LineId Id="214" Count="0" />
       <LineId Id="212" Count="0" />
       <LineId Id="208" Count="0" />
-      <LineId Id="274" Count="2" />
+      <LineId Id="274" Count="1" />
       <LineId Id="279" Count="0" />
       <LineId Id="278" Count="0" />
       <LineId Id="281" Count="0" />
       <LineId Id="277" Count="0" />
       <LineId Id="217" Count="1" />
-      <LineId Id="224" Count="0" />
       <LineId Id="221" Count="0" />
       <LineId Id="282" Count="0" />
       <LineId Id="222" Count="0" />
-      <LineId Id="220" Count="0" />
-      <LineId Id="215" Count="1" />
-      <LineId Id="225" Count="1" />
       <LineId Id="244" Count="0" />
-      <LineId Id="246" Count="0" />
       <LineId Id="283" Count="1" />
       <LineId Id="294" Count="0" />
       <LineId Id="305" Count="1" />
@@ -210,7 +226,8 @@ em.Config.Data.Q[3] := TRUE;
       <LineId Id="311" Count="0" />
       <LineId Id="151" Count="0" />
       <LineId Id="147" Count="0" />
-      <LineId Id="229" Count="14" />
+      <LineId Id="229" Count="4" />
+      <LineId Id="235" Count="8" />
       <LineId Id="228" Count="0" />
     </LineIds>
   </POU>
