@@ -5,8 +5,8 @@
 {attribute 'qualified_only'}
 VAR_GLOBAL CONSTANT
 	SliderEMNo : DINT := 1;
-	SliderWithGripperEMNo : DINT := 0;
-	XYMoverEMNo : DINT := 0;
+	SliderWithGripperEMNo : DINT := 1;
+	XYMoverEMNo : DINT := 1;
 	
 	packmlUnLast: DINT := 1;
 	packmlEmLast: DINT := SliderEMNo + SliderWithGripperEMNo + XYMoverEMNo;

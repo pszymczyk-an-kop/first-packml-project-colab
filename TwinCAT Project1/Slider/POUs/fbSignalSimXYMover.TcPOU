@@ -1,0 +1,143 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="fbSignalSimXYMover" Id="{7169e8eb-476f-4bb5-9ffe-cfa494d7f0fc}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK fbSignalSimXYMover
+VAR_IN_OUT
+	em : ST_EM;
+END_VAR
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	Timer1 : TON;
+	Timer2 : TON;
+	Timer3 : TON;
+	Timer4 : TON;
+	Timer5 : TON;
+	Timer6 : TON;
+	Timer7 : TON;
+	Timer8 : TON;
+	Timer9 : TON;
+	Trigger : R_Trig;
+	TriggerVar : BOOL := TRUE;
+	TriggerVarToOFF : BOOL;
+	TriggerVarToSimStatus1 : BOOL;
+	TriggerVarToSimStatus2 : BOOL;
+	TriggerVarToSimStatus3 : BOOL;
+	Elapsed : TIME;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[	CASE em.SequenceStep OF
+		
+	0:	IF em.Config.Data.I[3] = FALSE OR em.Config.Data.I[1] = FALSE THEN
+			Timer1(PT := T#2S);
+			Timer1(IN := em.Config.Data.Q[1]);
+			em.Config.Data.I[1] := Timer1.Q;
+			Timer1(PT := T#2S);
+			Timer1(IN := em.Config.Data.Q[3]);
+			em.Config.Data.I[3] := Timer1.Q;
+		END_IF
+		
+		IF Timer1.Q = TRUE THEN
+			Timer1(IN := FALSE);
+		END_IF
+		
+	1: 	TriggerVarToSimStatus1 := TRUE;
+		Timer7(PT := T#1S);
+		Timer7(IN := TriggerVarToSimStatus1);
+		
+		IF Timer7.Q = TRUE THEN
+			Timer7(IN := FALSE);
+			em.Cmd := E_Cmd.Reset;
+			TriggerVarToSimStatus1 := FALSE;
+		END_IF
+	
+	2: 	Timer3(PT := T#2S);
+		Timer3(IN := em.Config.Data.Q[1]);
+		em.Config.Data.I[1] := Timer3.Q;
+	
+		Timer3(PT := T#2S);
+		Timer3(IN := em.Config.Data.Q[3]);
+		em.Config.Data.I[3] := Timer3.Q;
+		
+		IF Timer3.Q = TRUE THEN
+			Timer3(IN := FALSE);
+		END_IF
+		
+	3: // Rezerwa
+	
+	4: 	TriggerVarToSimStatus2 := TRUE;
+		Timer8(PT := T#1S);
+		Timer8(IN := TriggerVarToSimStatus2);
+		
+		IF Timer8.Q = TRUE THEN
+			Timer8(IN := FALSE);
+			em.Cmd := E_Cmd.Reset;
+			TriggerVarToSimStatus2 := FALSE;
+		END_IF
+	
+	5: // Rezerwa
+	
+	10: TriggerVarToSimStatus3 := TRUE;
+		Timer9(PT := T#1S);
+		Timer9(IN := TriggerVarToSimStatus3);
+		
+		IF Timer9.Q = TRUE THEN
+			Timer9(IN := FALSE);
+			em.Cmd := E_Cmd.START;
+			TriggerVarToSimStatus3 := FALSE;
+		END_IF
+		
+	
+	20:	TriggerVar := TRUE;
+		Timer4(PT := T#2S);
+		Timer4(IN := TriggerVar);
+		em.Config.Data.I[5] := Timer4.Q;
+		
+		IF Timer4.Q = TRUE THEN
+			Timer4(IN := FALSE);
+			TriggerVar := FALSE;
+		END_IF
+		
+	30: // Rezerwa
+	
+	40: Timer5(PT := T#2S);
+		Timer5(IN := em.Config.Data.Q[2]);
+		em.Config.Data.I[2] := Timer5.Q;
+		
+		IF Timer5.Q = TRUE THEN
+			Timer5(IN := FALSE);
+		END_IF
+	
+	50: Timer6(PT := T#2S);
+		Timer6(IN := em.Config.Data.Q[4]);
+		em.Config.Data.I[4] := Timer6.Q;
+		
+		IF Timer6.Q = TRUE THEN
+			Timer6(IN := FALSE);
+		END_IF
+		
+	60:	TriggerVarToOFF := TRUE;
+		Timer2(PT := T#2S);
+		Timer2(IN := TriggerVarToOFF);
+
+		IF Timer2.Q = TRUE THEN
+			em.Config.Data.I[5] := FALSE;
+			Timer2(IN := FALSE);
+			TriggerVarToOFF := FALSE;
+		END_IF
+	
+	70: // Rezerwa
+	
+	
+	END_CASE 
+	]]></ST>
+    </Implementation>
+    <LineIds Name="fbSignalSimXYMover">
+      <LineId Id="64" Count="103" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

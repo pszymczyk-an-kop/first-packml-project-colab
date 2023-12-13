@@ -28,17 +28,17 @@ VAR
 	i : DINT;
 	
 	SignalSimSlider: fbSignalSimSlider;
+	SignalSimXYMover : fbSignalSimXYMover;
 	timer : TON;
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[IF InitialConfig THEN
-	// Specifing module type of each module in array
+	
 	em[1].Config.Functionality := E_Function.eSlider;
-//	em[2].Config.Functionality := E_Function.eSliderWithGripper;
-//	em[3].Config.Functionality := E_Function.eXYMover;
+	em[2].Config.Functionality := E_Function.eSliderWithGripper;
+	em[3].Config.Functionality := E_Function.eXYMover;
 
-	// FOR loop to specify config for each module
 	FOR i := 1 TO Counters.packmlEmLast DO
 		em[i].Config.Data.I REF= GVL.aInput[i];
 		em[i].Config.Data.Q REF= GVL.aOutput[i];
@@ -60,6 +60,7 @@ END_VAR
 END_IF
 
 SignalSimSlider(em := em[1], EnableSim := TRUE);
+SignalSimXYMover(em := em[3]);
 
 FOR i := 1 TO Counters.packmlEmLast DO
 	fbEM[i].fbEM(em := em[i], un := un);
@@ -95,7 +96,6 @@ END_FOR
       <LineId Id="223" Count="0" />
       <LineId Id="126" Count="1" />
       <LineId Id="122" Count="0" />
-      <LineId Id="224" Count="0" />
       <LineId Id="102" Count="0" />
       <LineId Id="157" Count="0" />
       <LineId Id="199" Count="0" />
@@ -113,7 +113,8 @@ END_FOR
       <LineId Id="135" Count="1" />
       <LineId Id="134" Count="0" />
       <LineId Id="351" Count="1" />
-      <LineId Id="226" Count="0" />
+      <LineId Id="382" Count="0" />
+      <LineId Id="384" Count="0" />
       <LineId Id="268" Count="1" />
       <LineId Id="225" Count="0" />
       <LineId Id="298" Count="0" />

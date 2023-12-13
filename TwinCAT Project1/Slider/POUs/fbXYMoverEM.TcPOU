@@ -2,13 +2,112 @@
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="fbXYMoverEM" Id="{542faac4-2fc2-4de1-969d-21d2b14af459}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK fbXYMoverEM EXTENDS fbEM
+VAR_IN_OUT
+END_VAR
+VAR
+	F_Reset : BOOL := TRUE;
+END_VAR
+VAR RETAIN
+	XYMoverActualStep : INT;
+END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[// TEST
-em.Config.Data.Q[6] := true;]]></ST>
+      <ST><![CDATA[
+
+//-----------------HOMING------------------------
+
+//-------------AUTO SEQUENCE---------------------
+
+
+
+IF em.Config.Functionality = E_Function.eXYMover THEN
+	IF em.Cmd = E_Cmd.STOP THEN
+		XYMoverActualStep := 1;
+	END_IF
+	IF em.Cmd = E_Cmd.ABORT THEN
+		XYMoverActualStep := 4;
+	END_IF
+END_IF
+
+CASE XYMoverActualStep OF
+	0: 
+	IF em.Config.Data.I[3] AND em.Config.Data.I[1] THEN
+		em.Status := E_Status.IDLE;
+		XYMoverActualStep := 10;
+	ELSE 
+		em.Status := E_Status.UNDEFINED;
+		XYMoverActualStep := 1;
+	END_IF
+	
+	1:
+		IF em.Cmd = E_Cmd.RESET THEN
+			em.Status := E_Status.RESETTING;
+			XYMoverActualStep := 2;
+		END_IF
+		
+	2:
+		IF em.Status = E_Status.RESETTING THEN
+			em.Config.Data.Q[1] := TRUE;
+			em.Config.Data.Q[3] := TRUE;
+			XYMoverActualStep := 0;
+		END_IF
+	
+	3:  // Rezerwa
+		
+		
+	4: 	IF em.Cmd = E_Cmd.RESET THEN
+			em.Config.Data.Q[7] := FALSE;
+			XYMoverActualStep := 5;
+		END_IF
+	
+	5:
+		em.Status := E_Status.CLEARING;
+		XYMoverActualStep := 2;
+	
+	10:
+		IF em.Cmd = E_Cmd.START THEN
+			em.Status := E_Status.STARTING;
+			XYMoverActualStep := 20;
+		END_IF
+
+	20:
+		IF em.Config.Data.I[5] = TRUE THEN
+			em.Status := E_Status.EXECUTE;
+			XYMoverActualStep := 30; 
+		END_IF
+
+	30:
+			em.Config.Data.Q[1] := FALSE;
+			em.Config.Data.Q[2] := TRUE;
+			XYMoverActualStep := 40;
+	
+	40: 
+		IF em.Config.Data.I[2] = TRUE THEN
+			em.Config.Data.Q[3] := FALSE;
+			em.Config.Data.Q[4] := TRUE;
+			XYMoverActualStep := 50;
+		END_IF
+		
+	50:
+		IF em.Config.Data.I[4] = TRUE THEN
+			XYMoverActualStep := 60; 
+		END_IF 
+	
+	60: 
+		IF em.Config.Data.I[5] = FALSE THEN
+			XYMoverActualStep := 70; 
+		END_IF 
+	
+	70: em.Config.Data.Q[3] := TRUE;
+		em.Config.Data.Q[1] := TRUE;
+		XYMoverActualStep := 20;
+		
+END_CASE
+
+em.SequenceStep := XYMoverActualStep;]]></ST>
     </Implementation>
     <LineIds Name="fbXYMoverEM">
-      <LineId Id="11" Count="0" />
+      <LineId Id="13" Count="91" />
       <LineId Id="9" Count="0" />
     </LineIds>
   </POU>
