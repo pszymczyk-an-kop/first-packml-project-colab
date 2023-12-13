@@ -2,13 +2,361 @@
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="fbSliderWithGripperEM" Id="{262a0099-d26a-4a20-85d1-5e68be47c9f0}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK fbSliderWithGripperEM EXTENDS fbEM
-]]></Declaration>
+VAR
+	i : INT;
+	state : INT;
+	initial: BOOL := TRUE;
+END_VAR
+VAR_INPUT
+	direction : E_pos;
+END_VAR
+VAR_OUTPUT
+	servo_signal : ARRAY[1..6] OF BOOL;
+END_VAR]]></Declaration>
     <Implementation>
-      <ST><![CDATA[// TEST
+      <ST><![CDATA[
+IF initial THEN // AFTER START OF PLC ENTER Undefined state
+	state:=0;
+	em.CMD := E_CMD.powerOn; //// MAKES SENSE?
+	initial:= FALSE;
+END_IF
+
+FOR i:=1 TO 5 DO
+	em.Config.Data.Q[2+i]:=servo_signal[i];
+END_FOR
+
+IF em.CMD = E_CMD.abort THEN
+	state:=65;
+END_IF
+IF em.CMD = E_CMD.stop THEN
+	state:=70;
+END_IF
+
+CASE state OF
+	
+	0:		//Undefined state
+	
+	em.Status := E_Status.undefined;	
+	IF em.Config.Data.I[3]= FALSE AND 
+		em.Config.Data.I[1]= FALSE AND 
+		em.Config.Data.I[2]=TRUE AND
+		em.CMD = E_CMD.clear THEN // GRIPPER HAS TO BE OPEN AND NO PART THEN PRESS CLEAR
+		
+		
+			IF  em.Config.Data.I[4] THEN 
+				state :=30; // IF gripper at HOME go to idle
+			ELSE
+				servo_signal[1]:=TRUE;//GO 
+				servo_signal[2]:=TRUE;//HOME POSITION
+				state := 10; // IF gripper pos unknown go to resetting
+			END_IF
+		
+	ELSE 
+		em.Config.Data.Q[1]:= FALSE; //OPEN GRIPPER
+	END_IF;
+
+	
+	10:		//Resetting
+	
+	em.Status := E_Status.resetting;
+	
+		IF em.Config.Data.I[4] THEN
+			servo_signal[1]:=FALSE;//GO 
+			servo_signal[2]:=FALSE;//HOME POSITION
+		END_IF
+		
+		IF em.Config.Data.I[4] AND em.CMD = E_CMD.reset THEN
+			
+			state :=30;
+		END_IF
+	
+
+	20:		
+	
+	
+	
+
+	30:		//IDLE
+	
+	em.Status := E_Status.idle;
+	IF em.CMD = E_CMD.start THEN 
+		state :=40;
+	END_IF
+	
+
+	40:		//EXECUTE.1
+	
+	em.Status := E_Status.starting;
+	//Close gripper when part present
+	IF em.Config.Data.I[3] AND em.Config.Data.I[4] THEN //when part present at HOME
+		
+		em.Config.Data.Q[1]:= TRUE; //CLOSE GRIPPER
+		
+	END_IF
+	//When Gripper closed --> state 41
+	IF em.Config.Data.I[1] = TRUE AND em.Config.Data.I[2]=FALSE THEN
+		state:=41;
+		
+	END_IF
+
+	41:		//EXECUTE.2
+	
+	em.Status := E_Status.execute;
+	CASE direction OF //DECISION
+			E_pos.one:
+			servo_signal[1]:=TRUE; 	//GO
+			servo_signal[3]:=TRUE; 	// pos 1
+			state:=42;				// go to execute.3
+			E_pos.two:
+			servo_signal[1]:=TRUE; 	//GO
+			servo_signal[4]:=TRUE; 	// pos 2
+			state:=42;				// go to execute.3
+			E_pos.three:
+			servo_signal[1]:=TRUE; 	//GO
+			servo_signal[5]:=TRUE; 	// pos 3
+			state:=42;				// go to execute.3
+
+	END_CASE
+
+	
+	42:		//EXECUTE.3 STOPPING AT POS 1 2 or 3 
+	em.Status := E_Status.execute;
+	CASE direction OF //DECISION
+		
+	E_pos.one:
+	IF em.Config.Data.I[5] THEN //when at pos1 with part
+		servo_signal[1]:=FALSE; //GO
+		servo_signal[3]:=FALSE; // pos1 
+		
+		state:=43;// go to execute.4
+	END_IF
+	E_pos.two:
+	IF em.Config.Data.I[6]=TRUE THEN //when at pos2 with part
+		servo_signal[1]:=FALSE; //GO
+		servo_signal[4]:=FALSE; // pos2 
+		
+		state:=43; // go to execute.4
+	END_IF
+	E_pos.three:	
+	IF em.Config.Data.I[7]=TRUE THEN //when at pos3 with part
+		servo_signal[1]:=FALSE; //GO
+		servo_signal[5]:=FALSE; // pos3 
+		
+		state:=43; // go to execute.4
+	END_IF
+	
+	END_CASE
+	43:		//EXECUTE.4 OPEN GRIPPER
+	
+			em.Status := E_Status.execute;
+		
+			em.Config.Data.Q[1]:=FALSE; //OPEN GRIPPER
+			em.Config.Data.Q[2]:=TRUE;
+			
+			IF em.Config.Data.I[1] = FALSE AND em.Config.Data.I[2]=TRUE THEN
+				state:=44;
+			END_IF
+	44:		//EXECUTE.5 MOVING HOME HOME WITHOUT PART
+	
+	em.Status := E_Status.execute;
+	
+		IF NOT em.Config.Data.I[3] AND (em.Config.Data.I[5] OR em.Config.Data.I[6] OR em.Config.Data.I[7])  THEN //when at pos1 2 or 3 without part
+			servo_signal[1]:=TRUE;//GO 
+			servo_signal[2]:=TRUE;//BASE POSITION
+		END_IF
+		IF em.Config.Data.I[4] THEN
+			servo_signal[1]:=FALSE;//GO 
+			servo_signal[2]:=FALSE;//BASE POSITION
+			state:=30;
+		END_IF
+		
+	45:		//EXECUTE.6 MOVE HOME HOME
+	
+
+	
+
+	65:		//ABORTED
+	
+	em.Status := E_Status.aborted;
+	
+	servo_signal[1]:=FALSE;//GO signal OFF
+	IF em.CMD = E_CMD.clear THEN
+		state := 70;
+	END_IF;
+	
+	//STOPPED
+	70:
+	
+	em.Status := E_Status.stopped;
+	
+	servo_signal[1]:=FALSE;//GO signal OFF
+	IF em.CMD = E_CMD.reset THEN
+		state:=0;
+	END_IF
+	
+	
+END_CASE
+
+
+
+em.SequenceStep:=state;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// TEST
 em.Config.Data.Q[10] := true;]]></ST>
     </Implementation>
     <LineIds Name="fbSliderWithGripperEM">
-      <LineId Id="10" Count="0" />
+      <LineId Id="316" Count="0" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="241" Count="0" />
+      <LineId Id="47" Count="0" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="341" Count="0" />
+      <LineId Id="338" Count="2" />
+      <LineId Id="41" Count="1" />
+      <LineId Id="200" Count="1" />
+      <LineId Id="225" Count="1" />
+      <LineId Id="43" Count="0" />
+      <LineId Id="227" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="50" Count="0" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="287" Count="0" />
+      <LineId Id="72" Count="1" />
+      <LineId Id="78" Count="2" />
+      <LineId Id="51" Count="0" />
+      <LineId Id="77" Count="0" />
+      <LineId Id="65" Count="1" />
+      <LineId Id="342" Count="0" />
+      <LineId Id="344" Count="0" />
+      <LineId Id="388" Count="0" />
+      <LineId Id="343" Count="0" />
+      <LineId Id="67" Count="0" />
+      <LineId Id="75" Count="0" />
+      <LineId Id="48" Count="0" />
+      <LineId Id="94" Count="0" />
+      <LineId Id="74" Count="0" />
+      <LineId Id="289" Count="0" />
+      <LineId Id="70" Count="0" />
+      <LineId Id="61" Count="0" />
+      <LineId Id="288" Count="0" />
+      <LineId Id="68" Count="0" />
+      <LineId Id="177" Count="0" />
+      <LineId Id="196" Count="2" />
+      <LineId Id="178" Count="0" />
+      <LineId Id="199" Count="0" />
+      <LineId Id="62" Count="0" />
+      <LineId Id="195" Count="0" />
+      <LineId Id="82" Count="1" />
+      <LineId Id="89" Count="0" />
+      <LineId Id="71" Count="0" />
+      <LineId Id="49" Count="0" />
+      <LineId Id="290" Count="0" />
+      <LineId Id="86" Count="1" />
+      <LineId Id="90" Count="0" />
+      <LineId Id="88" Count="0" />
+      <LineId Id="291" Count="0" />
+      <LineId Id="91" Count="1" />
+      <LineId Id="95" Count="3" />
+      <LineId Id="93" Count="0" />
+      <LineId Id="292" Count="0" />
+      <LineId Id="285" Count="0" />
+      <LineId Id="354" Count="0" />
+      <LineId Id="99" Count="0" />
+      <LineId Id="104" Count="0" />
+      <LineId Id="243" Count="0" />
+      <LineId Id="154" Count="2" />
+      <LineId Id="360" Count="1" />
+      <LineId Id="356" Count="1" />
+      <LineId Id="263" Count="0" />
+      <LineId Id="262" Count="0" />
+      <LineId Id="293" Count="0" />
+      <LineId Id="274" Count="0" />
+      <LineId Id="265" Count="8" />
+      <LineId Id="303" Count="2" />
+      <LineId Id="302" Count="0" />
+      <LineId Id="353" Count="0" />
+      <LineId Id="264" Count="0" />
+      <LineId Id="294" Count="0" />
+      <LineId Id="139" Count="0" />
+      <LineId Id="152" Count="1" />
+      <LineId Id="105" Count="0" />
+      <LineId Id="346" Count="1" />
+      <LineId Id="111" Count="1" />
+      <LineId Id="115" Count="1" />
+      <LineId Id="249" Count="0" />
+      <LineId Id="113" Count="0" />
+      <LineId Id="100" Count="0" />
+      <LineId Id="141" Count="3" />
+      <LineId Id="248" Count="0" />
+      <LineId Id="140" Count="0" />
+      <LineId Id="306" Count="0" />
+      <LineId Id="349" Count="0" />
+      <LineId Id="307" Count="3" />
+      <LineId Id="146" Count="0" />
+      <LineId Id="348" Count="0" />
+      <LineId Id="276" Count="0" />
+      <LineId Id="275" Count="0" />
+      <LineId Id="296" Count="0" />
+      <LineId Id="279" Count="0" />
+      <LineId Id="247" Count="0" />
+      <LineId Id="277" Count="1" />
+      <LineId Id="284" Count="0" />
+      <LineId Id="246" Count="0" />
+      <LineId Id="362" Count="1" />
+      <LineId Id="245" Count="0" />
+      <LineId Id="298" Count="0" />
+      <LineId Id="280" Count="0" />
+      <LineId Id="297" Count="0" />
+      <LineId Id="118" Count="0" />
+      <LineId Id="121" Count="1" />
+      <LineId Id="119" Count="0" />
+      <LineId Id="365" Count="0" />
+      <LineId Id="375" Count="1" />
+      <LineId Id="373" Count="1" />
+      <LineId Id="283" Count="0" />
+      <LineId Id="282" Count="0" />
+      <LineId Id="299" Count="0" />
+      <LineId Id="209" Count="0" />
+      <LineId Id="208" Count="0" />
+      <LineId Id="210" Count="1" />
+      <LineId Id="300" Count="0" />
+      <LineId Id="212" Count="1" />
+      <LineId Id="221" Count="0" />
+      <LineId Id="214" Count="0" />
+      <LineId Id="216" Count="1" />
+      <LineId Id="215" Count="0" />
+      <LineId Id="218" Count="1" />
+      <LineId Id="230" Count="0" />
+      <LineId Id="220" Count="0" />
+      <LineId Id="372" Count="0" />
+      <LineId Id="251" Count="0" />
+      <LineId Id="222" Count="0" />
+      <LineId Id="228" Count="1" />
+      <LineId Id="223" Count="1" />
+      <LineId Id="114" Count="0" />
+      <LineId Id="370" Count="0" />
+      <LineId Id="14" Count="2" />
+      <LineId Id="319" Count="0" />
+      <LineId Id="19" Count="3" />
+      <LineId Id="24" Count="11" />
+      <LineId Id="12" Count="0" />
       <LineId Id="9" Count="0" />
     </LineIds>
   </POU>

@@ -1,0 +1,307 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="fb_SliderSignalSim" Id="{e37b1043-ba32-4968-85cd-3c6e65122a2b}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK fb_SliderSignalSim
+VAR_IN_OUT
+	ConnectData : ST_EM; 
+END_VAR
+VAR_INPUT
+	EnableSim :BOOL; 
+	
+END_VAR
+VAR
+	enable : BOOL ; 
+	i : int; 
+	delay: ARRAY [1..10] OF TON;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+delay[1](PT:=T#2S); delay[1].ET;//Open Movement Sim
+delay[2](PT:=T#2S); delay[2].ET;//Open Movement SIm
+delay[3](PT:=T#5S); delay[3].ET;// Movement HOME SIM
+delay[4](PT:=T#4S); delay[4].ET;//CMD.button simulation
+delay[5](PT:=T#4S); delay[5].ET;
+delay[6](PT:=T#4S); delay[6].ET;
+delay[7](PT:=T#2S); delay[7].ET;// Close Movement Sim
+delay[8](PT:=T#2S); delay[8].ET;// Close Movement Sim
+delay[9](PT:=T#2S); delay[9].ET;
+delay[10](PT:=T#2S); delay[10].ET;
+
+IF enable THEN
+	
+
+		
+		IF ConnectData.Cmd = E_CMD.abort THEN
+			delay[9](IN:=TRUE);
+		END_IF
+		
+		IF ConnectData.Cmd = E_CMD.stop THEN
+			delay[10](IN:=TRUE);
+		END_IF
+		
+		
+		
+		CASE ConnectData.SequenceStep OF
+			
+			0:		//Undefined state
+					//Simulate opening gripper
+				IF ConnectData.Config.Data.Q[1]= FALSE THEN
+					delay[1](IN:=TRUE);
+					delay[2](IN:=TRUE);
+				END_IF
+		 
+				IF delay[1].Q AND delay[2].Q THEN
+					ConnectData.Config.Data.I[1]:= FALSE;
+					ConnectData.Config.Data.I[2]:=TRUE;
+					delay[1](IN:=FALSE);
+					delay[2](IN:=FALSE);
+					delay[4](IN:=TRUE);//Simulate CMD.clear button
+				END_IF
+				
+					//Simulate CMD.clear button
+				
+				IF delay[4].Q THEN
+					delay[4](IN:=FALSE);
+					ConnectData.Cmd:=E_Cmd.clear;
+				END_IF
+					//Simulate movement to HOME  //TIMER TURNED OFF IN STEP 10 or 20
+				IF ConnectData.Config.Data.Q[3]=TRUE AND ConnectData.Config.Data.Q[4]=TRUE THEN
+					delay[3](IN:=TRUE);
+					
+				END_IF
+				
+		
+				
+				
+				
+			10:		//Resetting
+					//Simulate movement to HOME 		
+					IF ConnectData.Config.Data.Q[3]=TRUE AND ConnectData.Config.Data.Q[4]=TRUE THEN
+						delay[3](IN:=TRUE);
+						FOR i:=4 TO 7 DO
+							ConnectData.Config.Data.I[i]:=FALSE;	// Gripper position clear
+						END_FOR
+					END_IF
+						
+				
+					IF delay[3].Q THEN
+					delay[3].IN:=FALSE;
+					ConnectData.Config.Data.I[4]:=TRUE; // arrived at home
+					END_IF
+					//Simulate CMD.reset
+					delay[5](IN:=TRUE);
+					IF delay[5].Q THEN
+						delay[5](IN:=FALSE);
+						ConnectData.Cmd:=E_Cmd.reset;
+						delay[6](IN:=TRUE);
+					END_IF
+					
+			
+			
+		
+			20:		//CLEARING
+					
+					
+			
+			30:		//IDLE
+					//WAIT FOR CMD.reset
+					IF delay[6].Q THEN
+						delay[6](IN:=FALSE);
+						ConnectData.Cmd:=E_Cmd.start;
+					END_IF
+		
+			40:		//EXECUTE.1
+					
+					//Simulate closing gripper
+				IF ConnectData.Config.Data.Q[1]= TRUE AND ConnectData.Config.Data.I[4] =TRUE THEN
+				delay[7](IN:=TRUE);
+				delay[8](IN:=TRUE);
+				END_IF
+				
+				
+				
+				IF delay[7].Q AND delay[8].Q THEN
+					ConnectData.Config.Data.I[1]:= TRUE;
+					ConnectData.Config.Data.I[2]:=FALSE;
+					delay[7](IN:=FALSE);
+					delay[8](IN:=FALSE);
+					
+				END_IF
+			
+		
+			41:		//EXECUTE.2
+					
+			
+			42:		//EXECUTE.3 STOPPING AT POS 1 2 or 3 
+			
+						IF ConnectData.Config.Data.Q[3]=TRUE AND  //servoGO
+									(ConnectData.Config.Data.Q[5]=TRUE OR  // pos 1
+									ConnectData.Config.Data.Q[6]=TRUE OR  // pos 2
+									ConnectData.Config.Data.Q[7]=TRUE) THEN  // pos3
+									delay[3](IN:=TRUE);	
+									ConnectData.Config.Data.I[4]:=FALSE; //LEAVING HOME
+						END_IF
+					
+						IF delay[3].Q THEN
+						delay[3].IN:=FALSE;
+								FOR i:=4 TO 7 DO
+										IF ConnectData.Config.Data.Q[i]=TRUE THEN
+											ConnectData.Config.Data.I[i]:=TRUE;
+										END_IF
+								END_FOR
+		
+						END_IF
+					
+			
+			
+			43:		//EXECUTE.4 OPEN GRIPPER
+			
+					//Simulate opening gripper
+						IF ConnectData.Config.Data.Q[1]= FALSE  THEN
+						delay[1](IN:=TRUE);
+						delay[2](IN:=TRUE);
+						END_IF
+				 
+						IF delay[1].Q AND delay[2].Q THEN
+							ConnectData.Config.Data.I[1]:= FALSE;
+							ConnectData.Config.Data.I[2]:=TRUE;
+							delay[1](IN:=FALSE);
+							delay[2](IN:=FALSE);
+						END_IF
+			44:		//EXECUTE.5 MOVING HOME HOME WITHOUT PART
+			
+					IF ConnectData.Config.Data.Q[3]=TRUE AND ConnectData.Config.Data.Q[4]=TRUE THEN
+						delay[6](IN:=TRUE);	
+						
+						FOR i:=4 TO 7 DO
+							ConnectData.Config.Data.I[i]:=FALSE;	// Gripper position clear
+						END_FOR	
+					END_IF
+						
+					IF delay[6].Q THEN
+					delay[6].IN:=FALSE;
+					ConnectData.Config.Data.I[4]:=TRUE; // arrived at home pos
+					END_IF
+					
+			45:		//EXECUTE.6 MOVE HOME HOME
+					
+			
+		
+			
+		
+			65:		//ABORTED
+			
+					IF delay[9].Q THEN
+					delay[9].IN:=FALSE;
+					ConnectData.Cmd:=E_Cmd.clear;
+					delay[10].IN:=TRUE;
+					END_IF
+			
+			
+			70:		//STOPPED
+					IF delay[10].Q THEN
+					delay[10].IN:=FALSE;
+					ConnectData.Cmd:=E_Cmd.reset;
+					END_IF
+		END_CASE
+		
+		IF ConnectData.SequenceStep <> 0 THEN 
+			delay[4](IN:=FALSE);
+END_IF
+
+END_IF		]]></ST>
+    </Implementation>
+    <LineIds Name="fb_SliderSignalSim">
+      <LineId Id="603" Count="0" />
+      <LineId Id="345" Count="2" />
+      <LineId Id="307" Count="0" />
+      <LineId Id="349" Count="1" />
+      <LineId Id="352" Count="0" />
+      <LineId Id="289" Count="0" />
+      <LineId Id="532" Count="0" />
+      <LineId Id="537" Count="0" />
+      <LineId Id="604" Count="3" />
+      <LineId Id="538" Count="0" />
+      <LineId Id="535" Count="1" />
+      <LineId Id="533" Count="1" />
+      <LineId Id="528" Count="0" />
+      <LineId Id="539" Count="1" />
+      <LineId Id="529" Count="2" />
+      <LineId Id="66" Count="0" />
+      <LineId Id="73" Count="1" />
+      <LineId Id="377" Count="0" />
+      <LineId Id="436" Count="10" />
+      <LineId Id="75" Count="0" />
+      <LineId Id="418" Count="5" />
+      <LineId Id="388" Count="0" />
+      <LineId Id="279" Count="3" />
+      <LineId Id="275" Count="0" />
+      <LineId Id="265" Count="0" />
+      <LineId Id="107" Count="0" />
+      <LineId Id="268" Count="0" />
+      <LineId Id="361" Count="0" />
+      <LineId Id="355" Count="0" />
+      <LineId Id="109" Count="0" />
+      <LineId Id="401" Count="0" />
+      <LineId Id="426" Count="1" />
+      <LineId Id="588" Count="1" />
+      <LineId Id="587" Count="0" />
+      <LineId Id="408" Count="0" />
+      <LineId Id="429" Count="1" />
+      <LineId Id="471" Count="2" />
+      <LineId Id="409" Count="0" />
+      <LineId Id="413" Count="0" />
+      <LineId Id="373" Count="3" />
+      <LineId Id="435" Count="0" />
+      <LineId Id="300" Count="0" />
+      <LineId Id="110" Count="0" />
+      <LineId Id="121" Count="3" />
+      <LineId Id="414" Count="0" />
+      <LineId Id="125" Count="0" />
+      <LineId Id="136" Count="1" />
+      <LineId Id="434" Count="0" />
+      <LineId Id="431" Count="2" />
+      <LineId Id="143" Count="2" />
+      <LineId Id="153" Count="0" />
+      <LineId Id="448" Count="5" />
+      <LineId Id="558" Count="1" />
+      <LineId Id="454" Count="5" />
+      <LineId Id="447" Count="0" />
+      <LineId Id="154" Count="2" />
+      <LineId Id="461" Count="0" />
+      <LineId Id="174" Count="2" />
+      <LineId Id="486" Count="4" />
+      <LineId Id="547" Count="0" />
+      <LineId Id="491" Count="3" />
+      <LineId Id="566" Count="0" />
+      <LineId Id="571" Count="2" />
+      <LineId Id="570" Count="0" />
+      <LineId Id="500" Count="1" />
+      <LineId Id="485" Count="0" />
+      <LineId Id="196" Count="2" />
+      <LineId Id="204" Count="0" />
+      <LineId Id="504" Count="10" />
+      <LineId Id="205" Count="1" />
+      <LineId Id="214" Count="0" />
+      <LineId Id="516" Count="1" />
+      <LineId Id="561" Count="2" />
+      <LineId Id="560" Count="0" />
+      <LineId Id="518" Count="1" />
+      <LineId Id="548" Count="2" />
+      <LineId Id="520" Count="0" />
+      <LineId Id="216" Count="1" />
+      <LineId Id="527" Count="0" />
+      <LineId Id="223" Count="5" />
+      <LineId Id="541" Count="2" />
+      <LineId Id="586" Count="0" />
+      <LineId Id="234" Count="3" />
+      <LineId Id="544" Count="2" />
+      <LineId Id="245" Count="0" />
+      <LineId Id="68" Count="2" />
+      <LineId Id="502" Count="1" />
+      <LineId Id="557" Count="0" />
+      <LineId Id="53" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

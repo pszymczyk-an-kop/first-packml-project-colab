@@ -42,6 +42,9 @@
     <Compile Include="DUTs\UN\ST_UN.TcDUT">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DUTs\UTIL\E_pos.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="GVLs\Counters.TcGVL">
       <SubType>Code</SubType>
       <LinkAlways>true</LinkAlways>
@@ -68,10 +71,14 @@
     <Compile Include="POUs\MAIN.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="POUs\fb_SliderSignalSim.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DUTs" />
     <Folder Include="DUTs\EM" />
+    <Folder Include="DUTs\UTIL" />
     <Folder Include="DUTs\UN" />
     <Folder Include="GVLs" />
     <Folder Include="VISUs" />

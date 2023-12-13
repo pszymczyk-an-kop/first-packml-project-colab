@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="E_pos" Id="{0a98cfc0-64c3-4487-a525-afbb59a64077}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE E_pos :
+(
+	base := 0,
+	one,
+	two,
+	three,
+	four
+	
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>
