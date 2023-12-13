@@ -259,3 +259,9 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+/TwinCAT Project1.sln
+/TwinCAT Project1/_Boot
+/TwinCAT Project1/_Config
+/TwinCAT Project1/TeamWork.tsproj
+/TwinCAT Project1/TeamWork.tsproj.bak
+/TwinCAT Project1/TrialLicense.tclrs
