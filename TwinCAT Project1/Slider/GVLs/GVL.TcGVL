@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <GVL Name="GVL" Id="{c9342c85-c4a4-4ca7-a734-71479bf0457d}">
+    <Declaration><![CDATA[// Global list with inputs/outputs to control and force variables
+{attribute 'qualified_only'}
+VAR_GLOBAL
+	axis : AXIS_REF;
+	aInput : ARRAY[1..10] OF ARRAY[1..10] OF BOOL;
+	aOutput : ARRAY[1..10] OF ARRAY[1..10] OF BOOL;
+	
+	Input : ARRAY[1..10] OF BOOL;
+	Output : ARRAY[1..10] OF BOOL;
+END_VAR]]></Declaration>
+  </GVL>
+</TcPlcObject>

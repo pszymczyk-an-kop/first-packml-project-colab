@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="fbSliderEM" Id="{8d63ff81-3bc4-421f-8810-eb0a34af2cf8}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK fbSliderEM EXTENDS fbEM
+VAR
+	State : INT := 0;
+	bSliderSide : BOOL;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF em.Config.Functionality = E_Function.eSlider THEN
+	IF State >= 15 AND em.Cmd = E_CMD.abort THEN
+		State := 5;
+	END_IF
+	
+	IF State >= 35 AND em.Cmd = E_CMD.stop THEN
+		State := 15;
+	END_IF
+
+	CASE State OF
+		0:	IF em.Config.Data.I[1] OR em.Config.Data.I[2] THEN
+				State := 1;
+			ELSE
+				em.Status := E_Status.undefined;
+				State := 20;
+			END_IF
+			
+		1:	IF em.Config.Data.I[2] THEN
+				bSliderSide := TRUE;
+			END_IF
+			State := 40;
+		
+		5:	em.Status := E_Status.aborting;
+			em.Config.Data.Q[1] := FALSE;
+			em.Config.Data.Q[2] := FALSE;
+			State := 10;
+			
+		10:	IF em.Cmd = E_CMD.clear THEN
+				em.Status := E_Status.clearing;
+				State := 20;
+			END_IF
+			
+		15: em.Status := E_Status.stopping;
+			em.Config.Data.Q[1] := FALSE;
+			em.Config.Data.Q[2] := FALSE;
+			State := 20;
+			
+		20:	em.Status := E_Status.stopped;
+			State := 30;
+			
+		30:	IF em.Cmd = E_CMD.reset THEN
+				em.Status := E_Status.resetting;
+				em.Config.Data.Q[1] := FALSE;
+				em.Config.Data.Q[2] := TRUE;
+				State := 35;
+			END_IF
+			
+		35:	IF em.Config.Data.I[1] THEN
+				em.Config.Data.Q[2] := FALSE;
+				bSliderSide := FALSE;
+				State := 40;
+			END_IF
+			
+		40:	em.Status := E_Status.idle;
+			IF em.Cmd = E_CMD.start THEN
+				State := 45;
+			END_IF
+			
+		45:	em.Status := E_Status.Starting;
+			State := 50;
+			
+			// Execute direction
+		50:	em.Status := E_Status.execute;
+			IF bSliderSide THEN
+				em.Config.Data.Q[2] := TRUE;
+				State := 60;
+			ELSIF em.Config.Data.I[3] THEN
+				em.Config.Data.Q[1] := TRUE;
+				State := 60;
+			END_IF
+			
+			// Main execute
+		60:	IF em.Cmd = E_CMD.hold THEN
+				em.Status := E_Status.holding;
+				State := 200;
+			ELSIF em.Cmd = E_CMD.suspend THEN
+				em.Status := E_Status.suspending;
+				State := 300;
+			END_IF
+			
+			IF em.Config.Data.Q[2] AND em.Config.Data.I[1] THEN
+				em.Config.Data.Q[2] := FALSE;
+				bSliderSide := FALSE;
+				State := 50;
+			END_IF
+			
+			IF em.Config.Data.Q[1] AND em.Config.Data.I[2] THEN
+				em.Config.Data.Q[1] := FALSE;
+				bSliderSide := TRUE;
+				State := 50;
+			END_IF
+			
+		200:em.Status := E_Status.held;
+			em.Config.Data.Q[1] := FALSE;
+			em.Config.Data.Q[2] := FALSE;
+			IF em.Cmd = E_CMD.unhold THEN
+				em.Status := E_Status.unholding;
+				State := 50;
+			END_IF
+			
+		300:em.Status := E_Status.suspended;
+			em.Config.Data.Q[1] := FALSE;
+			em.Config.Data.Q[2] := FALSE;
+			IF em.Cmd = E_CMD.unsuspend THEN
+				em.Status := E_Status.unsuspending;
+				State := 50;
+			END_IF
+	END_CASE
+END_IF
+
+em.SequenceStep := State;
+
+
+
+
+
+
+
+
+
+
+
+
+]]></ST>
+    </Implementation>
+    <LineIds Name="fbSliderEM">
+      <LineId Id="337" Count="0" />
+      <LineId Id="556" Count="0" />
+      <LineId Id="558" Count="5" />
+      <LineId Id="557" Count="0" />
+      <LineId Id="146" Count="0" />
+      <LineId Id="456" Count="95" />
+      <LineId Id="418" Count="0" />
+      <LineId Id="151" Count="0" />
+      <LineId Id="147" Count="0" />
+      <LineId Id="229" Count="4" />
+      <LineId Id="235" Count="8" />
+      <LineId Id="228" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

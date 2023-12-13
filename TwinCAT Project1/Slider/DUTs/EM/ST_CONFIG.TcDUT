@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="ST_CONFIG" Id="{d9fae36c-4e6f-4947-8908-f1ce6dbece85}">
+    <Declaration><![CDATA[// Structure config
+{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE ST_CONFIG :
+STRUCT
+	Functionality : E_Function;
+	Data : ST_DATA;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

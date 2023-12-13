@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="ST_CM_SERVO_CMD" Id="{d291d2f8-0c85-4700-ac4e-2ff7c5a41a03}">
+    <Declaration><![CDATA[TYPE ST_CM_SERVO_CMD :
+STRUCT
+	cmd : E_CM_SERVO_CMD;
+	start : BOOL;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>
