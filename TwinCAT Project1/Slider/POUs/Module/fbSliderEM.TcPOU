@@ -3,8 +3,11 @@
   <POU Name="fbSliderEM" Id="{8d63ff81-3bc4-421f-8810-eb0a34af2cf8}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK fbSliderEM EXTENDS fbEM
 VAR
-	State : INT := 0;
 	bSliderSide : BOOL;
+END_VAR
+
+VAR RETAIN
+	State : INT := 0;
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[(*
