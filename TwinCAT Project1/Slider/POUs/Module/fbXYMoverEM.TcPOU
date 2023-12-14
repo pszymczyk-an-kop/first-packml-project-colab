@@ -84,8 +84,8 @@ CASE XYMoverActualStep OF
 		END_IF
 
 	20:
+		em.Status := E_Status.EXECUTE;
 		IF em.Config.Data.I[5] = TRUE THEN
-			em.Status := E_Status.EXECUTE;
 			XYMoverActualStep := 30; 
 		END_IF
 
@@ -126,7 +126,12 @@ em.SequenceStep := XYMoverActualStep;]]></ST>
       <LineId Id="124" Count="0" />
       <LineId Id="120" Count="0" />
       <LineId Id="125" Count="1" />
-      <LineId Id="13" Count="91" />
+      <LineId Id="13" Count="53" />
+      <LineId Id="137" Count="0" />
+      <LineId Id="68" Count="3" />
+      <LineId Id="138" Count="0" />
+      <LineId Id="72" Count="0" />
+      <LineId Id="74" Count="30" />
       <LineId Id="9" Count="0" />
     </LineIds>
   </POU>
