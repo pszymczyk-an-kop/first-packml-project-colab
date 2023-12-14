@@ -16,7 +16,18 @@ VAR_OUTPUT
 	
 END_VAR]]></Declaration>
     <Implementation>
-      <ST><![CDATA[
+      <ST><![CDATA[(*
+THIS fb use IOs listed below
+DATA.I[1] -> true when gripper closed
+DATA.I[2] -> true when gripper opened
+DATA.I[3] -> part present
+DATA.Q[1] -> 1 CLOSE / 0 OPEN gripper
+DATA.Q[3] -> SERVO_GO
+DATA.pick_pos -> desired pick position
+DATA.drop_pos -> desired drop position
+DATA.act_pos -> actual postition ( resolved in SIM or SERVO_HANDLER)
+DATA.give_pos -> moves desired position into SIM or SERVO_HANDLER)
+*)
 IF initial THEN // AFTER START OF PLC ENTER Undefined state
 	state:=0;
 	em.CMD := E_CMD.powerOn; //// MAKES SENSE?
@@ -39,7 +50,7 @@ CASE state OF
 	0:		//RESETTING
 		em.Status := E_Status.resetting;	
 	
-		IF em.CMD = E_CMD.clear THEN 		
+		IF em.CMD = E_CMD.reset THEN 		
 		
 			IF  em.Config.Data.pick_pos = em.Config.Data.act_pos THEN   // ACTUAL POS READ FROM SERVO HANDLER / FOR NOW FROM SIGNAL SIM
 				
@@ -87,20 +98,20 @@ CASE state OF
 		servo_GO:=TRUE; 							
 		IF em.Config.Data.act_pos = em.Config.Data.drop_pos THEN
 		servo_GO:=FALSE;
-		state:=43;										
+		state:=42;										
 		END_IF
 
 
-	43:		//EXECUTE.4 OPEN GRIPPER
+	42:		//EXECUTE.3 OPEN GRIPPER
 	
 		em.Status := E_Status.execute;
 		em.Config.Data.Q[1]:=FALSE; //OPEN GRIPPER
 		IF em.Config.Data.I[1] = FALSE AND em.Config.Data.I[2]=TRUE THEN
-			state:=44;
+			state:=43;
 		END_IF
 		
 			
-	44:		//EXECUTE.5 MOVING PICK_POS WITHOUT PART
+	43:		//EXECUTE.4 MOVING PICK_POS WITHOUT PART
 
 		em.Status := E_Status.execute;
 		IF NOT em.Config.Data.I[3]  
@@ -163,6 +174,8 @@ em.Config.Data.Q[3]:=servo_GO;//Q[3] alias
     </Implementation>
     <LineIds Name="fbSliderWithGripperEM">
       <LineId Id="316" Count="0" />
+      <LineId Id="538" Count="9" />
+      <LineId Id="537" Count="0" />
       <LineId Id="40" Count="0" />
       <LineId Id="45" Count="0" />
       <LineId Id="241" Count="0" />
