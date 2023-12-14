@@ -59,9 +59,9 @@ IF EnableSim THEN
 				
 			IF delay[4].Q THEN
 				delay[4](IN:=FALSE);
-				em.Cmd:=E_Cmd.clear;
+				em.Cmd:=E_CMD.reset;
 			END_IF
-			delay[4](IN:=TRUE);//Simulate CMD.clear button
+			delay[4](IN:=TRUE);//Simulate CMD.reset button
 				//Simulate movement to PICK_POS 
 			IF em.Config.Data.Q[3]=TRUE THEN
 				delay[3](IN:=TRUE);
@@ -118,7 +118,7 @@ IF EnableSim THEN
 					END_IF
 		
 		
-		43:		//EXECUTE.4 OPEN GRIPPER
+		42:		//EXECUTE.3 OPEN GRIPPER
 		
 				//Simulate opening gripper
 					IF em.Config.Data.Q[1]= FALSE  THEN
@@ -131,7 +131,7 @@ IF EnableSim THEN
 						em.Config.Data.I[2]:=TRUE;
 						delay[1](IN:=FALSE);
 					END_IF
-		44:		//EXECUTE.5 MOVING PICK_pOS 
+		43:		//EXECUTE.4 MOVING PICK_pOS 
 		
 				IF em.Config.Data.Q[3]=TRUE AND
 				em.Config.Data.act_pos =em.Config.Data.drop_pos THEN
