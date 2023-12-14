@@ -7,7 +7,16 @@ VAR
 	bSliderSide : BOOL;
 END_VAR]]></Declaration>
     <Implementation>
-      <ST><![CDATA[IF em.Config.Functionality = E_Function.eSlider THEN
+      <ST><![CDATA[(*
+	Input/Output mapping
+	I[1] <- Siłownik pozycja 1 (wsunięty) 
+	I[2] <- Siłownik pozycja 2 (wysunięty)
+	I[3] <- Czujnik obecności obiektu (na pozycji 1 (wsunięty)) 
+	Q[1] <- Wysuń siłownik (do pozycji 2)
+	Q[2] <- Wsuń siłownik (do pozycji 1)
+*)
+
+IF em.Config.Functionality = E_Function.eSlider THEN
 	IF State >= 15 AND em.Cmd = E_CMD.abort THEN
 		State := 5;
 	END_IF
@@ -133,6 +142,11 @@ em.SequenceStep := State;
 ]]></ST>
     </Implementation>
     <LineIds Name="fbSliderEM">
+      <LineId Id="568" Count="0" />
+      <LineId Id="571" Count="2" />
+      <LineId Id="577" Count="2" />
+      <LineId Id="570" Count="0" />
+      <LineId Id="569" Count="0" />
       <LineId Id="337" Count="0" />
       <LineId Id="556" Count="0" />
       <LineId Id="558" Count="5" />
