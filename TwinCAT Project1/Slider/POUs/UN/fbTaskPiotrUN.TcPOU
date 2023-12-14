@@ -35,8 +35,9 @@ END_VAR
 CASE State OF
 	0:	un.Status := E_Status.idle;
 		FOR i := 1 TO Counters.packmlEmLast DO
-//			em[i].Cmd := E_CMD.
-			;
+			IF NOT em[i].Status = E_Status.idle THEN
+				em[i].Cmd := E_CMD.reset;
+			END_IF
 		END_FOR
 END_CASE
 
@@ -94,7 +95,7 @@ END_FOR]]></ST>
       <LineId Id="49" Count="0" />
       <LineId Id="53" Count="0" />
       <LineId Id="56" Count="0" />
-      <LineId Id="58" Count="0" />
+      <LineId Id="80" Count="1" />
       <LineId Id="57" Count="0" />
       <LineId Id="50" Count="0" />
       <LineId Id="40" Count="0" />

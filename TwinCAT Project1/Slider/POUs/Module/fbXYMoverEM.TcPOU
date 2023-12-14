@@ -12,7 +12,20 @@ VAR RETAIN
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[
+      <ST><![CDATA[(*
+	Input/Output mapping
+	I[1] <- Siłownik 1 - zamknięty 
+	I[2] <- Siłownik 1 - otwarty
+	I[3] <- Siłownik 2 - zamknięty 
+	I[4] <- Siłownik 2 - otwarty
+	I[5] <- Czujnik obecności produktu -> TRUE jeżeli produkt jest na narzędziu
+	I[7] <- Stop z szafy/ESTOP
+	Q[1] <- Siłownik 1 - komenda zamknij
+	Q[2] <- Siłownik 1 - komenda otwórz
+	Q[3] <- Siłownik 2 - komenda zamknij
+	Q[4] <- Siłownik 2 - komenda otwórz
+	Q[7] <- Rezerwa
+*)
 
 //-----------------HOMING------------------------
 
@@ -71,8 +84,8 @@ CASE XYMoverActualStep OF
 		END_IF
 
 	20:
+		em.Status := E_Status.EXECUTE;
 		IF em.Config.Data.I[5] = TRUE THEN
-			em.Status := E_Status.EXECUTE;
 			XYMoverActualStep := 30; 
 		END_IF
 
@@ -107,7 +120,18 @@ END_CASE
 em.SequenceStep := XYMoverActualStep;]]></ST>
     </Implementation>
     <LineIds Name="fbXYMoverEM">
-      <LineId Id="13" Count="91" />
+      <LineId Id="114" Count="4" />
+      <LineId Id="121" Count="2" />
+      <LineId Id="119" Count="0" />
+      <LineId Id="124" Count="0" />
+      <LineId Id="120" Count="0" />
+      <LineId Id="125" Count="1" />
+      <LineId Id="13" Count="53" />
+      <LineId Id="137" Count="0" />
+      <LineId Id="68" Count="3" />
+      <LineId Id="138" Count="0" />
+      <LineId Id="72" Count="0" />
+      <LineId Id="74" Count="30" />
       <LineId Id="9" Count="0" />
     </LineIds>
   </POU>
