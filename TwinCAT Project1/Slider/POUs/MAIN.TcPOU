@@ -4,10 +4,7 @@
     <Declaration><![CDATA[PROGRAM MAIN
 VAR
 	un : ST_UN;
-	fbUN : fbTaskPiotrUN;
-	
-	// Arrays with 'em' universal structure and 'fbEM' containing ST_MACHINE structure which contains of references to fbEM function block
-	em : ARRAY[1..Counters.packmlEmLast] OF ST_EM;
+	em: ARRAY[1..Counters.packmlEmLast] OF ST_EM;
 	fbEM : ARRAY[1..Counters.packmlEmLast] OF ST_MACHINE;
 	
 	// Array containing all instances fo fbSliderEM with its own iterator
@@ -27,43 +24,51 @@ VAR
 	
 	// FOR iterator
 	i : DINT;
-	
+	SignalSimSliderWithGripper :fbSignalSimSliderWithGripper; 
 	SignalSimSlider: fbSignalSimSlider;
 	SignalSimXYMover : fbSignalSimXYMover;
 	timer : TON;
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[//IF InitialConfig THEN
-//	// Specifing module type of each module in array
-//	em[1].Config.Functionality := E_Function.eSlider;
-////	em[2].Config.Functionality := E_Function.eSliderWithGripper;
-////	em[3].Config.Functionality := E_Function.eXYMover;
+      <ST><![CDATA[IF InitialConfig THEN
+	// Specifing module type of each module in array
+	//em[1].Config.Functionality := E_Function.eSlider;
+	em[1].Config.Functionality := E_Function.eSliderWithGripper;
+	//em[3].Config.Functionality := E_Function.eXYMover;
 
-//	// FOR loop to specify config for each module
-//	FOR i := 1 TO Counters.packmlEmLast DO
-//		em[i].Config.Data.I REF= GVL.aInput[i];
-//		em[i].Config.Data.Q REF= GVL.aOutput[i];
+	// FOR loop to specify config for each module
+	FOR i := 1 TO Counters.packmlEmLast DO
+		em[i].Config.Data.I REF= GVL.aInput[i];
+		em[i].Config.Data.Q REF= GVL.aOutput[i];
 	
-//		CASE em[i].Config.Functionality OF
-//			E_Function.eSlider:
-//				fbEM[i].fbEM REF= SliderEM[iSliderEM];
-//				iSliderEM := iSliderEM + 1;
-//			E_Function.eSliderWithGripper:
-//				fbEM[i].fbEM REF= SliderWithGripperEM[iSliderWithGripperEM];
-//				iSliderWithGripperEM := iSliderWithGripperEM + 1;
-//			E_Function.eXYMover:
-//				fbEM[i].fbEM REF= XYMoverEM[iXYMoverEM];
-//				iXYMoverEM := iXYMoverEM + 1;
-//		END_CASE
-//	END_FOR
+		CASE em[i].Config.Functionality OF
+			E_Function.eSlider:
+				fbEM[i].fbEM REF= SliderEM[iSliderEM];
+				iSliderEM := iSliderEM + 1;
+			E_Function.eSliderWithGripper:
+				fbEM[i].fbEM REF= SliderWithGripperEM[iSliderWithGripperEM];
+				iSliderWithGripperEM := iSliderWithGripperEM + 1;
+			E_Function.eXYMover:
+				fbEM[i].fbEM REF= XYMoverEM[iXYMoverEM];
+				iXYMoverEM := iXYMoverEM + 1;
+		END_CASE
+	END_FOR
 	
-//	InitialConfig := FALSE;
-//END_IF
+	InitialConfig := FALSE;
+END_IF
 
-//SignalSimSlider(em := em[1], EnableSim := TRUE);
 
-fbUN(un := un);
+FOR i := 1 TO Counters.packmlEmLast DO
+	fbEM[i].fbEM(em:=em[i], un:=un);
+END_FOR
+
+
+SignalSimSliderWithGripper(em := em[1], EnableSim := TRUE);
+
+
+
+
 
 
 
@@ -110,14 +115,19 @@ fbUN(un := un);
       <LineId Id="154" Count="0" />
       <LineId Id="135" Count="1" />
       <LineId Id="134" Count="0" />
-      <LineId Id="351" Count="1" />
+      <LineId Id="351" Count="0" />
+      <LineId Id="355" Count="1" />
+      <LineId Id="359" Count="0" />
+      <LineId Id="374" Count="0" />
+      <LineId Id="357" Count="1" />
+      <LineId Id="352" Count="0" />
       <LineId Id="226" Count="0" />
+      <LineId Id="353" Count="1" />
       <LineId Id="268" Count="1" />
       <LineId Id="225" Count="0" />
       <LineId Id="298" Count="0" />
       <LineId Id="303" Count="0" />
-      <LineId Id="305" Count="16" />
-      <LineId Id="304" Count="0" />
+      <LineId Id="305" Count="15" />
     </LineIds>
     <LineIds Name="MAIN.Init">
       <LineId Id="1" Count="0" />
