@@ -4,9 +4,9 @@
     <Declaration><![CDATA[// Global list to specify number of each module
 {attribute 'qualified_only'}
 VAR_GLOBAL CONSTANT
-	SliderEMNo : DINT := 0;
+	SliderEMNo : DINT := 1;
 	SliderWithGripperEMNo : DINT := 1;
-	XYMoverEMNo : DINT := 0;
+	XYMoverEMNo : DINT := 2;
 	
 	packmlUnLast: DINT := 1;
 	packmlEmLast: DINT := SliderEMNo + SliderWithGripperEMNo + XYMoverEMNo;

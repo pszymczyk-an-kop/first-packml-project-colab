@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="fbTaskMichalUN" Id="{4ceb2965-fcc1-481b-8b35-1b2a977008a3}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK fbTaskMichalUN
+	FUNCTION_BLOCK fbTaskPiotrUN EXTENDS fbUN
+VAR	
+	// Arrays with 'em' universal structure and 'fbEM' containing ST_MACHINE structure which contains of references to fbEM function block
+	em : ARRAY[1..Counters.packmlEmLast] OF ST_EM;
+	fbEM : ARRAY[1..Counters.packmlEmLast] OF ST_MACHINE;
+	
+	// Array containing all instances fo fbSliderEM with its own iterator
+	SliderEM : ARRAY[1..Counters.SliderEMNo] OF fbSliderEM;
+	iSliderEM : DINT := 1;
+	
+	// Array containing all instances fo fbSliderWithGripperEM with its own iterator
+	SliderWithGripperEM : ARRAY[1..Counters.SliderWithGripperEMNo] OF fbSliderWithGripperEM;
+	iSliderWithGripperEM : DINT := 1;
+	
+	// Array containing all instances fo fbXYMoverEM with its own iterator
+	XYMoverEM : ARRAY[1..Counters.XYMoverEMNo] OF fbXYMoverEM;
+	iXYMoverEM : DINT := 1;
+	
+	i : DINT;
+	State : INT;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="FB_init" Id="{5c508c10-d299-489b-b603-205e68cc54f5}">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+END_VAR
+
+VAR
+	declareIterator : DINT;
+	initIterator : dint;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// Specifing module type of each module in array
+em[1].Config.Functionality := E_Function.eSliderWithGripper;
+em[2].Config.Functionality := E_Function.eXYMover;
+em[3].Config.Functionality := E_Function.eXYMover;
+em[4].Config.Functionality := E_Function.eSlider;
+
+
+// FOR loop to specify config for each module
+FOR declareIterator := 1 TO Counters.packmlEmLast DO
+	em[declareIterator].Config.Data.I REF= GVL.aInput[declareIterator];
+	em[declareIterator].Config.Data.Q REF= GVL.aOutput[declareIterator];
+
+	CASE em[declareIterator].Config.Functionality OF
+		E_Function.eSlider:
+			fbEM[declareIterator].fbEM REF= SliderEM[iSliderEM];
+			iSliderEM := iSliderEM + 1;
+		E_Function.eSliderWithGripper:
+			fbEM[declareIterator].fbEM REF= SliderWithGripperEM[iSliderWithGripperEM];
+			iSliderWithGripperEM := iSliderWithGripperEM + 1;
+		E_Function.eXYMover:
+			fbEM[declareIterator].fbEM REF= XYMoverEM[iXYMoverEM];
+			iXYMoverEM := iXYMoverEM + 1;
+	END_CASE
+END_FOR
+
+FOR initIterator := 1 TO Counters.packmlEmLast DO
+	fbEM[initIterator].fbEM(em := em[initIterator], un := un);
+END_FOR]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="fbTaskMichalUN">
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="fbTaskMichalUN.FB_init">
+      <LineId Id="12" Count="26" />
+      <LineId Id="7" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
