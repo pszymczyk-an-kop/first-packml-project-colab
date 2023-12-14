@@ -75,14 +75,8 @@ CASE state OF
 		
 
 	40:		//EXECUTE.1
-			
-			(*em.Status := E_Status.starting;
-			IF em.Config.Data.I[3]= TRUE AND 
-			em.Config.Data.I[1]= FALSE AND 
-			em.Config.Data.I[2]=TRUE THEN 
-			JMP label;  
-			END_IF` *)
-	
+		em.Status := E_Status.execute;
+				
 		//Close gripper when part present
 		IF em.Config.Data.I[3]  THEN 
 			em.Config.Data.Q[1]:= TRUE; //CLOSE GRIPPER
@@ -94,6 +88,7 @@ CASE state OF
 		END_IF
 
 	41:		//EXECUTE.2 ORDER TO MOVE TO CHOOSEN POSITION
+		em.Status := E_Status.execute;
 		em.Config.Data.give_pos := em.Config.Data.drop_pos;
 		servo_GO:=TRUE; 							
 		IF em.Config.Data.act_pos = em.Config.Data.drop_pos THEN
@@ -124,7 +119,7 @@ CASE state OF
 		
 		IF em.Config.Data.act_pos = em.Config.Data.pick_pos THEN
 			servo_GO:=FALSE;
-			state:=30;
+			state:=40;
 			//em.Config.Data.pick_pos:= -1;
 			//em.Config.Data.drop_pos:= -1;
 		END_IF
@@ -216,11 +211,7 @@ em.Config.Data.Q[3]:=servo_GO;//Q[3] alias
       <LineId Id="98" Count="0" />
       <LineId Id="93" Count="0" />
       <LineId Id="491" Count="0" />
-      <LineId Id="285" Count="0" />
-      <LineId Id="485" Count="1" />
-      <LineId Id="480" Count="1" />
       <LineId Id="503" Count="0" />
-      <LineId Id="483" Count="0" />
       <LineId Id="354" Count="0" />
       <LineId Id="99" Count="0" />
       <LineId Id="243" Count="0" />
@@ -230,6 +221,7 @@ em.Config.Data.Q[3]:=servo_GO;//Q[3] alias
       <LineId Id="357" Count="0" />
       <LineId Id="263" Count="0" />
       <LineId Id="262" Count="0" />
+      <LineId Id="559" Count="0" />
       <LineId Id="293" Count="0" />
       <LineId Id="430" Count="0" />
       <LineId Id="471" Count="0" />
