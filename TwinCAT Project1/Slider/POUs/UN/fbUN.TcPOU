@@ -3,7 +3,7 @@
   <POU Name="fbUN" Id="{25c001df-3c7a-452c-a9eb-2f93c0a8c1f9}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK fbUN
 VAR_IN_OUT
-	un : ST_UN;
+	testUN : ST_UN;
 END_VAR
 ]]></Declaration>
     <Implementation>

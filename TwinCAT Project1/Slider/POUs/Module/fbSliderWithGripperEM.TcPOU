@@ -32,8 +32,8 @@ IF initial THEN // AFTER START OF PLC ENTER Undefined state
 	state:=0;
 	em.CMD := E_CMD.powerOn; //// MAKES SENSE?
 	initial:= FALSE;
-	 em.Config.Data.pick_pos:=10; 
-	 em.Config.Data.pick_pos:=200;
+	 em.Config.Data.pick_pos:=3; 
+	 em.Config.Data.drop_pos:=2;
 	
 END_IF
 
@@ -49,22 +49,22 @@ CASE state OF
 	
 	0:		//RESETTING
 		em.Status := E_Status.resetting;	
-	
-		IF em.CMD = E_CMD.reset THEN 		
 		
-			IF  em.Config.Data.pick_pos = em.Config.Data.act_pos THEN   // ACTUAL POS READ FROM SERVO HANDLER / FOR NOW FROM SIGNAL SIM
+		
+		IF  em.Config.Data.pick_pos = em.Config.Data.act_pos THEN   // ACTUAL POS READ FROM SERVO HANDLER / FOR NOW FROM SIGNAL SIM
 				
 				servo_GO:=FALSE;
 				state :=30; // IF gripper at PICK_pos go to idle
-			ELSE
+		END_IF
+		IF em.CMD = E_CMD.reset THEN 		
 				em.Config.Data.give_pos:=em.Config.Data.pick_pos;
 				servo_GO:=TRUE;
 				
 				//// IF gripper pos unknown move to PICK
 				//SERVO_HANDLER HAS TO KNOW THE CASE STEP TO DECIDE WHERE TO MOVE 			 
 				//HERE SIGNAL SIM HANDLE THIS		
-			END_IF
-		END_IF;
+		END_IF
+		
 
 	
 	30:		//IDLE
@@ -75,14 +75,8 @@ CASE state OF
 		
 
 	40:		//EXECUTE.1
-			
-			(*em.Status := E_Status.starting;
-			IF em.Config.Data.I[3]= TRUE AND 
-			em.Config.Data.I[1]= FALSE AND 
-			em.Config.Data.I[2]=TRUE THEN 
-			JMP label;  
-			END_IF` *)
-	
+		em.Status := E_Status.execute;
+				
 		//Close gripper when part present
 		IF em.Config.Data.I[3]  THEN 
 			em.Config.Data.Q[1]:= TRUE; //CLOSE GRIPPER
@@ -94,6 +88,7 @@ CASE state OF
 		END_IF
 
 	41:		//EXECUTE.2 ORDER TO MOVE TO CHOOSEN POSITION
+		em.Status := E_Status.execute;
 		em.Config.Data.give_pos := em.Config.Data.drop_pos;
 		servo_GO:=TRUE; 							
 		IF em.Config.Data.act_pos = em.Config.Data.drop_pos THEN
@@ -124,7 +119,7 @@ CASE state OF
 		
 		IF em.Config.Data.act_pos = em.Config.Data.pick_pos THEN
 			servo_GO:=FALSE;
-			state:=30;
+			state:=40;
 			//em.Config.Data.pick_pos:= -1;
 			//em.Config.Data.drop_pos:= -1;
 		END_IF
@@ -181,7 +176,7 @@ em.Config.Data.Q[3]:=servo_GO;//Q[3] alias
       <LineId Id="241" Count="0" />
       <LineId Id="47" Count="0" />
       <LineId Id="511" Count="0" />
-      <LineId Id="537" Count="0" />
+      <LineId Id="560" Count="0" />
       <LineId Id="512" Count="0" />
       <LineId Id="46" Count="0" />
       <LineId Id="41" Count="1" />
@@ -194,12 +189,11 @@ em.Config.Data.Q[3]:=servo_GO;//Q[3] alias
       <LineId Id="50" Count="0" />
       <LineId Id="38" Count="0" />
       <LineId Id="287" Count="0" />
-      <LineId Id="79" Count="1" />
-      <LineId Id="77" Count="0" />
-      <LineId Id="65" Count="1" />
-      <LineId Id="516" Count="0" />
-      <LineId Id="453" Count="0" />
-      <LineId Id="452" Count="0" />
+      <LineId Id="79" Count="0" />
+      <LineId Id="549" Count="0" />
+      <LineId Id="551" Count="3" />
+      <LineId Id="550" Count="0" />
+      <LineId Id="80" Count="0" />
       <LineId Id="467" Count="0" />
       <LineId Id="520" Count="0" />
       <LineId Id="518" Count="1" />
@@ -217,11 +211,7 @@ em.Config.Data.Q[3]:=servo_GO;//Q[3] alias
       <LineId Id="98" Count="0" />
       <LineId Id="93" Count="0" />
       <LineId Id="491" Count="0" />
-      <LineId Id="285" Count="0" />
-      <LineId Id="485" Count="1" />
-      <LineId Id="480" Count="1" />
       <LineId Id="503" Count="0" />
-      <LineId Id="483" Count="0" />
       <LineId Id="354" Count="0" />
       <LineId Id="99" Count="0" />
       <LineId Id="243" Count="0" />
@@ -231,6 +221,7 @@ em.Config.Data.Q[3]:=servo_GO;//Q[3] alias
       <LineId Id="357" Count="0" />
       <LineId Id="263" Count="0" />
       <LineId Id="262" Count="0" />
+      <LineId Id="559" Count="0" />
       <LineId Id="293" Count="0" />
       <LineId Id="430" Count="0" />
       <LineId Id="471" Count="0" />
