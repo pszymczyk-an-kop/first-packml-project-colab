@@ -6,6 +6,7 @@ VAR_IN_OUT
 	em : ST_EM;
 END_VAR
 VAR_INPUT
+	EnableSim :BOOL;
 END_VAR
 VAR_OUTPUT
 END_VAR
@@ -91,7 +92,7 @@ END_VAR
 		END_IF
 		
 	
-	20:	TriggerVar := TRUE;
+	20:	(*TriggerVar := TRUE;
 		Timer4(PT := T#2S);
 		Timer4(IN := TriggerVar);
 		em.Config.Data.I[5] := Timer4.Q;
@@ -99,7 +100,7 @@ END_VAR
 		IF Timer4.Q = TRUE THEN
 			Timer4(IN := FALSE);
 			TriggerVar := FALSE;
-		END_IF
+		END_IF*)
 		
 	30: // Rezerwa
 	
@@ -119,7 +120,7 @@ END_VAR
 			Timer6(IN := FALSE);
 		END_IF
 		
-	60:	TriggerVarToOFF := TRUE;
+	60:(*	TriggerVarToOFF := TRUE;
 		Timer2(PT := T#2S);
 		Timer2(IN := TriggerVarToOFF);
 
@@ -128,7 +129,7 @@ END_VAR
 			Timer2(IN := FALSE);
 			TriggerVarToOFF := FALSE;
 		END_IF
-	
+	*)
 	70: // Rezerwa
 	
 	

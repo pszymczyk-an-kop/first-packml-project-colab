@@ -33,7 +33,7 @@ END_VAR
 // 5 <- Slider
 
 CASE State OF
-	0:	un.Status := E_Status.idle;
+	0:	testUN.Status := E_Status.idle;
 		FOR i := 1 TO Counters.packmlEmLast DO
 			IF NOT em[i].Status = E_Status.idle THEN
 				em[i].Cmd := E_CMD.reset;
@@ -82,7 +82,7 @@ FOR declareIterator := 1 TO Counters.packmlEmLast DO
 END_FOR
 
 FOR initIterator := 1 TO Counters.packmlEmLast DO
-	fbEM[initIterator].fbEM(em := em[initIterator], un := un);
+	fbEM[initIterator].fbEM(em := em[initIterator], un := testUN);
 END_FOR]]></ST>
       </Implementation>
     </Method>

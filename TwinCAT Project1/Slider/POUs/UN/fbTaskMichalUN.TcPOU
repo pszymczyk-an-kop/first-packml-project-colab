@@ -1,8 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="fbTaskMichalUN" Id="{4ceb2965-fcc1-481b-8b35-1b2a977008a3}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK fbTaskMichalUN
-	FUNCTION_BLOCK fbTaskPiotrUN EXTENDS fbUN
+    <Declaration><![CDATA[FUNCTION_BLOCK fbTaskMichalUN EXTENDS fbUN
 VAR	
 	// Arrays with 'em' universal structure and 'fbEM' containing ST_MACHINE structure which contains of references to fbEM function block
 	em : ARRAY[1..Counters.packmlEmLast] OF ST_EM;
@@ -20,26 +19,27 @@ VAR
 	XYMoverEM : ARRAY[1..Counters.XYMoverEMNo] OF fbXYMoverEM;
 	iXYMoverEM : DINT := 1;
 	
+	SignalSimSliderWithGripper :fbSignalSimSliderWithGripper; 
+	SignalSimSlider: fbSignalSimSlider;
+	SignalSimXYMover : fbSignalSimXYMover;
+	initEnable: BOOL := TRUE;
 	i : DINT;
 	State : INT;
+	declareIterator: DINT;
+	initIterator: DINT;
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[]]></ST>
-    </Implementation>
-    <Method Name="FB_init" Id="{5c508c10-d299-489b-b603-205e68cc54f5}">
-      <Declaration><![CDATA[METHOD FB_init : BOOL
-VAR_INPUT
-	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
-	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
-END_VAR
+      <ST><![CDATA[(*IF __ISVALIDREF(fbEM[1].fbEM) THEN <----really cool function. validates refference
+fbEM[1].fbEM(em := em[1], un := testUN);
+END_IF; *)
+//fbEM[2].fbEM(em := em[2], un := testUN);
+//fbEM[3].fbEM(em := em[3], un := testUN);
+//fbEM[4].fbEM(em := em[4], un := testUN);  
 
-VAR
-	declareIterator : DINT;
-	initIterator : dint;
-END_VAR]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[// Specifing module type of each module in array
+IF initEnable THEN 
+{region "INIT"} 
+// Specifing module type of each module in array
 em[1].Config.Functionality := E_Function.eSliderWithGripper;
 em[2].Config.Functionality := E_Function.eXYMover;
 em[3].Config.Functionality := E_Function.eXYMover;
@@ -63,18 +63,60 @@ FOR declareIterator := 1 TO Counters.packmlEmLast DO
 			iXYMoverEM := iXYMoverEM + 1;
 	END_CASE
 END_FOR
+	
+	(*FOR initIterator := 1 TO Counters.packmlEmLast DO
+		fbEM[initIterator].fbEM(em := em[initIterator], un := testUN);
+	END_FOR*)
 
-FOR initIterator := 1 TO Counters.packmlEmLast DO
-	fbEM[initIterator].fbEM(em := em[initIterator], un := un);
-END_FOR]]></ST>
-      </Implementation>
-    </Method>
+	initEnable:=FALSE;
+END_IF
+	 
+
+// ENABLE SIGNAL SIM FOR ALL EMs
+SignalSimSliderWithGripper(em := em[1], EnableSim := TRUE);
+SignalSimXYMover (em := em[2], EnableSim := TRUE);
+SignalSimXYMover (em := em[3], EnableSim := TRUE);
+SignalSimSlider (em := em[4], EnableSim := TRUE);
+
+fbEM[1].fbEM(em := em[1], un := testUN);
+fbEM[2].fbEM(em := em[2], un := testUN);
+fbEM[3].fbEM(em := em[3], un := testUN);
+fbEM[4].fbEM(em := em[4], un := testUN);
+{endregion};
+
+
+
+
+
+
+
+
+
+
+]]></ST>
+    </Implementation>
     <LineIds Name="fbTaskMichalUN">
-      <LineId Id="9" Count="0" />
-    </LineIds>
-    <LineIds Name="fbTaskMichalUN.FB_init">
-      <LineId Id="12" Count="26" />
-      <LineId Id="7" Count="0" />
+      <LineId Id="170" Count="0" />
+      <LineId Id="174" Count="1" />
+      <LineId Id="171" Count="1" />
+      <LineId Id="133" Count="0" />
+      <LineId Id="173" Count="0" />
+      <LineId Id="134" Count="0" />
+      <LineId Id="105" Count="0" />
+      <LineId Id="75" Count="26" />
+      <LineId Id="74" Count="0" />
+      <LineId Id="73" Count="0" />
+      <LineId Id="176" Count="0" />
+      <LineId Id="136" Count="1" />
+      <LineId Id="142" Count="0" />
+      <LineId Id="55" Count="4" />
+      <LineId Id="187" Count="0" />
+      <LineId Id="185" Count="0" />
+      <LineId Id="192" Count="0" />
+      <LineId Id="195" Count="1" />
+      <LineId Id="61" Count="0" />
+      <LineId Id="63" Count="9" />
+      <LineId Id="41" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>

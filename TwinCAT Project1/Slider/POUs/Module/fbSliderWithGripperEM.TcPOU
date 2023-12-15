@@ -32,8 +32,8 @@ IF initial THEN // AFTER START OF PLC ENTER Undefined state
 	state:=0;
 	em.CMD := E_CMD.powerOn; //// MAKES SENSE?
 	initial:= FALSE;
-	 em.Config.Data.pick_pos:=10; 
-	 em.Config.Data.pick_pos:=200;
+	 em.Config.Data.pick_pos:=3; 
+	 em.Config.Data.drop_pos:=2;
 	
 END_IF
 
@@ -176,7 +176,7 @@ em.Config.Data.Q[3]:=servo_GO;//Q[3] alias
       <LineId Id="241" Count="0" />
       <LineId Id="47" Count="0" />
       <LineId Id="511" Count="0" />
-      <LineId Id="537" Count="0" />
+      <LineId Id="560" Count="0" />
       <LineId Id="512" Count="0" />
       <LineId Id="46" Count="0" />
       <LineId Id="41" Count="1" />
