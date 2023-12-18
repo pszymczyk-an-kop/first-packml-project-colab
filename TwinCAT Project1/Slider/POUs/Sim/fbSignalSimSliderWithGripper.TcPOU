@@ -23,12 +23,10 @@ delay[4](PT:=T#4S); delay[4].ET;//CMD.Clear simulation
 delay[5](PT:=T#4S); delay[5].ET;
 delay[6](PT:=T#4S); delay[6].ET;
 delay[7](PT:=T#4S); delay[7].ET;//OpenGRipp State 0
-delay[9](PT:=T#2S); delay[9].ET;//CMD.abort
-delay[10](PT:=T#2S);delay[10].ET;//CMD.stop
+delay[9](PT:=T#2S); delay[9].ET;//CMD.clear
+delay[10](PT:=T#2S);delay[10].ET;//CMD.reset
 
 IF EnableSim THEN
-	
-
 		
 	IF em.Cmd = E_CMD.abort THEN
 		delay[9](IN:=TRUE);
@@ -43,17 +41,7 @@ IF EnableSim THEN
 	CASE em.SequenceStep OF
 		
 		0:		//Undefined state
-				//Simulate opening gripper
-			(*IF em.Config.Data.Q[1]= FALSE THEN
-				delay[1](IN:=TRUE);
-			END_IF
-	 
-			IF delay[1].Q THEN
-				em.Config.Data.I[1]:= FALSE;
-				em.Config.Data.I[2]:=TRUE;
-				delay[1](IN:=FALSE);
 				
-			END_IF *)
 			
 				//Simulate CMD.clear button
 				
@@ -61,7 +49,7 @@ IF EnableSim THEN
 				delay[4](IN:=FALSE);
 				em.Cmd:=E_CMD.reset;
 			END_IF
-			delay[4](IN:=TRUE);//Simulate CMD.reset button
+			delay[4](IN:=TRUE);
 				//Simulate movement to PICK_POS 
 			IF em.Config.Data.Q[3]=TRUE THEN
 				delay[3](IN:=TRUE);
@@ -107,71 +95,67 @@ IF EnableSim THEN
 	
 		41:		//EXECUTE.2
 				
-				IF em.Config.Data.Q[3]=TRUE AND em.Config.Data.act_pos =em.Config.Data.pick_pos THEN  //servoGO		
-						delay[3](IN:=TRUE);	
-						em.Config.Data.act_pos:=666; //LEAVING HOME
-					END_IF
+			IF em.Config.Data.Q[3]=TRUE AND em.Config.Data.act_pos =em.Config.Data.pick_pos THEN  //servoGO		
+				delay[3](IN:=TRUE);	
+				em.Config.Data.act_pos:=666; //LEAVING HOME
+			END_IF
 				
-					IF delay[3].Q THEN
-						delay[3].IN:=FALSE;
-						em.Config.Data.act_pos:= em.Config.Data.give_pos;		
-					END_IF
+			IF delay[3].Q THEN
+				delay[3].IN:=FALSE;
+				em.Config.Data.act_pos:= em.Config.Data.give_pos;		
+			END_IF
 		
 		
 		42:		//EXECUTE.3 OPEN GRIPPER
 		
 				//Simulate opening gripper
-					IF em.Config.Data.Q[1]= FALSE  THEN
-					delay[1](IN:=TRUE);
-					
-					END_IF
-			 
-					IF delay[1].Q THEN
-						em.Config.Data.I[1]:= FALSE;
-						em.Config.Data.I[2]:=TRUE;
-						delay[1](IN:=FALSE);
-					END_IF
+			IF em.Config.Data.Q[1]= FALSE  THEN
+			delay[1](IN:=TRUE);
+			
+			END_IF
+	 
+			IF delay[1].Q THEN
+				em.Config.Data.I[1]:= FALSE;
+				em.Config.Data.I[2]:=TRUE;
+				delay[1](IN:=FALSE);
+			END_IF
 		43:		//EXECUTE.4 MOVING PICK_pOS 
 		
-				IF em.Config.Data.Q[3]=TRUE AND
-				em.Config.Data.act_pos =em.Config.Data.drop_pos THEN
-					delay[3](IN:=TRUE);	
-					em.Config.Data.act_pos:=666;
-				END_IF
-					
-				IF delay[3].Q THEN
-				delay[3].IN:=FALSE;
-				em.Config.Data.act_pos:=em.Config.Data.give_pos; // arrived at pick_pos
-				END_IF;
+			IF em.Config.Data.Q[3]=TRUE AND
+			em.Config.Data.act_pos =em.Config.Data.drop_pos THEN
+				delay[3](IN:=TRUE);	
+				em.Config.Data.act_pos:=666;
+			END_IF
+				
+			IF delay[3].Q THEN
+			delay[3].IN:=FALSE;
+			em.Config.Data.act_pos:=em.Config.Data.give_pos; // arrived at pick_pos
+			END_IF;
 				
 		65:		//ABORTED
 		
-				IF delay[9].Q THEN
-				delay[9].IN:=FALSE;
-				em.Cmd:=E_Cmd.clear;
-				delay[10].IN:=TRUE;
-				END_IF
+			IF delay[9].Q THEN
+			delay[9].IN:=FALSE;
+			em.Cmd:=E_Cmd.clear;
+			delay[10].IN:=TRUE;
+			END_IF
 		
 		
 		70:		//STOPPED
-				IF delay[10].Q THEN
-				delay[10].IN:=FALSE;
-				em.Cmd:=E_Cmd.reset;
-				END_IF
+			IF delay[10].Q THEN
+			delay[10].IN:=FALSE;
+			em.Cmd:=E_Cmd.reset;
+			END_IF
 	END_CASE
 	
-	IF em.SequenceStep <> 0 THEN 
-		delay[4](IN:=FALSE);
-	END_IF
-
 END_IF		]]></ST>
     </Implementation>
     <LineIds Name="fbSignalSimSliderWithGripper">
       <LineId Id="636" Count="5" />
       <LineId Id="863" Count="0" />
-      <LineId Id="644" Count="22" />
-      <LineId Id="668" Count="5" />
-      <LineId Id="675" Count="8" />
+      <LineId Id="644" Count="3" />
+      <LineId Id="650" Count="13" />
+      <LineId Id="676" Count="7" />
       <LineId Id="862" Count="0" />
       <LineId Id="684" Count="2" />
       <LineId Id="688" Count="0" />
@@ -193,8 +177,8 @@ END_IF		]]></ST>
       <LineId Id="861" Count="0" />
       <LineId Id="792" Count="0" />
       <LineId Id="796" Count="7" />
-      <LineId Id="810" Count="19" />
-      <LineId Id="53" Count="0" />
+      <LineId Id="810" Count="15" />
+      <LineId Id="828" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>
