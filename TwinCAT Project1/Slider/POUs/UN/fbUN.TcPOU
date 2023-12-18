@@ -4,6 +4,7 @@
     <Declaration><![CDATA[FUNCTION_BLOCK fbUN
 VAR_IN_OUT
 	un : ST_UN;
+	cell : ST_CELL;
 END_VAR
 ]]></Declaration>
     <Implementation>

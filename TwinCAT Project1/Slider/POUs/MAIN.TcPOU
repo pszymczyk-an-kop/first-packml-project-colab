@@ -4,11 +4,12 @@
     <Declaration><![CDATA[PROGRAM MAIN
 VAR
 	un : ST_UN;
+	cell : ST_CELL;
 	fbTaskPiotrUN : fbTaskPiotrUN;
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[fbTaskPiotrUN(un := un);]]></ST>
+      <ST><![CDATA[fbTaskPiotrUN(un := un, cell := cell);]]></ST>
     </Implementation>
     <LineIds Name="MAIN">
       <LineId Id="5" Count="0" />

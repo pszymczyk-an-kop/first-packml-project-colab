@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Refactors>
+  <Renames>
+    <RenamedType>
+      <Type guid="bcc4df79-890f-45ab-b800-18ca7a40ba4e">ST_CMD_CELL</Type>
+      <From>ST_CMD_CELL</From>
+      <To>E_CMD_CELL</To>
+    </RenamedType>
+  </Renames>
+</Refactors>

@@ -34,14 +34,93 @@ END_VAR
 
 // All init configuration done in FB_init method
 
+IF cell.Cmd = E_CMD_CELL.STOP THEN
+	State := 100;
+END_IF
+
+IF cell.Cmd = E_CMD_CELL.ABORT THEN
+	State := 200;
+END_IF
+
 CASE State OF
-	0:	un.Status := E_Status.idle;
-		FOR i := 1 TO Counters.packmlEmLast DO
+	0:	un.Status := E_Status.undefined;
+		State := 5;
+		
+	5:	FOR i := 0 TO Counters.packmlEmLast DO
 			IF NOT (em[i].Status = E_Status.idle) THEN
-				em[i].Cmd := E_CMD.reset;
+				un.Cmd := E_CMD.reset;
+			ELSE
+				un.Status := E_Status.idle;
+				State := 10;
 			END_IF
 		END_FOR
+		
+	10:	IF cell.Cmd = E_CMD_CELL.START THEN
+			un.Cmd := E_CMD.start;
+			un.Status := E_Status.starting;
+			State := 20;
+		END_IF
+		
+	20:	FOR i := 0 TO Counters.packmlEmLast DO
+			IF NOT (em[i].Status = E_Status.execute) THEN
+				un.Cmd := E_CMD.reset;
+				un.Status := E_Status.resetting;
+				State := 0;
+			END_IF
+		END_FOR
+	
+	100:un.Cmd := E_CMD.stop;
+		un.Status := E_Status.stopping;
+		State := 110;
+		
+	110:FOR i := 0 TO Counters.packmlEmLast DO
+			IF NOT (em[i].Status = E_Status.stopped) THEN
+				;
+			ELSE
+				un.Status := E_Status.stopped;
+				State := 5;
+			END_IF
+		END_FOR
+		
+	200:un.Cmd := E_CMD.abort;
+		un.Status := E_Status.aborting;
+		State := 210;
+		
+	210:FOR i := 0 TO Counters.packmlEmLast DO
+			IF NOT (em[i].Status = E_Status.aborted) THEN
+				;
+			ELSE
+				State := 220;
+			END_IF
+		END_FOR
+		
+	220:un.Cmd := E_CMD.clear;
+		State := 5;
 END_CASE
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ]]></ST>
@@ -85,7 +164,32 @@ END_FOR
 
 FOR initIterator := 1 TO Counters.packmlEmLast DO
 	fbEM[initIterator].fbEM(em := em[initIterator], un := un);
-END_FOR]]></ST>
+END_FOR
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+]]></ST>
       </Implementation>
     </Method>
     <LineIds Name="fbTaskPiotrUN">
@@ -94,14 +198,46 @@ END_FOR]]></ST>
       <LineId Id="35" Count="3" />
       <LineId Id="104" Count="0" />
       <LineId Id="103" Count="0" />
+      <LineId Id="170" Count="0" />
+      <LineId Id="169" Count="0" />
+      <LineId Id="171" Count="1" />
+      <LineId Id="191" Count="0" />
+      <LineId Id="190" Count="0" />
+      <LineId Id="192" Count="1" />
       <LineId Id="47" Count="0" />
       <LineId Id="46" Count="0" />
       <LineId Id="49" Count="0" />
-      <LineId Id="53" Count="0" />
-      <LineId Id="56" Count="0" />
-      <LineId Id="80" Count="1" />
-      <LineId Id="57" Count="0" />
+      <LineId Id="186" Count="0" />
+      <LineId Id="126" Count="0" />
+      <LineId Id="185" Count="0" />
+      <LineId Id="113" Count="0" />
+      <LineId Id="115" Count="0" />
+      <LineId Id="124" Count="0" />
+      <LineId Id="142" Count="0" />
+      <LineId Id="125" Count="0" />
+      <LineId Id="116" Count="0" />
+      <LineId Id="114" Count="0" />
+      <LineId Id="118" Count="1" />
+      <LineId Id="128" Count="0" />
+      <LineId Id="130" Count="1" />
+      <LineId Id="129" Count="0" />
+      <LineId Id="132" Count="0" />
+      <LineId Id="134" Count="3" />
+      <LineId Id="139" Count="1" />
+      <LineId Id="168" Count="0" />
+      <LineId Id="173" Count="4" />
+      <LineId Id="179" Count="1" />
+      <LineId Id="183" Count="0" />
+      <LineId Id="187" Count="2" />
+      <LineId Id="184" Count="0" />
+      <LineId Id="178" Count="0" />
+      <LineId Id="194" Count="0" />
+      <LineId Id="196" Count="7" />
+      <LineId Id="205" Count="1" />
+      <LineId Id="195" Count="0" />
+      <LineId Id="207" Count="2" />
       <LineId Id="50" Count="0" />
+      <LineId Id="143" Count="23" />
       <LineId Id="40" Count="0" />
       <LineId Id="43" Count="0" />
       <LineId Id="39" Count="0" />
@@ -109,6 +245,8 @@ END_FOR]]></ST>
     <LineIds Name="fbTaskPiotrUN.FB_init">
       <LineId Id="84" Count="26" />
       <LineId Id="70" Count="0" />
+      <LineId Id="121" Count="23" />
+      <LineId Id="120" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>

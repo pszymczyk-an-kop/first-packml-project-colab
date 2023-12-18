@@ -18,6 +18,12 @@
     <LibraryReferences>{c44a4d94-d9fc-40cc-8cf9-072146928957}</LibraryReferences>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="DUTs\Cell\ST_CELL.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DUTs\Cell\E_CMD_CELL.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="DUTs\CM\E_CM_SERVO_CMD.TcDUT">
       <SubType>Code</SubType>
     </Compile>
@@ -106,6 +112,7 @@
     <Folder Include="DUTs\CM" />
     <Folder Include="DUTs\CM\Servo" />
     <Folder Include="DUTs\EM" />
+    <Folder Include="DUTs\Cell" />
     <Folder Include="DUTs\UTIL" />
     <Folder Include="DUTs\UN" />
     <Folder Include="GVLs" />
