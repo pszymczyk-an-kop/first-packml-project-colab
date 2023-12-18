@@ -1,8 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="fbTaskPiotrUN" Id="{e4410345-6b08-4ef7-a94f-07fca8e2946d}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK fbTaskPiotrUN EXTENDS fbUN
-VAR	
+    <Declaration><![CDATA[FUNCTION_BLOCK fbTaskPiotrUN
+VAR_IN_OUT
+	un : ST_UN;
+	cell : ST_CELL;
+END_VAR
+
+VAR
 	// Arrays with 'em' universal structure and 'fbEM' containing ST_MACHINE structure which contains of references to fbEM function block
 	em : ARRAY[1..Counters.packmlEmLast] OF ST_EM;
 	fbEM : ARRAY[1..Counters.packmlEmLast] OF ST_MACHINE;
@@ -21,8 +26,9 @@ VAR
 	
 	i : DINT;
 	State : INT := 0;
-	declareIterator: DINT;
-	initIterator: DINT;
+	declareIterator : DINT;
+	moduleWorkIterator : DINT;
+	initIterator: DINT := 1;
 	initialConfig: BOOL := TRUE;
 END_VAR
 ]]></Declaration>
@@ -64,19 +70,13 @@ IF initialConfig THEN
 		END_CASE
 		
 		fbEM[declareIterator].fbEM(em := em[initIterator], un := un);
-		
-	//	IF __ISVALIDREF(fbEM[declareIterator].fbEM) THEN
-	//		fbEM[declareIterator].fbEM(em := em[initIterator], un := un);
-	//	ELSE
-	//		ADSLOGSTR(
-	//			msgCtrlMask := ADSLOG_MSGTYPE_HINT, 
-	//			msgFmtStr   := 'Zly ref',
-	//			strArg		:= ''
-	//		);      
-	//	END_IF
 	END_FOR
 END_IF
 //////////////////////////////////////////////////////////////////////
+
+FOR moduleWorkIterator := 1 TO Counters.packmlEmLast DO
+	fbEM[moduleWorkIterator].fbEM(em := em[moduleWorkIterator], un := un);
+END_FOR
 
 
 // All init configuration done in FB_init method
@@ -121,8 +121,6 @@ CASE State OF
 	
 	110:FOR i := 1 TO Counters.packmlEmLast DO
 			IF NOT (em[i].Status = E_Status.stopped) THEN
-				;
-			ELSE
 				un.Status := E_Status.stopped;
 				State := 5;
 			END_IF
@@ -254,12 +252,13 @@ END_VAR]]></Declaration>
       <LineId Id="264" Count="0" />
       <LineId Id="299" Count="0" />
       <LineId Id="303" Count="23" />
-      <LineId Id="337" Count="0" />
-      <LineId Id="336" Count="0" />
-      <LineId Id="327" Count="8" />
-      <LineId Id="302" Count="0" />
+      <LineId Id="335" Count="0" />
+      <LineId Id="378" Count="0" />
       <LineId Id="300" Count="0" />
       <LineId Id="263" Count="0" />
+      <LineId Id="379" Count="0" />
+      <LineId Id="396" Count="1" />
+      <LineId Id="380" Count="0" />
       <LineId Id="259" Count="0" />
       <LineId Id="104" Count="0" />
       <LineId Id="231" Count="0" />
@@ -290,9 +289,9 @@ END_VAR]]></Declaration>
       <LineId Id="139" Count="1" />
       <LineId Id="168" Count="0" />
       <LineId Id="173" Count="4" />
-      <LineId Id="179" Count="1" />
-      <LineId Id="183" Count="0" />
-      <LineId Id="187" Count="2" />
+      <LineId Id="179" Count="0" />
+      <LineId Id="187" Count="1" />
+      <LineId Id="399" Count="0" />
       <LineId Id="184" Count="0" />
       <LineId Id="178" Count="0" />
       <LineId Id="194" Count="0" />

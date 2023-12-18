@@ -11,8 +11,7 @@ VAR
 	emCmdOld: E_CMD;
 END_VAR]]></Declaration>
     <Implementation>
-      <ST><![CDATA[// Empty for now universal basic em class, every module needs to extends this to ensure compatibility
-]]></ST>
+      <ST><![CDATA[// Empty for now universal basic em class, every module needs to extends this to ensure compatibility]]></ST>
     </Implementation>
     <Action Name="GetUnCmd" Id="{a266e4e6-3916-4e46-b695-bab02612cf36}">
       <Implementation>
@@ -24,7 +23,6 @@ END_IF]]></ST>
     </Action>
     <LineIds Name="fbEM">
       <LineId Id="16" Count="0" />
-      <LineId Id="21" Count="0" />
     </LineIds>
     <LineIds Name="fbEM.GetUnCmd">
       <LineId Id="35" Count="2" />
