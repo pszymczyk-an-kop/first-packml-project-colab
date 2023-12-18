@@ -984,6 +984,9 @@ External Setpoint Generation:
 	</DataTypes>
 	<Project ProjectGUID="{012604D5-0001-457B-8D73-008CB0F2FCB8}" Target64Bit="true" ShowHideConfigurations="#x6">
 		<System>
+			<Settings MaxCpus="4">
+				<Cpu CpuId="3"/>
+			</Settings>
 			<Tasks>
 				<Task Id="3" Priority="20" CycleTime="100000" AmsPort="350" AdtTasks="true">
 					<Name>PlcTask</Name>
@@ -992,7 +995,7 @@ External Setpoint Generation:
 		</System>
 		<Plc>
 			<Project GUID="{25334B93-F735-4EF0-B31D-05931480FD9A}" Name="Slider" PrjFilePath="Slider\Slider.plcproj" TmcFilePath="Slider\Slider.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Slider\Slider.tmc" TmcHash="{45C4F3D4-96AA-F1E9-D585-029FFACA08C6}">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Slider\Slider.tmc" TmcHash="{AEF9C414-7F17-269C-324D-BD0789AC2807}">
 					<Name>Slider Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Vars VarGrpType="1">

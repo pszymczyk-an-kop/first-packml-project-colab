@@ -4,10 +4,7 @@
     <Declaration><![CDATA[FUNCTION_BLOCK fbEM
 VAR_IN_OUT
 	em : ST_EM;
-END_VAR
-
-VAR_INPUT
-	un : REFERENCE TO ST_UN;
+	un : ST_UN;
 END_VAR
 
 VAR
@@ -15,15 +12,23 @@ VAR
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[// Empty for now universal basic em class, every module needs to extends this to ensure compatibility
-IF emCmdOld <> un.Cmd THEN
+]]></ST>
+    </Implementation>
+    <Action Name="GetUnCmd" Id="{a266e4e6-3916-4e46-b695-bab02612cf36}">
+      <Implementation>
+        <ST><![CDATA[IF emCmdOld <> un.Cmd THEN
 	emCmdOld := un.Cmd;
 	em.Cmd := un.Cmd;
 END_IF]]></ST>
-    </Implementation>
+      </Implementation>
+    </Action>
     <LineIds Name="fbEM">
       <LineId Id="16" Count="0" />
-      <LineId Id="22" Count="2" />
       <LineId Id="21" Count="0" />
+    </LineIds>
+    <LineIds Name="fbEM.GetUnCmd">
+      <LineId Id="35" Count="2" />
+      <LineId Id="1" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>

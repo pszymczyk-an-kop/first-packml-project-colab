@@ -5,17 +5,17 @@
 VAR
 	un : ST_UN;
 	cell : ST_CELL;
+	fbUN : REFERENCE TO fbUN;
 	fbTaskPiotrUN : fbTaskPiotrUN;
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[cell.Cmd;
-un.Status;
-fbTaskPiotrUN(un := un, cell := cell);]]></ST>
+      <ST><![CDATA[fbUN REF= fbTaskPiotrUN;
+fbUN(un := un, cell := cell);]]></ST>
     </Implementation>
     <LineIds Name="MAIN">
-      <LineId Id="12" Count="1" />
       <LineId Id="5" Count="0" />
+      <LineId Id="13" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>
