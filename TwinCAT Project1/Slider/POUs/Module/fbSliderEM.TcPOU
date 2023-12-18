@@ -4,6 +4,7 @@
     <Declaration><![CDATA[FUNCTION_BLOCK fbSliderEM EXTENDS fbEM
 VAR
 	bSliderSide : BOOL;
+	XYMoverActualStep: INT;
 END_VAR
 
 VAR RETAIN
@@ -150,16 +151,8 @@ em.SequenceStep := State;
       <LineId Id="577" Count="2" />
       <LineId Id="570" Count="0" />
       <LineId Id="569" Count="0" />
-      <LineId Id="337" Count="0" />
-      <LineId Id="556" Count="0" />
-      <LineId Id="558" Count="5" />
-      <LineId Id="557" Count="0" />
-      <LineId Id="146" Count="0" />
-      <LineId Id="456" Count="95" />
-      <LineId Id="418" Count="0" />
-      <LineId Id="151" Count="0" />
-      <LineId Id="147" Count="0" />
-      <LineId Id="229" Count="4" />
+      <LineId Id="688" Count="111" />
+      <LineId Id="232" Count="1" />
       <LineId Id="235" Count="8" />
       <LineId Id="228" Count="0" />
     </LineIds>
