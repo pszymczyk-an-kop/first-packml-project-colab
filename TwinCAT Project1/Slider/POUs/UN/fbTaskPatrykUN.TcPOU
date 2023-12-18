@@ -20,11 +20,84 @@ VAR
 	iXYMoverEM : DINT := 1;
 	
 	i : DINT;
-	State : INT;
+	GlobalStep : INT;
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[]]></ST>
+      <ST><![CDATA[
+IF cell.Cmd = E_CMD_CELL.STOP THEN
+	GlobalStep := 100;
+END_IF
+
+IF cell.Cmd = E_CMD_CELL.ABORT THEN
+	GlobalStep := 200;
+END_IF
+
+CASE GlobalStep OF
+	0:	// Status Undefined
+		
+	10:	// Global idle
+		
+	15:	//
+	
+	20: //
+	
+	30: //
+	
+	31: //
+	
+	32: //
+	
+	33: //
+	
+	34: //
+	
+	35: //
+	
+	36: //
+	
+	37: //
+	
+	38: //
+	
+	39: //
+	
+	40: //
+	
+	46: //
+	
+	47: //
+	
+	48: //
+	
+	49: //
+	
+	50: //
+	
+	60: //
+	
+	61: //
+	
+	62: //
+	
+	63: //
+	
+	99: // INIT Check homing for all EM's, check gripper state
+	
+	100: // Status stopping, reset IO's
+	
+	101: // Status stopped
+	
+	102: // Wait for Global Reset Un.cmd.reset, set IO's for homing
+		
+	103: // IF Homing OK > back to INIT state
+		
+	200: // Status aborting, reset IO's
+		
+	201: // Wait for global clear un.cmd.clear, status clearing, back to #101 state
+		
+END_CASE
+]]></ST>
     </Implementation>
     <Method Name="FB_init" Id="{72069cc3-6c29-46ff-8ab2-a60e11fe7764}">
       <Declaration><![CDATA[METHOD FB_init : BOOL
@@ -71,6 +144,25 @@ END_FOR
       </Implementation>
     </Method>
     <LineIds Name="fbTaskPatrykUN">
+      <LineId Id="94" Count="0" />
+      <LineId Id="31" Count="9" />
+      <LineId Id="51" Count="0" />
+      <LineId Id="56" Count="1" />
+      <LineId Id="64" Count="0" />
+      <LineId Id="103" Count="20" />
+      <LineId Id="125" Count="3" />
+      <LineId Id="101" Count="0" />
+      <LineId Id="132" Count="15" />
+      <LineId Id="131" Count="0" />
+      <LineId Id="102" Count="0" />
+      <LineId Id="65" Count="0" />
+      <LineId Id="68" Count="0" />
+      <LineId Id="97" Count="3" />
+      <LineId Id="69" Count="0" />
+      <LineId Id="77" Count="1" />
+      <LineId Id="81" Count="1" />
+      <LineId Id="89" Count="1" />
+      <LineId Id="93" Count="0" />
       <LineId Id="9" Count="0" />
     </LineIds>
     <LineIds Name="fbTaskPatrykUN.FB_init">
