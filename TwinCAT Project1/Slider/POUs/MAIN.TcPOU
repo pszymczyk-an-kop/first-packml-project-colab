@@ -6,13 +6,16 @@ VAR
 	un : ST_UN;
 	cell : ST_CELL;
 	fbTaskPiotrUN : fbTaskPiotrUN;
+	fbTaskPatrykUN : fbTaskPatrykUN;
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[fbTaskPiotrUN(un := un, cell := cell);]]></ST>
+      <ST><![CDATA[fbTaskPiotrUN(un := un, cell := cell);
+fbTaskPatrykUN(un := un, cell := cell);]]></ST>
     </Implementation>
     <LineIds Name="MAIN">
       <LineId Id="5" Count="0" />
+      <LineId Id="12" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>

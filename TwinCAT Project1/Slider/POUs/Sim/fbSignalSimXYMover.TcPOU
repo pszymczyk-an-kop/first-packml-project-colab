@@ -19,6 +19,7 @@ VAR
 	Timer7 : TON;
 	Timer8 : TON;
 	Timer9 : TON;
+	Timer10: TON;
 	Trigger : R_Trig;
 	TriggerVar : BOOL := TRUE;
 	TriggerVarToOFF : BOOL;
@@ -31,45 +32,29 @@ END_VAR
     <Implementation>
       <ST><![CDATA[	CASE em.SequenceStep OF
 		
-	0:	IF em.Config.Data.I[3] = FALSE OR em.Config.Data.I[1] = FALSE THEN
-			Timer1(PT := T#2S);
-			Timer1(IN := em.Config.Data.Q[1]);
-			em.Config.Data.I[1] := Timer1.Q;
-			Timer1(PT := T#2S);
-			Timer1(IN := em.Config.Data.Q[3]);
-			em.Config.Data.I[3] := Timer1.Q;
-		END_IF
+	0:	// Rezerwa
+		
+	1: 	Timer1(PT := T#1S);
+		Timer1(IN := em.Config.Data.Q[1]);
+		em.Config.Data.I[1] := Timer1.Q;
+		Timer1(PT := T#1S);
+		Timer1(IN := em.Config.Data.Q[2]);
+		em.Config.Data.I[2] := Timer1.Q;
+		Timer1(PT := T#1S);
+		Timer1(IN := em.Config.Data.Q[3]);
+		em.Config.Data.I[3] := Timer1.Q;
+		Timer1(PT := T#1S);
+		Timer1(IN := em.Config.Data.Q[4]);
+		em.Config.Data.I[4] := Timer1.Q;
 		
 		IF Timer1.Q = TRUE THEN
 			Timer1(IN := FALSE);
 		END_IF
-		
-	1: 	TriggerVarToSimStatus1 := TRUE;
-		Timer7(PT := T#1S);
-		Timer7(IN := TriggerVarToSimStatus1);
-		
-		IF Timer7.Q = TRUE THEN
-			Timer7(IN := FALSE);
-			em.Cmd := E_Cmd.Reset;
-			TriggerVarToSimStatus1 := FALSE;
-		END_IF
 	
-	2: 	Timer3(PT := T#2S);
-		Timer3(IN := em.Config.Data.Q[1]);
-		em.Config.Data.I[1] := Timer3.Q;
-	
-		Timer3(PT := T#2S);
-		Timer3(IN := em.Config.Data.Q[3]);
-		em.Config.Data.I[3] := Timer3.Q;
+	2: // Rezerwa
 		
-		IF Timer3.Q = TRUE THEN
-			Timer3(IN := FALSE);
-		END_IF
-		
-	3: // Rezerwa
-	
-	4: 	TriggerVarToSimStatus2 := TRUE;
-		Timer8(PT := T#1S);
+	3: 	TriggerVarToSimStatus2 := TRUE;
+		Timer8(PT := T#2S);
 		Timer8(IN := TriggerVarToSimStatus2);
 		
 		IF Timer8.Q = TRUE THEN
@@ -78,7 +63,43 @@ END_VAR
 			TriggerVarToSimStatus2 := FALSE;
 		END_IF
 	
-	5: // Rezerwa
+	4: 	Timer3(PT := T#2S);
+		Timer3(IN := em.Config.Data.Q[1]);
+		em.Config.Data.I[1] := Timer3.Q;
+		Timer3(PT := T#2S);
+		Timer3(IN := em.Config.Data.Q[3]);
+		em.Config.Data.I[3] := Timer1.Q;
+		
+		IF Timer3.Q = TRUE THEN
+			Timer3(IN := FALSE);
+		END_IF
+		
+	5: 	Timer7(PT := T#1S);
+		Timer7(IN := em.Config.Data.Q[1]);
+		em.Config.Data.I[1] := Timer7.Q;
+		Timer7(PT := T#1S);
+		Timer7(IN := em.Config.Data.Q[2]);
+		em.Config.Data.I[2] := Timer7.Q;
+		Timer7(PT := T#1S);
+		Timer7(IN := em.Config.Data.Q[3]);
+		em.Config.Data.I[3] := Timer7.Q;
+		Timer7(PT := T#1S);
+		Timer7(IN := em.Config.Data.Q[4]);
+		em.Config.Data.I[4] := Timer7.Q;
+		
+		IF Timer7.Q = TRUE THEN
+			Timer7(IN := FALSE);
+		END_IF
+	
+	6:	TriggerVarToSimStatus1 := TRUE;
+		Timer10(PT := T#2S);
+		Timer10(IN := TriggerVarToSimStatus1);
+		
+		IF Timer10.Q = TRUE THEN
+			Timer10(IN := FALSE);
+			em.Cmd := E_CMD.clear;
+			TriggerVarToSimStatus1 := FALSE;
+		END_IF
 	
 	10: TriggerVarToSimStatus3 := TRUE;
 		Timer9(PT := T#1S);
@@ -136,7 +157,35 @@ END_VAR
 	]]></ST>
     </Implementation>
     <LineIds Name="fbSignalSimXYMover">
-      <LineId Id="64" Count="103" />
+      <LineId Id="64" Count="1" />
+      <LineId Id="77" Count="1" />
+      <LineId Id="194" Count="0" />
+      <LineId Id="196" Count="1" />
+      <LineId Id="206" Count="1" />
+      <LineId Id="205" Count="0" />
+      <LineId Id="198" Count="2" />
+      <LineId Id="208" Count="1" />
+      <LineId Id="201" Count="3" />
+      <LineId Id="87" Count="1" />
+      <LineId Id="99" Count="1" />
+      <LineId Id="210" Count="7" />
+      <LineId Id="101" Count="1" />
+      <LineId Id="218" Count="1" />
+      <LineId Id="111" Count="0" />
+      <LineId Id="221" Count="1" />
+      <LineId Id="220" Count="0" />
+      <LineId Id="112" Count="0" />
+      <LineId Id="224" Count="1" />
+      <LineId Id="223" Count="0" />
+      <LineId Id="226" Count="11" />
+      <LineId Id="113" Count="0" />
+      <LineId Id="238" Count="0" />
+      <LineId Id="240" Count="1" />
+      <LineId Id="239" Count="0" />
+      <LineId Id="242" Count="0" />
+      <LineId Id="244" Count="7" />
+      <LineId Id="243" Count="0" />
+      <LineId Id="114" Count="53" />
       <LineId Id="9" Count="0" />
     </LineIds>
   </POU>
