@@ -3,9 +3,13 @@
   <POU Name="fbEM" Id="{20ab5818-6755-4885-a642-a71cb67ceff3}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK fbEM
 VAR_IN_OUT
-	em : ST_EM;     
-	un : ST_UN;     
+	em : ST_EM;
 END_VAR
+
+VAR_INPUT
+	un : REFERENCE TO ST_UN;
+END_VAR
+
 VAR
 	emCmdOld: E_CMD;
 END_VAR]]></Declaration>

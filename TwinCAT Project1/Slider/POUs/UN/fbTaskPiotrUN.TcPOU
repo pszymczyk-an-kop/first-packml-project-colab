@@ -20,7 +20,9 @@ VAR
 	iXYMoverEM : DINT := 1;
 	
 	i : DINT;
-	State : INT;
+	State : INT := 0;
+	declareIterator: DINT;
+	initIterator: DINT;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -34,11 +36,11 @@ END_VAR
 
 // All init configuration done in FB_init method
 
-IF cell.Cmd = E_CMD_CELL.STOP THEN
+IF cell.Cmd = E_CMD_CELL.STOP AND NOT (State = 100 OR State = 110) THEN
 	State := 100;
 END_IF
 
-IF cell.Cmd = E_CMD_CELL.ABORT THEN
+IF cell.Cmd = E_CMD_CELL.ABORT AND NOT (State = 200 OR State = 210) THEN
 	State := 200;
 END_IF
 
@@ -46,7 +48,7 @@ CASE State OF
 	0:	un.Status := E_Status.undefined;
 		State := 5;
 		
-	5:	FOR i := 0 TO Counters.packmlEmLast DO
+	5:	FOR i := 1 TO Counters.packmlEmLast DO
 			IF NOT (em[i].Status = E_Status.idle) THEN
 				un.Cmd := E_CMD.reset;
 			ELSE
@@ -61,7 +63,7 @@ CASE State OF
 			State := 20;
 		END_IF
 		
-	20:	FOR i := 0 TO Counters.packmlEmLast DO
+	20:	FOR i := 1 TO Counters.packmlEmLast DO
 			IF NOT (em[i].Status = E_Status.execute) THEN
 				un.Cmd := E_CMD.reset;
 				un.Status := E_Status.resetting;
@@ -73,7 +75,7 @@ CASE State OF
 		un.Status := E_Status.stopping;
 		State := 110;
 		
-	110:FOR i := 0 TO Counters.packmlEmLast DO
+	110:FOR i := 1 TO Counters.packmlEmLast DO
 			IF NOT (em[i].Status = E_Status.stopped) THEN
 				;
 			ELSE
@@ -86,7 +88,7 @@ CASE State OF
 		un.Status := E_Status.aborting;
 		State := 210;
 		
-	210:FOR i := 0 TO Counters.packmlEmLast DO
+	210:FOR i := 1 TO Counters.packmlEmLast DO
 			IF NOT (em[i].Status = E_Status.aborted) THEN
 				;
 			ELSE
@@ -197,7 +199,7 @@ END_FOR
       <LineId Id="31" Count="1" />
       <LineId Id="35" Count="3" />
       <LineId Id="104" Count="0" />
-      <LineId Id="103" Count="0" />
+      <LineId Id="231" Count="0" />
       <LineId Id="170" Count="0" />
       <LineId Id="169" Count="0" />
       <LineId Id="171" Count="1" />
