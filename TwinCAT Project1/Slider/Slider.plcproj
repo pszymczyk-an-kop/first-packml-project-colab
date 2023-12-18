@@ -62,6 +62,7 @@
     </Compile>
     <Compile Include="GVLs\Counters.TcGVL">
       <SubType>Code</SubType>
+      <LinkAlways>true</LinkAlways>
     </Compile>
     <Compile Include="GVLs\GVL.TcGVL">
       <SubType>Code</SubType>

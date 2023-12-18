@@ -260,5 +260,3 @@ paket-files/
 __pycache__/
 *.pyc
 /TwinCAT Project1.project.~u
-/TwinCAT Project1/Slider/GVLs/Counters.TcGVL
-/TwinCAT Project1/Slider/POUs/MAIN.TcPOU
