@@ -44,9 +44,6 @@ IF initialConfig THEN
 	em[3].Config.Functionality := E_Function.eXYMover;
 	em[4].Config.Functionality := E_Function.eSlider;
 	em[5].Config.Functionality := E_Function.eSlider;
-	
-	// Test em
-//	em[1].Config.Functionality := E_Function.eSlider;
 
 	// FOR loop to specify config for each module
 	FOR declareIterator := 1 TO Counters.packmlEmLast DO
@@ -180,9 +177,7 @@ END_CASE
       <LineId Id="463" Count="0" />
       <LineId Id="493" Count="0" />
       <LineId Id="501" Count="0" />
-      <LineId Id="439" Count="4" />
-      <LineId Id="514" Count="0" />
-      <LineId Id="541" Count="0" />
+      <LineId Id="439" Count="3" />
       <LineId Id="515" Count="0" />
       <LineId Id="444" Count="15" />
       <LineId Id="462" Count="0" />
