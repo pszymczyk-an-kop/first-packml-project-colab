@@ -1,0 +1,184 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="fbTaskPatrykUN" Id="{ec0fe630-22dc-4cb0-892d-8a119321a62f}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK fbTaskPatrykUN EXTENDS fbUN
+VAR	
+	// Arrays with 'em' universal structure and 'fbEM' containing ST_MACHINE structure which contains of references to fbEM function block
+	em : ARRAY[1..Counters.packmlEmLast] OF ST_EM;
+	fbEM : ARRAY[1..Counters.packmlEmLast] OF ST_MACHINE;
+	
+	// Array containing all instances fo fbSliderEM with its own iterator
+	SliderEM : ARRAY[1..Counters.SliderEMNo] OF fbSliderEM;
+	iSliderEM : DINT := 1;
+	
+	// Array containing all instances fo fbSliderWithGripperEM with its own iterator
+	SliderWithGripperEM : ARRAY[1..Counters.SliderWithGripperEMNo] OF fbSliderWithGripperEM;
+	iSliderWithGripperEM : DINT := 1;
+	
+	// Array containing all instances fo fbXYMoverEM with its own iterator
+	XYMoverEM : ARRAY[1..Counters.XYMoverEMNo] OF fbXYMoverEM;
+	iXYMoverEM : DINT := 1;
+	
+	i : DINT;
+	GlobalStep : INT := 0;
+	declareIterator : DINT;
+	moduleWorkIterator : DINT;
+	initIterator: DINT := 1;
+	initialConfig: BOOL := TRUE;
+	
+	fbSignalSimSlider : fbSignalSimSlider;
+	
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[//////////////////////////////////////////////////////////////////////
+IF initialConfig THEN
+	initialConfig := FALSE;
+	
+// Specifing module type of each module in array
+em[1].Config.Functionality := E_Function.eSliderWithGripper;
+em[2].Config.Functionality := E_Function.eSliderWithGripper;
+em[3].Config.Functionality := E_Function.eSliderWithGripper;
+em[4].Config.Functionality := E_Function.eSlider;
+em[5].Config.Functionality := E_Function.eSlider;
+em[6].Config.Functionality := E_Function.eSlider;
+	
+	// FOR loop to specify config for each module
+FOR declareIterator := 1 TO Counters.packmlEmLast DO
+	em[declareIterator].Config.Data.I REF= GVL.aInput[declareIterator];
+	em[declareIterator].Config.Data.Q REF= GVL.aOutput[declareIterator];
+
+	CASE em[declareIterator].Config.Functionality OF
+		E_Function.eSlider:
+			fbEM[declareIterator].fbEM REF= SliderEM[iSliderEM];
+			iSliderEM := iSliderEM + 1;
+		E_Function.eSliderWithGripper:
+			fbEM[declareIterator].fbEM REF= SliderWithGripperEM[iSliderWithGripperEM];
+			iSliderWithGripperEM := iSliderWithGripperEM + 1;
+		E_Function.eXYMover:
+			fbEM[declareIterator].fbEM REF= XYMoverEM[iXYMoverEM];
+			iXYMoverEM := iXYMoverEM + 1;
+	END_CASE
+	
+	fbEM[declareIterator].fbEM(em := em[declareIterator], un := un);
+END_FOR
+END_IF
+
+FOR moduleWorkIterator := 1 TO Counters.packmlEmLast DO
+	fbEM[moduleWorkIterator].fbEM(em := em[moduleWorkIterator], un := un);
+	
+END_FOR
+
+//////////////////////////////////////////////////////////////////////
+
+IF cell.Cmd = E_CMD_CELL.STOP THEN
+	GlobalStep := 100;
+END_IF
+
+IF cell.Cmd = E_CMD_CELL.ABORT THEN
+	GlobalStep := 200;
+END_IF
+
+CASE GlobalStep OF
+	0:	// Status Undefined
+		
+	10:	// Global idle
+		
+	15:	//
+	
+	20: //
+	
+	30: //
+	
+	31: //
+	
+	32: //
+	
+	33: //
+	
+	34: //
+	
+	35: //
+	
+	36: //
+	
+	37: //
+	
+	38: //
+	
+	39: //
+	
+	40: //
+	
+	46: //
+	
+	47: //
+	
+	48: //
+	
+	49: //
+	
+	50: //
+	
+	60: //
+	
+	61: //
+	
+	62: //
+	
+	63: //
+	
+	99: // INIT Check homing for all EM's, check gripper state
+	
+	100: 	un.Cmd := E_Cmd.stop;
+			un.Status := E_Status.stopping;
+					
+	
+	101: // Status stopped
+	
+	102: // Wait for Global Reset Un.cmd.reset, set IO's for homing
+		
+	103: // IF Homing OK > back to INIT state
+		
+	200: // Status aborting, reset IO's
+		
+	201: // Wait for global clear un.cmd.clear, status clearing, back to #101 state
+		
+END_CASE
+]]></ST>
+    </Implementation>
+    <LineIds Name="fbTaskPatrykUN">
+      <LineId Id="204" Count="0" />
+      <LineId Id="210" Count="1" />
+      <LineId Id="214" Count="0" />
+      <LineId Id="174" Count="26" />
+      <LineId Id="205" Count="0" />
+      <LineId Id="213" Count="0" />
+      <LineId Id="207" Count="1" />
+      <LineId Id="216" Count="0" />
+      <LineId Id="206" Count="0" />
+      <LineId Id="201" Count="1" />
+      <LineId Id="94" Count="0" />
+      <LineId Id="31" Count="9" />
+      <LineId Id="51" Count="0" />
+      <LineId Id="56" Count="1" />
+      <LineId Id="64" Count="0" />
+      <LineId Id="103" Count="20" />
+      <LineId Id="125" Count="3" />
+      <LineId Id="101" Count="0" />
+      <LineId Id="132" Count="15" />
+      <LineId Id="131" Count="0" />
+      <LineId Id="102" Count="0" />
+      <LineId Id="65" Count="0" />
+      <LineId Id="68" Count="0" />
+      <LineId Id="245" Count="1" />
+      <LineId Id="97" Count="3" />
+      <LineId Id="69" Count="0" />
+      <LineId Id="77" Count="1" />
+      <LineId Id="81" Count="1" />
+      <LineId Id="89" Count="1" />
+      <LineId Id="93" Count="0" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

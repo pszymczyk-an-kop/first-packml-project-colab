@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
-  <POU Name="fbUN" Id="{ccbda342-45e8-4570-b3b5-a767274183ee}" SpecialFunc="None">
+  <POU Name="fbUN" Id="{8a89ae08-eb4c-4a33-b71a-fcdedacd8068}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK fbUN
 VAR_IN_OUT
 	un : ST_UN;
 	cell : ST_CELL;
 END_VAR
-
 VAR_INPUT
 	EnableSim : BOOL;
-END_VAR]]></Declaration>
+END_VAR
+]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>

@@ -100,6 +100,9 @@
     <Compile Include="POUs\Sim\fbSignalSimXYMover.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="POUs\UN\fbTaskPatrykUN.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="POUs\UN\fbTaskPiotrUN.TcPOU">
       <SubType>Code</SubType>
     </Compile>
