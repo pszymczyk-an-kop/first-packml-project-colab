@@ -6,186 +6,123 @@ VAR_IN_OUT
 	em : ST_EM;
 END_VAR
 VAR_INPUT
+	EnableSim : BOOL;
 END_VAR
 VAR_OUTPUT
 END_VAR
 VAR
-	Timer1 : TON;
-	Timer2 : TON;
-	Timer3 : TON;
-	Timer4 : TON;
-	Timer5 : TON;
-	Timer6 : TON;
-	Timer7 : TON;
-	Timer8 : TON;
-	Timer9 : TON;
-	Timer10: TON;
-	Trigger : R_Trig;
-	TriggerVar : BOOL := TRUE;
-	TriggerVarToOFF : BOOL;
-	TriggerVarToSimStatus1 : BOOL;
-	TriggerVarToSimStatus2 : BOOL;
-	TriggerVarToSimStatus3 : BOOL;
+	TimerSim : Array[1..10] OF TON;
 	Elapsed : TIME;
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[	CASE em.SequenceStep OF
+      <ST><![CDATA[IF EnableSim THEN
+	CASE em.SequenceStep OF
 		
-	0:	// Rezerwa
+	1: 	TimerSim[1](in := TRUE);
+		TimerSim[1](PT := T#2S);
 		
-	1: 	Timer1(PT := T#1S);
-		Timer1(IN := em.Config.Data.Q[1]);
-		em.Config.Data.I[1] := Timer1.Q;
-		Timer1(PT := T#1S);
-		Timer1(IN := em.Config.Data.Q[2]);
-		em.Config.Data.I[2] := Timer1.Q;
-		Timer1(PT := T#1S);
-		Timer1(IN := em.Config.Data.Q[3]);
-		em.Config.Data.I[3] := Timer1.Q;
-		Timer1(PT := T#1S);
-		Timer1(IN := em.Config.Data.Q[4]);
-		em.Config.Data.I[4] := Timer1.Q;
+		IF TimerSim[1].Q THEN
+			em.Config.Data.I[1] := FALSE;
+            em.Config.Data.I[2] := FALSE;
+            em.Config.Data.I[3] := FALSE;
+            em.Config.Data.I[4] := FALSE;
+			TimerSim[1](in := FALSE);
+		END_IF
 		
-		IF Timer1.Q = TRUE THEN
-			Timer1(IN := FALSE);
+	3: 	TimerSim[2](in := TRUE);
+		TimerSim[2](PT := T#2S);
+		
+		IF TimerSim[2].Q THEN
+			em.Config.Data.I[1] := TRUE;
+            em.Config.Data.I[3] := TRUE;
+			em.Cmd := E_CMD.reset;
+			TimerSim[2](in := FALSE);
 		END_IF
 	
-	2: // Rezerwa
 		
-	3: 	TriggerVarToSimStatus2 := TRUE;
-		Timer8(PT := T#2S);
-		Timer8(IN := TriggerVarToSimStatus2);
+	5: 	TimerSim[3](in := TRUE);
+		TimerSim[3](PT := T#2S);
 		
-		IF Timer8.Q = TRUE THEN
-			Timer8(IN := FALSE);
-			em.Cmd := E_Cmd.Reset;
-			TriggerVarToSimStatus2 := FALSE;
+		IF TimerSim[3].Q THEN
+			em.Config.Data.I[1] := FALSE;
+            em.Config.Data.I[2] := FALSE;
+            em.Config.Data.I[3] := FALSE;
+            em.Config.Data.I[4] := FALSE;
+			TimerSim[3](in := FALSE);
 		END_IF
 	
-	4: 	Timer3(PT := T#2S);
-		Timer3(IN := em.Config.Data.Q[1]);
-		em.Config.Data.I[1] := Timer3.Q;
-		Timer3(PT := T#2S);
-		Timer3(IN := em.Config.Data.Q[3]);
-		em.Config.Data.I[3] := Timer1.Q;
+	6:	TimerSim[4](in := TRUE);
+		TimerSim[4](PT := T#2S);
 		
-		IF Timer3.Q = TRUE THEN
-			Timer3(IN := FALSE);
-		END_IF
-		
-	5: 	Timer7(PT := T#1S);
-		Timer7(IN := em.Config.Data.Q[1]);
-		em.Config.Data.I[1] := Timer7.Q;
-		Timer7(PT := T#1S);
-		Timer7(IN := em.Config.Data.Q[2]);
-		em.Config.Data.I[2] := Timer7.Q;
-		Timer7(PT := T#1S);
-		Timer7(IN := em.Config.Data.Q[3]);
-		em.Config.Data.I[3] := Timer7.Q;
-		Timer7(PT := T#1S);
-		Timer7(IN := em.Config.Data.Q[4]);
-		em.Config.Data.I[4] := Timer7.Q;
-		
-		IF Timer7.Q = TRUE THEN
-			Timer7(IN := FALSE);
-		END_IF
-	
-	6:	TriggerVarToSimStatus1 := TRUE;
-		Timer10(PT := T#2S);
-		Timer10(IN := TriggerVarToSimStatus1);
-		
-		IF Timer10.Q = TRUE THEN
-			Timer10(IN := FALSE);
+		IF TimerSim[4].Q THEN
 			em.Cmd := E_CMD.clear;
-			TriggerVarToSimStatus1 := FALSE;
+			TimerSim[4](in := FALSE);
 		END_IF
 	
-	10: TriggerVarToSimStatus3 := TRUE;
-		Timer9(PT := T#1S);
-		Timer9(IN := TriggerVarToSimStatus3);
+	10: TimerSim[5](in := TRUE);
+		TimerSim[5](PT := T#2S);
 		
-		IF Timer9.Q = TRUE THEN
-			Timer9(IN := FALSE);
-			em.Cmd := E_Cmd.START;
-			TriggerVarToSimStatus3 := FALSE;
+		IF TimerSim[5].Q THEN
+			em.Cmd := E_CMD.start;
+			TimerSim[5](in := FALSE);
 		END_IF
 		
 	
-	20:	TriggerVar := TRUE;
-		Timer4(PT := T#2S);
-		Timer4(IN := TriggerVar);
-		em.Config.Data.I[5] := Timer4.Q;
+	20:	TimerSim[6](in := TRUE);
+		TimerSim[6](PT := T#2S);
 		
-		IF Timer4.Q = TRUE THEN
-			Timer4(IN := FALSE);
-			TriggerVar := FALSE;
+		IF TimerSim[6].Q THEN
+			em.Config.Data.I[5] := TRUE;
+			TimerSim[6](in := FALSE);
 		END_IF
 		
-	30: // Rezerwa
-	
-	40: Timer5(PT := T#2S);
-		Timer5(IN := em.Config.Data.Q[2]);
-		em.Config.Data.I[2] := Timer5.Q;
+	30: TimerSim[7](in := TRUE);
+		TimerSim[7](PT := T#2S);
 		
-		IF Timer5.Q = TRUE THEN
-			Timer5(IN := FALSE);
+		IF TimerSim[7].Q THEN
+			em.Config.Data.I[1] := FALSE;
+			em.Config.Data.I[2] := TRUE;
+			TimerSim[7](in := FALSE);
 		END_IF
 	
-	50: Timer6(PT := T#2S);
-		Timer6(IN := em.Config.Data.Q[4]);
-		em.Config.Data.I[4] := Timer6.Q;
+	40: TimerSim[8](in := TRUE);
+		TimerSim[8](PT := T#2S);
 		
-		IF Timer6.Q = TRUE THEN
-			Timer6(IN := FALSE);
+		IF TimerSim[8].Q THEN
+			em.Config.Data.I[3] := FALSE;
+			em.Config.Data.I[4] := TRUE;
+			TimerSim[8](in := FALSE);
 		END_IF
-		
-	60:	TriggerVarToOFF := TRUE;
-		Timer2(PT := T#2S);
-		Timer2(IN := TriggerVarToOFF);
 
-		IF Timer2.Q = TRUE THEN
+		
+	60:	TimerSim[9](in := TRUE);
+		TimerSim[9](PT := T#2S);
+		
+		IF TimerSim[9].Q THEN
 			em.Config.Data.I[5] := FALSE;
-			Timer2(IN := FALSE);
-			TriggerVarToOFF := FALSE;
+			TimerSim[9](in := FALSE);
 		END_IF
 	
-	70: // Rezerwa
+	70: TimerSim[10](in := TRUE);
+		TimerSim[10](PT := T#2S);
+		
+		IF TimerSim[9].Q THEN
+			em.Config.Data.I[1] := TRUE;
+			em.Config.Data.I[3] := TRUE;
+			TimerSim[9](in := FALSE);
+		END_IF
 	
 	
 	END_CASE 
-	]]></ST>
+END_IF	
+]]></ST>
     </Implementation>
     <LineIds Name="fbSignalSimXYMover">
-      <LineId Id="64" Count="1" />
-      <LineId Id="77" Count="1" />
-      <LineId Id="194" Count="0" />
-      <LineId Id="196" Count="1" />
-      <LineId Id="206" Count="1" />
-      <LineId Id="205" Count="0" />
-      <LineId Id="198" Count="2" />
-      <LineId Id="208" Count="1" />
-      <LineId Id="201" Count="3" />
-      <LineId Id="87" Count="1" />
-      <LineId Id="99" Count="1" />
-      <LineId Id="210" Count="7" />
-      <LineId Id="101" Count="1" />
-      <LineId Id="218" Count="1" />
-      <LineId Id="111" Count="0" />
-      <LineId Id="221" Count="1" />
-      <LineId Id="220" Count="0" />
-      <LineId Id="112" Count="0" />
-      <LineId Id="224" Count="1" />
-      <LineId Id="223" Count="0" />
-      <LineId Id="226" Count="11" />
-      <LineId Id="113" Count="0" />
-      <LineId Id="238" Count="0" />
-      <LineId Id="240" Count="1" />
-      <LineId Id="239" Count="0" />
-      <LineId Id="242" Count="0" />
-      <LineId Id="244" Count="7" />
-      <LineId Id="243" Count="0" />
-      <LineId Id="114" Count="53" />
+      <LineId Id="420" Count="0" />
+      <LineId Id="305" Count="0" />
+      <LineId Id="308" Count="10" />
+      <LineId Id="321" Count="86" />
       <LineId Id="9" Count="0" />
     </LineIds>
   </POU>

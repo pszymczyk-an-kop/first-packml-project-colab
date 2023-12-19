@@ -6,7 +6,9 @@ VAR_IN_OUT
 	em : ST_EM;
 	un : ST_UN;
 END_VAR
-
+VAR_INPUT
+	EnableSim : BOOL;
+END_VAR
 VAR
 	emCmdOld: E_CMD;
 END_VAR]]></Declaration>
