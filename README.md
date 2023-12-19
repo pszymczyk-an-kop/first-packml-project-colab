@@ -5,7 +5,7 @@ Poniżej najważniejsze dane wspólne dla każdego
 
 WAŻNE -> Po prezentacji podstawowych struktur i FB przedstawione zostały przykłady tworzenia modułów i unitów
 
-Update: 19.12.2023 - 14:15
+Update: 19.12.2023 - 14:21
 
 ## Struktury
 
@@ -313,14 +313,13 @@ END_VAR
 ```
 
 ```ST
-$${\color{red}(* // Komentarz co do wykorzystanych we/wy
-	Input/Output mapping
-	I[1] <- Siłownik pozycja 1 (wsunięty) 
-	I[2] <- Siłownik pozycja 2 (wysunięty)
-	I[3] <- Czujnik obecności obiektu (na pozycji 1 (wsunięty)) 
-	Q[1] <- Wysuń siłownik (do pozycji 2)
-	Q[2] <- Wsuń siłownik (do pozycji 1)
-*)}$$
+// Komentarz co do wykorzystanych we/wy
+//	I[1] <- Siłownik pozycja 1 (wsunięty) 
+//	I[2] <- Siłownik pozycja 2 (wysunięty)
+//	I[3] <- Czujnik obecności obiektu (na pozycji 1 (wsunięty)) 
+//	Q[1] <- Wysuń siłownik (do pozycji 2)
+//	Q[2] <- Wsuń siłownik (do pozycji 1)
+
 
 GetUnCmd();
 fbSignalSim(
