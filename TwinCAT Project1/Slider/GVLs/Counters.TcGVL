@@ -3,9 +3,9 @@
   <GVL Name="Counters" Id="{7aa1b933-f473-443b-9eb0-69c4c379c9fc}">
     <Declaration><![CDATA[{attribute 'qualified_only'}
 VAR_GLOBAL CONSTANT
-	SliderEMNo : INT := 2;
-	SliderWithGripperEMNo : INT := 1;
-	XYMoverEMNo : INT := 2;
+	SliderEMNo : INT := 1;
+	SliderWithGripperEMNo : INT := 0;
+	XYMoverEMNo : INT := 0;
 	
 	packmlUnLast : INT := 1;
 	packmlEmLast : INT := SliderEMNo + SliderWithGripperEMNo + XYMoverEMNo;

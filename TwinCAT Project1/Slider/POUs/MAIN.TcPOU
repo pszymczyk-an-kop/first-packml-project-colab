@@ -10,7 +10,7 @@ END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[cell.Cmd := E_CMD_CELL.START;
-fbTaskPiotrUN(un := un, cell := cell);]]></ST>
+fbTaskPiotrUN(un := un, cell := cell, EnableSim := TRUE);]]></ST>
     </Implementation>
     <LineIds Name="MAIN">
       <LineId Id="21" Count="0" />

@@ -7,6 +7,11 @@ VAR_IN_OUT
 	un : ST_UN;
 END_VAR
 
+VAR_INPUT
+	EnableSim : BOOL;
+	CmdSim : BOOL := TRUE;
+END_VAR
+
 VAR
 	emCmdOld: E_CMD;
 END_VAR]]></Declaration>

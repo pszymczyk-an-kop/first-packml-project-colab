@@ -9,6 +9,7 @@ VAR_INPUT
 	EnableSim : BOOL;
 	UnknownStartPosition : BOOL := FALSE;
 	StartOnOtherSide : BOOL := FALSE;
+	CmdSim : BOOL := true;
 END_VAR
 VAR
 	InitialConfig : BOOL := TRUE;
@@ -39,18 +40,22 @@ END_VAR
 	timers[4].PT := timers[5].PT := timers[6].PT := timers[7].PT := timers[8].PT := timers[9].PT := duration / 3;
 	
 	CASE em.SequenceStep OF
-		10:	timers[5](in := TRUE);
-		
-			IF timers[5].Q THEN
-				timers[5](in := FALSE);
-				em.Cmd := E_CMD.clear;
-			END_IF 
+		10:	IF CmdSim THEN
+				timers[5](in := TRUE);
+			
+				IF timers[5].Q THEN
+					timers[5](in := FALSE);
+					em.Cmd := E_CMD.clear;
+				END_IF
+			END_IF
 	
-		30:	timers[6](in := TRUE);
-		
-			IF timers[6].Q THEN
-				timers[6](in := FALSE);
-				em.Cmd := E_CMD.reset;	
+		30:	IF CmdSim THEN
+				timers[6](in := TRUE);
+			
+				IF timers[6].Q THEN
+					timers[6](in := FALSE);
+					em.Cmd := E_CMD.reset;	
+				END_IF
 			END_IF
 
 		35:	timers[10](in := TRUE);
@@ -60,12 +65,14 @@ END_VAR
 				em.Config.Data.I[1] := TRUE;
 			END_IF
 	
-		40: timers[4](in := TRUE);
-		
-			IF timers[4].Q THEN
-				timers[4](in := FALSE);
-				em.Cmd := E_CMD.start;
-			END_IF	
+		40: IF CmdSim THEN
+				timers[4](in := TRUE);
+			
+				IF timers[4].Q THEN
+					timers[4](in := FALSE);
+					em.Cmd := E_CMD.start;
+				END_IF
+			END_IF
 
 		50:	IF NOT OtherSide AND em.Config.Data.I[1] THEN
 				timers[1](in := TRUE); 
@@ -96,18 +103,22 @@ END_VAR
 				em.Config.Data.I[1] := TRUE;
 			END_IF
 			
-		200:timers[8](in := TRUE);
-		
-			IF timers[8].Q THEN
-				timers[8](in := FALSE);
-				em.Cmd := E_CMD.unhold;	
+		200:IF CmdSim THEN
+				timers[8](in := TRUE);
+			
+				IF timers[8].Q THEN
+					timers[8](in := FALSE);
+					em.Cmd := E_CMD.unhold;	
+				END_IF
 			END_IF
 		
-		300:timers[9](in := TRUE);
-		
-			IF timers[9].Q THEN
-				timers[9](in := FALSE);
-				em.Cmd := E_CMD.unsuspend;	
+		300:IF CmdSim THEN
+				timers[9](in := TRUE);
+			
+				IF timers[9].Q THEN
+					timers[9](in := FALSE);
+					em.Cmd := E_CMD.unsuspend;	
+				END_IF
 			END_IF
 	END_CASE
 
@@ -131,17 +142,27 @@ END_IF]]></ST>
       <LineId Id="160" Count="0" />
       <LineId Id="47" Count="0" />
       <LineId Id="9" Count="0" />
-      <LineId Id="141" Count="4" />
-      <LineId Id="125" Count="1" />
-      <LineId Id="146" Count="4" />
+      <LineId Id="141" Count="0" />
+      <LineId Id="227" Count="0" />
+      <LineId Id="142" Count="3" />
+      <LineId Id="125" Count="0" />
+      <LineId Id="228" Count="0" />
+      <LineId Id="126" Count="0" />
+      <LineId Id="146" Count="0" />
+      <LineId Id="229" Count="0" />
+      <LineId Id="147" Count="3" />
       <LineId Id="78" Count="0" />
+      <LineId Id="230" Count="0" />
       <LineId Id="81" Count="0" />
       <LineId Id="96" Count="1" />
       <LineId Id="85" Count="2" />
       <LineId Id="80" Count="0" />
       <LineId Id="79" Count="0" />
-      <LineId Id="135" Count="4" />
+      <LineId Id="135" Count="0" />
+      <LineId Id="233" Count="0" />
+      <LineId Id="136" Count="3" />
       <LineId Id="11" Count="0" />
+      <LineId Id="234" Count="0" />
       <LineId Id="48" Count="0" />
       <LineId Id="76" Count="0" />
       <LineId Id="50" Count="1" />
@@ -157,10 +178,17 @@ END_IF]]></ST>
       <LineId Id="73" Count="2" />
       <LineId Id="185" Count="0" />
       <LineId Id="127" Count="0" />
-      <LineId Id="167" Count="4" />
-      <LineId Id="128" Count="1" />
-      <LineId Id="172" Count="4" />
+      <LineId Id="167" Count="0" />
+      <LineId Id="235" Count="0" />
+      <LineId Id="168" Count="3" />
+      <LineId Id="128" Count="0" />
+      <LineId Id="236" Count="0" />
+      <LineId Id="129" Count="0" />
+      <LineId Id="172" Count="0" />
+      <LineId Id="237" Count="0" />
+      <LineId Id="173" Count="3" />
       <LineId Id="130" Count="0" />
+      <LineId Id="238" Count="0" />
       <LineId Id="193" Count="1" />
       <LineId Id="132" Count="0" />
       <LineId Id="22" Count="0" />
