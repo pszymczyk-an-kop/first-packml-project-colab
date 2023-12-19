@@ -6,8 +6,8 @@ VAR_IN_OUT
 	em : ST_EM; 
 END_VAR
 VAR_INPUT
-	EnableSim :BOOL; 
-	
+	EnableSim : BOOL;
+	CmdSim : BOOL := true;
 END_VAR
 VAR
 	 

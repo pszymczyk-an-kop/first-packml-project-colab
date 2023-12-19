@@ -2,9 +2,15 @@
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="fbSliderEM" Id="{8d63ff81-3bc4-421f-8810-eb0a34af2cf8}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK fbSliderEM EXTENDS fbEM
+VAR_INPUT
+	UnknownStartPosition : BOOL := FALSE;
+	StartOnOtherSide : BOOL := FALSE;
+END_VAR
+
 VAR
 	bSliderSide : BOOL;
 	XYMoverActualStep: INT;
+	fbSignalSim : fbSignalSimSlider;
 END_VAR
 
 VAR RETAIN
@@ -21,6 +27,13 @@ END_VAR]]></Declaration>
 *)
 
 GetUnCmd();
+fbSignalSim(
+	em := em,
+	EnableSim := EnableSim,
+	UnknownStartPosition := UnknownStartPosition,
+	StartOnOtherSide := StartOnOtherSide,
+	CmdSim := CmdSim
+);
 
 IF em.Config.Functionality = E_Function.eSlider THEN
 	IF State >= 15 AND em.Cmd = E_CMD.abort THEN
@@ -154,6 +167,10 @@ em.SequenceStep := State;
       <LineId Id="808" Count="0" />
       <LineId Id="819" Count="0" />
       <LineId Id="818" Count="0" />
+      <LineId Id="828" Count="0" />
+      <LineId Id="836" Count="3" />
+      <LineId Id="841" Count="0" />
+      <LineId Id="840" Count="0" />
       <LineId Id="569" Count="0" />
       <LineId Id="688" Count="111" />
       <LineId Id="232" Count="1" />
