@@ -13,7 +13,7 @@ END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[//fbTaskPiotrUN(un := un, cell := cell);
-fbTaskPatrykUN(un := un, cell := cell);]]></ST>
+fbTaskPatrykUN(un := un, cell := cell, EnableSim := true);]]></ST>
     </Implementation>
     <LineIds Name="MAIN">
       <LineId Id="5" Count="0" />

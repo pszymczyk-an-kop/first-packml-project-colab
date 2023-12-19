@@ -130,7 +130,9 @@ CASE GlobalStep OF
 	
 	99: // INIT Check homing for all EM's, check gripper state
 	
-	100: // Status stopping, reset IO's
+	100: 	un.Cmd := E_Cmd.stop;
+			un.Status := E_Status.stopping;
+					
 	
 	101: // Status stopped
 	
@@ -169,6 +171,7 @@ END_CASE
       <LineId Id="102" Count="0" />
       <LineId Id="65" Count="0" />
       <LineId Id="68" Count="0" />
+      <LineId Id="245" Count="1" />
       <LineId Id="97" Count="3" />
       <LineId Id="69" Count="0" />
       <LineId Id="77" Count="1" />
