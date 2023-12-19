@@ -43,35 +43,7 @@ END_VAR
 
 
 //////////////////////////////////////////////////////////////////////
-IF initialConfig THEN
-	initialConfig := FALSE;
-		// Specifing module type of each module in array
-	em[1].Config.Functionality := E_Function.eXYMover;
-	em[2].Config.Functionality := E_Function.eSliderWithGripper;
-	em[3].Config.Functionality := E_Function.eXYMover;
-	em[4].Config.Functionality := E_Function.eSlider;
-	em[5].Config.Functionality := E_Function.eSlider;
-	
-	// FOR loop to specify config for each module
-	FOR declareIterator := 1 TO Counters.packmlEmLast DO
-		em[declareIterator].Config.Data.I REF= GVL.aInput[declareIterator];
-		em[declareIterator].Config.Data.Q REF= GVL.aOutput[declareIterator];
-	
-		CASE em[declareIterator].Config.Functionality OF
-			E_Function.eSlider:
-				fbEM[declareIterator].fbEM REF= SliderEM[iSliderEM];
-				iSliderEM := iSliderEM + 1;
-			E_Function.eSliderWithGripper:
-				fbEM[declareIterator].fbEM REF= SliderWithGripperEM[iSliderWithGripperEM];
-				iSliderWithGripperEM := iSliderWithGripperEM + 1;
-			E_Function.eXYMover:
-				fbEM[declareIterator].fbEM REF= XYMoverEM[iXYMoverEM];
-				iXYMoverEM := iXYMoverEM + 1;
-		END_CASE
-		
-		fbEM[declareIterator].fbEM(em := em[initIterator], un := un);
-	END_FOR
-END_IF
+
 //////////////////////////////////////////////////////////////////////
 
 FOR moduleWorkIterator := 1 TO Counters.packmlEmLast DO
@@ -181,40 +153,42 @@ VAR
 	initIterator : dint;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[//// Specifing module type of each module in array
-//em[1].Config.Functionality := E_Function.eXYMover;
-//em[2].Config.Functionality := E_Function.eSliderWithGripper;
-//em[3].Config.Functionality := E_Function.eXYMover;
-//em[4].Config.Functionality := E_Function.eSlider;
-//em[5].Config.Functionality := E_Function.eSlider;
+        <ST><![CDATA[// Specifing module type of each module in array
+em[1].Config.Functionality := E_Function.eXYMover;
+em[2].Config.Functionality := E_Function.eSliderWithGripper;
+em[3].Config.Functionality := E_Function.eXYMover;
+em[4].Config.Functionality := E_Function.eSlider;
+em[5].Config.Functionality := E_Function.eSlider;
 
-//// FOR loop to specify config for each module
-//FOR declareIterator := 1 TO Counters.packmlEmLast DO
-//	em[declareIterator].Config.Data.I REF= GVL.aInput[declareIterator];
-//	em[declareIterator].Config.Data.Q REF= GVL.aOutput[declareIterator];
-
-//	CASE em[declareIterator].Config.Functionality OF
-//		E_Function.eSlider:
-//			fbEM[declareIterator].fbEM REF= SliderEM[iSliderEM];
-//			iSliderEM := iSliderEM + 1;
-//		E_Function.eSliderWithGripper:
-//			fbEM[declareIterator].fbEM REF= SliderWithGripperEM[iSliderWithGripperEM];
-//			iSliderWithGripperEM := iSliderWithGripperEM + 1;
-//		E_Function.eXYMover:
-//			fbEM[declareIterator].fbEM REF= XYMoverEM[iXYMoverEM];
-//			iXYMoverEM := iXYMoverEM + 1;
-//	END_CASE
+IF initialConfig THEN
+	initialConfig := FALSE;
+		// Specifing module type of each module in array
+	em[1].Config.Functionality := E_Function.eXYMover;
+	em[2].Config.Functionality := E_Function.eSliderWithGripper;
+	em[3].Config.Functionality := E_Function.eXYMover;
+	em[4].Config.Functionality := E_Function.eSlider;
+	em[5].Config.Functionality := E_Function.eSlider;
 	
-////	IF __ISVALIDREF(fbEM[declareIterator].fbEM) THEN
-////		fbEM[declareIterator].fbEM(em := em[initIterator], un := un);z
-////	ELSE
-////		ADSLOGSTR(
-////			msgCtrlMask := ADSLOG_MSGTYPE_HINT, 
-////			msgFmtStr   := 'Zly ref',
-////			strArg		:= ''
-////		);      
-////	END_IF
-//END_FOR
+	// FOR loop to specify config for each module
+	FOR declareIterator := 1 TO Counters.packmlEmLast DO
+		em[declareIterator].Config.Data.I REF= GVL.aInput[declareIterator];
+		em[declareIterator].Config.Data.Q REF= GVL.aOutput[declareIterator];
+	
+		CASE em[declareIterator].Config.Functionality OF
+			E_Function.eSlider:
+				fbEM[declareIterator].fbEM REF= SliderEM[iSliderEM];
+				iSliderEM := iSliderEM + 1;
+			E_Function.eSliderWithGripper:
+				fbEM[declareIterator].fbEM REF= SliderWithGripperEM[iSliderWithGripperEM];
+				iSliderWithGripperEM := iSliderWithGripperEM + 1;
+			E_Function.eXYMover:
+				fbEM[declareIterator].fbEM REF= XYMoverEM[iXYMoverEM];
+				iXYMoverEM := iXYMoverEM + 1;
+		END_CASE
+		
+		fbEM[declareIterator].fbEM(em := em[initIterator], un := un);
+	END_FOR
+END_IF
 
 
 
@@ -249,11 +223,6 @@ END_VAR]]></Declaration>
       <LineId Id="260" Count="0" />
       <LineId Id="262" Count="0" />
       <LineId Id="261" Count="0" />
-      <LineId Id="264" Count="0" />
-      <LineId Id="299" Count="0" />
-      <LineId Id="303" Count="23" />
-      <LineId Id="335" Count="0" />
-      <LineId Id="378" Count="0" />
       <LineId Id="300" Count="0" />
       <LineId Id="263" Count="0" />
       <LineId Id="379" Count="0" />
@@ -306,14 +275,8 @@ END_VAR]]></Declaration>
       <LineId Id="39" Count="0" />
     </LineIds>
     <LineIds Name="fbTaskPiotrUN.FB_init">
-      <LineId Id="84" Count="22" />
-      <LineId Id="166" Count="0" />
-      <LineId Id="168" Count="0" />
-      <LineId Id="167" Count="0" />
-      <LineId Id="170" Count="0" />
-      <LineId Id="172" Count="3" />
-      <LineId Id="171" Count="0" />
-      <LineId Id="169" Count="0" />
+      <LineId Id="84" Count="6" />
+      <LineId Id="185" Count="27" />
       <LineId Id="70" Count="0" />
       <LineId Id="121" Count="23" />
       <LineId Id="120" Count="0" />
