@@ -1,11 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="fbTaskPiotrUN" Id="{e4410345-6b08-4ef7-a94f-07fca8e2946d}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK fbTaskPiotrUN
-VAR_IN_OUT
-	un : ST_UN;
-	cell : ST_CELL;
-END_VAR
+    <Declaration><![CDATA[FUNCTION_BLOCK fbTaskPiotrUN EXTENDS fbUN
 
 VAR
 	// Arrays with 'em' universal structure and 'fbEM' containing ST_MACHINE structure which contains of references to fbEM function block
@@ -43,6 +39,34 @@ END_VAR
 
 
 //////////////////////////////////////////////////////////////////////
+// Specifing module type of each module in array
+em[1].Config.Functionality := E_Function.eXYMover;
+em[2].Config.Functionality := E_Function.eSliderWithGripper;
+em[3].Config.Functionality := E_Function.eXYMover;
+em[4].Config.Functionality := E_Function.eSlider;
+em[5].Config.Functionality := E_Function.eSlider;
+	
+// FOR loop to specify config for each module
+FOR declareIterator := 1 TO Counters.packmlEmLast DO
+	em[declareIterator].Config.Data.I REF= GVL.aInput[declareIterator];
+	em[declareIterator].Config.Data.Q REF= GVL.aOutput[declareIterator];
+
+	CASE em[declareIterator].Config.Functionality OF
+		E_Function.eSlider:
+			fbEM[declareIterator].fbEM REF= SliderEM[iSliderEM];
+			iSliderEM := iSliderEM + 1;
+		E_Function.eSliderWithGripper:
+			fbEM[declareIterator].fbEM REF= SliderWithGripperEM[iSliderWithGripperEM];
+			iSliderWithGripperEM := iSliderWithGripperEM + 1;
+		E_Function.eXYMover:
+			fbEM[declareIterator].fbEM REF= XYMoverEM[iXYMoverEM];
+			iXYMoverEM := iXYMoverEM + 1;
+	END_CASE
+
+	fbEM[declareIterator].fbEM(em := em[initIterator], un := un);
+END_FOR
+
+
 
 //////////////////////////////////////////////////////////////////////
 
@@ -141,81 +165,6 @@ END_CASE
 
 ]]></ST>
     </Implementation>
-    <Method Name="FB_init" Id="{561b991e-a2eb-4871-8f3e-ec3979cefce5}">
-      <Declaration><![CDATA[METHOD FB_init : BOOL
-VAR_INPUT
-	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
-	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
-END_VAR
-
-VAR
-	declareIterator : DINT;
-	initIterator : dint;
-END_VAR]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[// Specifing module type of each module in array
-em[1].Config.Functionality := E_Function.eXYMover;
-em[2].Config.Functionality := E_Function.eSliderWithGripper;
-em[3].Config.Functionality := E_Function.eXYMover;
-em[4].Config.Functionality := E_Function.eSlider;
-em[5].Config.Functionality := E_Function.eSlider;
-
-IF initialConfig THEN
-	initialConfig := FALSE;
-		// Specifing module type of each module in array
-	em[1].Config.Functionality := E_Function.eXYMover;
-	em[2].Config.Functionality := E_Function.eSliderWithGripper;
-	em[3].Config.Functionality := E_Function.eXYMover;
-	em[4].Config.Functionality := E_Function.eSlider;
-	em[5].Config.Functionality := E_Function.eSlider;
-	
-	// FOR loop to specify config for each module
-	FOR declareIterator := 1 TO Counters.packmlEmLast DO
-		em[declareIterator].Config.Data.I REF= GVL.aInput[declareIterator];
-		em[declareIterator].Config.Data.Q REF= GVL.aOutput[declareIterator];
-	
-		CASE em[declareIterator].Config.Functionality OF
-			E_Function.eSlider:
-				fbEM[declareIterator].fbEM REF= SliderEM[iSliderEM];
-				iSliderEM := iSliderEM + 1;
-			E_Function.eSliderWithGripper:
-				fbEM[declareIterator].fbEM REF= SliderWithGripperEM[iSliderWithGripperEM];
-				iSliderWithGripperEM := iSliderWithGripperEM + 1;
-			E_Function.eXYMover:
-				fbEM[declareIterator].fbEM REF= XYMoverEM[iXYMoverEM];
-				iXYMoverEM := iXYMoverEM + 1;
-		END_CASE
-		
-		fbEM[declareIterator].fbEM(em := em[initIterator], un := un);
-	END_FOR
-END_IF
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-]]></ST>
-      </Implementation>
-    </Method>
     <LineIds Name="fbTaskPiotrUN">
       <LineId Id="9" Count="0" />
       <LineId Id="31" Count="1" />
@@ -223,6 +172,7 @@ END_IF
       <LineId Id="260" Count="0" />
       <LineId Id="262" Count="0" />
       <LineId Id="261" Count="0" />
+      <LineId Id="431" Count="27" />
       <LineId Id="300" Count="0" />
       <LineId Id="263" Count="0" />
       <LineId Id="379" Count="0" />
@@ -273,13 +223,6 @@ END_IF
       <LineId Id="40" Count="0" />
       <LineId Id="43" Count="0" />
       <LineId Id="39" Count="0" />
-    </LineIds>
-    <LineIds Name="fbTaskPiotrUN.FB_init">
-      <LineId Id="84" Count="6" />
-      <LineId Id="185" Count="27" />
-      <LineId Id="70" Count="0" />
-      <LineId Id="121" Count="23" />
-      <LineId Id="120" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>

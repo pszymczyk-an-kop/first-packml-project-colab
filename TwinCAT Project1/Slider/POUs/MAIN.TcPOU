@@ -5,12 +5,14 @@
 VAR
 	un : ST_UN;
 	cell : ST_CELL;
-	fbTaskPiotrUN : fbTaskPiotrUN;
+	//fbTaskPiotrUN : fbTaskPiotrUN;
 	fbTaskPatrykUN : fbTaskPatrykUN;
+	fbSignalSimSlider : fbSignalSimSlider;
+	fbSignalSimSliderWithGripper : fbSignalSimSliderWithGripper;
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[fbTaskPiotrUN(un := un, cell := cell);
+      <ST><![CDATA[//fbTaskPiotrUN(un := un, cell := cell);
 fbTaskPatrykUN(un := un, cell := cell);]]></ST>
     </Implementation>
     <LineIds Name="MAIN">

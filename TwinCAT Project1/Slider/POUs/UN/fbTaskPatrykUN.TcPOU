@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="fbTaskPatrykUN" Id="{ec0fe630-22dc-4cb0-892d-8a119321a62f}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK fbTaskPiotrUN EXTENDS fbUN
+    <Declaration><![CDATA[FUNCTION_BLOCK fbTaskPatrykUN EXTENDS fbUN
 VAR	
 	// Arrays with 'em' universal structure and 'fbEM' containing ST_MACHINE structure which contains of references to fbEM function block
 	em : ARRAY[1..Counters.packmlEmLast] OF ST_EM;
@@ -20,11 +20,57 @@ VAR
 	iXYMoverEM : DINT := 1;
 	
 	i : DINT;
-	GlobalStep : INT;
+	GlobalStep : INT := 0;
+	declareIterator : DINT;
+	moduleWorkIterator : DINT;
+	initIterator: DINT := 1;
+	initialConfig: BOOL := TRUE;
+	
+	fbSignalSimSlider : fbSignalSimSlider;
+	
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[
+      <ST><![CDATA[//////////////////////////////////////////////////////////////////////
+IF initialConfig THEN
+	initialConfig := FALSE;
+	
+// Specifing module type of each module in array
+em[1].Config.Functionality := E_Function.eSliderWithGripper;
+em[2].Config.Functionality := E_Function.eSliderWithGripper;
+em[3].Config.Functionality := E_Function.eSliderWithGripper;
+em[4].Config.Functionality := E_Function.eSlider;
+em[5].Config.Functionality := E_Function.eSlider;
+em[6].Config.Functionality := E_Function.eSlider;
+	
+	// FOR loop to specify config for each module
+FOR declareIterator := 1 TO Counters.packmlEmLast DO
+	em[declareIterator].Config.Data.I REF= GVL.aInput[declareIterator];
+	em[declareIterator].Config.Data.Q REF= GVL.aOutput[declareIterator];
+
+	CASE em[declareIterator].Config.Functionality OF
+		E_Function.eSlider:
+			fbEM[declareIterator].fbEM REF= SliderEM[iSliderEM];
+			iSliderEM := iSliderEM + 1;
+		E_Function.eSliderWithGripper:
+			fbEM[declareIterator].fbEM REF= SliderWithGripperEM[iSliderWithGripperEM];
+			iSliderWithGripperEM := iSliderWithGripperEM + 1;
+		E_Function.eXYMover:
+			fbEM[declareIterator].fbEM REF= XYMoverEM[iXYMoverEM];
+			iXYMoverEM := iXYMoverEM + 1;
+	END_CASE
+	
+	fbEM[declareIterator].fbEM(em := em[declareIterator], un := un);
+END_FOR
+END_IF
+
+FOR moduleWorkIterator := 1 TO Counters.packmlEmLast DO
+	fbEM[moduleWorkIterator].fbEM(em := em[moduleWorkIterator], un := un);
+	
+END_FOR
+
+//////////////////////////////////////////////////////////////////////
+
 IF cell.Cmd = E_CMD_CELL.STOP THEN
 	GlobalStep := 100;
 END_IF
@@ -99,51 +145,17 @@ CASE GlobalStep OF
 END_CASE
 ]]></ST>
     </Implementation>
-    <Method Name="FB_init" Id="{72069cc3-6c29-46ff-8ab2-a60e11fe7764}">
-      <Declaration><![CDATA[METHOD FB_init : BOOL
-VAR_INPUT
-	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
-	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
-END_VAR
-VAR
-	declareIterator : DINT;
-	initIterator : dint;
-END_VAR]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[// Specifing module type of each module in array
-em[1].Config.Functionality := E_Function.eXYMover;
-em[2].Config.Functionality := E_Function.eSliderWithGripper;
-em[3].Config.Functionality := E_Function.eXYMover;
-em[4].Config.Functionality := E_Function.eSlider;
-em[5].Config.Functionality := E_Function.eSlider;
-
-// FOR loop to specify config for each module
-FOR declareIterator := 1 TO Counters.packmlEmLast DO
-	em[declareIterator].Config.Data.I REF= GVL.aInput[declareIterator];
-	em[declareIterator].Config.Data.Q REF= GVL.aOutput[declareIterator];
-
-	CASE em[declareIterator].Config.Functionality OF
-		E_Function.eSlider:
-			fbEM[declareIterator].fbEM REF= SliderEM[iSliderEM];
-			iSliderEM := iSliderEM + 1;
-		E_Function.eSliderWithGripper:
-			fbEM[declareIterator].fbEM REF= SliderWithGripperEM[iSliderWithGripperEM];
-			iSliderWithGripperEM := iSliderWithGripperEM + 1;
-		E_Function.eXYMover:
-			fbEM[declareIterator].fbEM REF= XYMoverEM[iXYMoverEM];
-			iXYMoverEM := iXYMoverEM + 1;
-	END_CASE
-END_FOR
-
-FOR initIterator := 1 TO Counters.packmlEmLast DO
-	fbEM[initIterator].fbEM(em := em[initIterator], un := un);
-END_FOR
-
-
-]]></ST>
-      </Implementation>
-    </Method>
     <LineIds Name="fbTaskPatrykUN">
+      <LineId Id="204" Count="0" />
+      <LineId Id="210" Count="1" />
+      <LineId Id="214" Count="0" />
+      <LineId Id="174" Count="26" />
+      <LineId Id="205" Count="0" />
+      <LineId Id="213" Count="0" />
+      <LineId Id="207" Count="1" />
+      <LineId Id="216" Count="0" />
+      <LineId Id="206" Count="0" />
+      <LineId Id="201" Count="1" />
       <LineId Id="94" Count="0" />
       <LineId Id="31" Count="9" />
       <LineId Id="51" Count="0" />
@@ -164,10 +176,6 @@ END_FOR
       <LineId Id="89" Count="1" />
       <LineId Id="93" Count="0" />
       <LineId Id="9" Count="0" />
-    </LineIds>
-    <LineIds Name="fbTaskPatrykUN.FB_init">
-      <LineId Id="8" Count="29" />
-      <LineId Id="7" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>
