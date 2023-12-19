@@ -132,9 +132,14 @@ CASE GlobalStep OF
 	
 	100: 	un.Cmd := E_Cmd.stop;
 			un.Status := E_Status.stopping;
-					
+			GlobalStep := 101;		
 	
-	101: // Status stopped
+	101: 	FOR i := 1 TO Counters.packmlEmLast DO
+			IF NOT (em[i].Status = E_Status.stopped) THEN
+				un.Status := E_Status.stopped;
+				GlobalStep := 102;
+			END_IF
+		END_FOR
 	
 	102: // Wait for Global Reset Un.cmd.reset, set IO's for homing
 		
@@ -172,7 +177,9 @@ END_CASE
       <LineId Id="65" Count="0" />
       <LineId Id="68" Count="0" />
       <LineId Id="245" Count="1" />
-      <LineId Id="97" Count="3" />
+      <LineId Id="97" Count="0" />
+      <LineId Id="247" Count="4" />
+      <LineId Id="98" Count="2" />
       <LineId Id="69" Count="0" />
       <LineId Id="77" Count="1" />
       <LineId Id="81" Count="1" />

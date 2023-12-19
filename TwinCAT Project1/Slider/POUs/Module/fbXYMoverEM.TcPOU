@@ -27,7 +27,7 @@ IF em.Config.Functionality = E_Function.eXYMover THEN
             IF em.Cmd = E_Cmd.ABORT THEN
                    XYMoverActualStep := 5;
            	END_IF
-END_IF
+
 
 CASE XYMoverActualStep OF
 	
@@ -106,7 +106,7 @@ CASE XYMoverActualStep OF
             XYMoverActualStep := 20;
                         
 END_CASE
-
+END_IF
 em.SequenceStep := XYMoverActualStep;
 ]]></ST>
     </Implementation>
