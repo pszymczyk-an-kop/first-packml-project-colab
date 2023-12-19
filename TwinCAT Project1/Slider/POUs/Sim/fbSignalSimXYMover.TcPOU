@@ -29,16 +29,16 @@ END_VAR
 			TimerSim[1](in := FALSE);
 		END_IF
 		
-	3: 	IF CmdSim THEN
-			TimerSim[2](in := TRUE);
-			TimerSim[2](PT := T#2S);
-		
-			IF TimerSim[2].Q THEN
-				em.Config.Data.I[1] := TRUE;
-           		em.Config.Data.I[3] := TRUE;
+	3: 	TimerSim[2](in := TRUE);
+		TimerSim[2](PT := T#2S);
+	
+		IF TimerSim[2].Q THEN
+			em.Config.Data.I[1] := TRUE;
+			em.Config.Data.I[3] := TRUE;
+			IF CmdSim THEN
 				em.Cmd := E_CMD.reset;
-				TimerSim[2](in := FALSE);
 			END_IF
+			TimerSim[2](in := FALSE);
 		END_IF
 		
 	5: 	TimerSim[3](in := TRUE);
@@ -127,8 +127,12 @@ END_IF
       <LineId Id="308" Count="10" />
       <LineId Id="321" Count="0" />
       <LineId Id="433" Count="0" />
-      <LineId Id="435" Count="0" />
-      <LineId Id="323" Count="21" />
+      <LineId Id="323" Count="4" />
+      <LineId Id="441" Count="0" />
+      <LineId Id="328" Count="0" />
+      <LineId Id="442" Count="0" />
+      <LineId Id="329" Count="1" />
+      <LineId Id="332" Count="12" />
       <LineId Id="437" Count="0" />
       <LineId Id="345" Count="6" />
       <LineId Id="439" Count="0" />
