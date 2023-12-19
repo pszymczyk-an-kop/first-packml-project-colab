@@ -106,9 +106,6 @@
     <Compile Include="POUs\UN\fbTaskPiotrUN.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="POUs\UN\fbUN.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DUTs" />

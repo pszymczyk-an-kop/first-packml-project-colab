@@ -20,6 +20,8 @@ END_VAR]]></Declaration>
 	Q[2] <- Wsuń siłownik (do pozycji 1)
 *)
 
+GetUnCmd();
+
 IF em.Config.Functionality = E_Function.eSlider THEN
 	IF State >= 15 AND em.Cmd = E_CMD.abort THEN
 		State := 5;
@@ -149,7 +151,9 @@ em.SequenceStep := State;
       <LineId Id="568" Count="0" />
       <LineId Id="571" Count="2" />
       <LineId Id="577" Count="2" />
-      <LineId Id="570" Count="0" />
+      <LineId Id="808" Count="0" />
+      <LineId Id="819" Count="0" />
+      <LineId Id="818" Count="0" />
       <LineId Id="569" Count="0" />
       <LineId Id="688" Count="111" />
       <LineId Id="232" Count="1" />

@@ -12,7 +12,9 @@ VAR RETAIN
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[IF em.Config.Functionality = E_Function.eXYMover THEN
+      <ST><![CDATA[GetUnCmd();
+
+IF em.Config.Functionality = E_Function.eXYMover THEN
             IF em.Cmd = E_Cmd.STOP THEN
                    XYMoverActualStep := 1;
             END_IF
@@ -103,6 +105,7 @@ em.SequenceStep := XYMoverActualStep;
 ]]></ST>
     </Implementation>
     <LineIds Name="fbXYMoverEM">
+      <LineId Id="269" Count="1" />
       <LineId Id="148" Count="9" />
       <LineId Id="248" Count="0" />
       <LineId Id="158" Count="0" />
