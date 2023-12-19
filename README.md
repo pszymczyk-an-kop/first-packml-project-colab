@@ -5,7 +5,7 @@ Poniżej najważniejsze dane wspólne dla każdego
 
 WAŻNE -> Po prezentacji podstawowych struktur i FB przedstawione zostały przykłady tworzenia modułów i unitów
 
-Update: 19.12.2023 - 13:42
+Update: 19.12.2023 - 14:10
 
 ## Struktury
 
