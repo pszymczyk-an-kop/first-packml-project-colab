@@ -5,7 +5,7 @@ Poniżej najważniejsze dane wspólne dla każdego
 
 WAŻNE -> Po prezentacji podstawowych struktur i FB przedstawione zostały przykłady tworzenia modułów i unitów
 
-Update: 19.12.2023 - 14:10
+Update: 19.12.2023 - 14:15
 
 ## Struktury
 
@@ -17,15 +17,15 @@ Folder: DUTs -> EM:
 // Base structure em
 TYPE ST_EM :
 STRUCT
-	Config : ST_CONFIG;
-	Cmd : E_CMD;
-	Status : E_Status;
-	SequenceStep: INT;
+	Config :ST_CONFIG;
+	Cmd :E_CMD;
+	Status :E_Status;
+	SequenceStep  :INT;
 END_STRUCT
 END_TYPE
 ```
 
-### ST_DATA
+### ST_CONFIG
 Struktura konfiguracji
 
 Folder: DUTs -> EM:
@@ -35,8 +35,8 @@ Folder: DUTs -> EM:
 {attribute 'strict'}
 TYPE ST_CONFIG :
 STRUCT
-	Functionality : E_Function;
-	Data : ST_DATA;
+	Functionality :E_Function;
+	Data :ST_DATA;
 END_STRUCT
 END_TYPE
 ```
@@ -49,13 +49,13 @@ Folder: DUTs -> EM:
 // Structure data contains inputs/outputs/axies
 TYPE ST_DATA :
 STRUCT
-	I : REFERENCE TO ARRAY[1..10] OF BOOL;
-	Q : REFERENCE TO ARRAY[1..10] OF BOOL;
-	Axis : ARRAY[1..10] OF AXIS_REF;
+	I :REFERENCE TO ARRAY[1..10] OF BOOL;
+	Q :REFERENCE TO ARRAY[1..10] OF BOOL;
+	Axis  :ARRAY[1..10] OF AXIS_REF;
 	pick_pos :INT ; 					// Q CMD from where girpper picks
-	drop_pos: INT ;						// Q CMD to where gripper moves for drop
-	act_pos: INT;						// I actual position from of gripper
-	give_pos: INT;						// writes value to servo_handle // simulator 
+	drop_pos :INT ;						// Q CMD to where gripper moves for drop
+	act_pos :INT;						// I actual position from of gripper
+	give_pos :INT;						// writes value to servo_handle // simulator 
 END_STRUCT
 END_TYPE
 ```
@@ -68,7 +68,7 @@ Folder: DUTs -> EM:
 // Utility structure to reference to fbEM
 TYPE ST_MACHINE :
 STRUCT
-	fbEM : REFERENCE TO fbEM;
+	fbEM :REFERENCE TO fbEM;
 END_STRUCT
 END_TYPE
 ```
@@ -81,8 +81,8 @@ Folder: DUTs -> UN:
 // For now empty structure to build master for em-s
 TYPE ST_UN :
 STRUCT
-	Cmd : E_CMD;
-	Status : E_Status;
+	Cmd :E_CMD;
+	Status :E_Status;
 END_STRUCT
 END_TYPE
 ```
@@ -94,7 +94,7 @@ Folder: DUTs -> Cell:
 ```ST
 TYPE ST_CELL :
 STRUCT
-	Cmd : E_CMD_CELL;
+	Cmd :E_CMD_CELL;
 END_STRUCT
 END_TYPE
 ```
@@ -111,7 +111,7 @@ Folder: DUTs -> EM:
 {attribute 'strict'}
 TYPE E_Status :
 (
-	undefined:=0,
+	undefined :=0,
 	clearing,
 	stopped,
 	starting,
@@ -143,7 +143,7 @@ Folder: DUTs -> EM:
 {attribute 'strict'}
 TYPE E_CMD :
 (
-	reset:=1,
+	reset :=1,
 	start,
 	stop,
 	hold,
@@ -219,12 +219,12 @@ Folder: GVLs:
 ```ST
 {attribute 'qualified_only'}
 VAR_GLOBAL CONSTANT
-	SliderEMNo : INT := 2;
-	SliderWithGripperEMNo : INT := 1;
-	XYMoverEMNo : INT := 2;
+	SliderEMNo :INT := 2;
+	SliderWithGripperEMNo :INT := 1;
+	XYMoverEMNo :INT := 2;
 	
-	packmlUnLast : INT := 1;
-	packmlEmLast : INT := SliderEMNo + SliderWithGripperEMNo + XYMoverEMNo;
+	packmlUnLast :INT := 1;
+	packmlEmLast :INT := SliderEMNo + SliderWithGripperEMNo + XYMoverEMNo;
 END_VAR
 ```
 
@@ -236,12 +236,12 @@ Folder: GVLs:
 // Global list with inputs/outputs to control and force variables
 {attribute 'qualified_only'}
 VAR_GLOBAL
-	axis : AXIS_REF;
-	aInput : ARRAY[1..10] OF ARRAY[1..10] OF BOOL;
-	aOutput : ARRAY[1..10] OF ARRAY[1..10] OF BOOL;
+	axis :AXIS_REF;
+	aInput :ARRAY[1..10] OF ARRAY[1..10] OF BOOL;
+	aOutput :ARRAY[1..10] OF ARRAY[1..10] OF BOOL;
 	
-	Input : ARRAY[1..10] OF BOOL;
-	Output : ARRAY[1..10] OF BOOL;
+	Input :ARRAY[1..10] OF BOOL;
+	Output :ARRAY[1..10] OF BOOL;
 END_VAR
 ```
 
@@ -254,17 +254,17 @@ Folder: POUs -> Module:
 ```ST
 FUNCTION_BLOCK fbEM
 VAR_IN_OUT
-	em : ST_EM;
-	un : ST_UN;
+	em :ST_EM;
+	un :ST_UN;
 END_VAR
 
 VAR_INPUT
-	EnableSim : BOOL;
-	CmdSim : BOOL := TRUE;
+	EnableSim :BOOL;
+	CmdSim :BOOL := TRUE;
 END_VAR
 
 VAR
-	emCmdOld: E_CMD;
+	emCmdOld :E_CMD;
 END_VAR
 ```
 
@@ -285,12 +285,12 @@ Folder: POUs -> UN:
 ```ST
 FUNCTION_BLOCK fbUN
 VAR_IN_OUT
-	un : ST_UN;
-	cell : ST_CELL;
+	un :ST_UN;
+	cell :ST_CELL;
 END_VAR
 
 VAR_INPUT
-	EnableSim : BOOL;
+	EnableSim :BOOL;
 END_VAR
 ```
 
@@ -308,11 +308,11 @@ END_VAR
 
 VAR
 	// Zmienne lokalne
-    fbSignalSim : fbSignalSim;
+    fbSignalSim :fbSignalSim;
 END_VAR
 ```
 
-```ST
+```PASCAL
 (* // Komentarz co do wykorzystanych we/wy
 	Input/Output mapping
 	I[1] <- Siłownik pozycja 1 (wsunięty) 
@@ -342,26 +342,26 @@ Folder: POUs -> UN
 FUNCTION_BLOCK fbTaskExampleUN EXTENDS fbUN
 VAR
 	// Arrays with 'em' universal structure and 'fbEM' containing ST_MACHINE structure which contains of references to fbEM function block
-	em : ARRAY[1..Counters.packmlEmLast] OF ST_EM;
-	fbEM : ARRAY[1..Counters.packmlEmLast] OF ST_MACHINE;
+	em :ARRAY[1..Counters.packmlEmLast] OF ST_EM;
+	fbEM :ARRAY[1..Counters.packmlEmLast] OF ST_MACHINE;
 	
 	// Array containing all instances fo fbSliderEM with its own iterator
-	SliderEM : ARRAY[1..Counters.SliderEMNo] OF fbSliderEM;
-	iSliderEM : DINT := 1;
+	SliderEM :ARRAY[1..Counters.SliderEMNo] OF fbSliderEM;
+	iSliderEM :DINT := 1;
 	
 	// Array containing all instances fo fbSliderWithGripperEM with its own iterator
-	SliderWithGripperEM : ARRAY[1..Counters.SliderWithGripperEMNo] OF fbSliderWithGripperEM;
-	iSliderWithGripperEM : DINT := 1;
+	SliderWithGripperEM :ARRAY[1..Counters.SliderWithGripperEMNo] OF fbSliderWithGripperEM;
+	iSliderWithGripperEM :DINT := 1;
 	
 	// Array containing all instances fo fbXYMoverEM with its own iterator
-	XYMoverEM : ARRAY[1..Counters.XYMoverEMNo] OF fbXYMoverEM;
-	iXYMoverEM : DINT := 1;
+	XYMoverEM :ARRAY[1..Counters.XYMoverEMNo] OF fbXYMoverEM;
+	iXYMoverEM :DINT := 1;
 	
 	i : DINT;
-	CaseState : INT := 0;
-	declareIterator : DINT;
-	moduleWorkIterator : DINT;
-	initialConfig: BOOL := TRUE;
+	CaseState :INT := 0;
+	declareIterator :DINT;
+	moduleWorkIterator :DINT;
+	initialConfig :BOOL := TRUE;
 END_VAR
 ```
 
