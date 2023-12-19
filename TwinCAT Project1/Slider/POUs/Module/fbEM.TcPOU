@@ -11,14 +11,10 @@ VAR
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[// Empty for now universal basic em class, every module needs to extends this to ensure compatibility
-IF emCmdOld <> un.Cmd THEN
-	emCmdOld := un.Cmd;
-	em.Cmd := un.Cmd;
-END_IF]]></ST>
+]]></ST>
     </Implementation>
     <LineIds Name="fbEM">
       <LineId Id="16" Count="0" />
-      <LineId Id="22" Count="2" />
       <LineId Id="21" Count="0" />
     </LineIds>
   </POU>
