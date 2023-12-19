@@ -34,10 +34,10 @@ END_VAR
 			em.Config.Data.I[1] := FALSE;
 			em.Config.Data.I[2] := FALSE;
 		END_IF
+		
+		timers[1].PT := timers[2].PT := timers[3].PT := timers[10].PT := duration;
+		timers[4].PT := timers[5].PT := timers[6].PT := timers[7].PT := timers[8].PT := timers[9].PT := duration / 3;
 	END_IF
-	
-	timers[1].PT := timers[2].PT := timers[3].PT := timers[10].PT := duration;
-	timers[4].PT := timers[5].PT := timers[6].PT := timers[7].PT := timers[8].PT := timers[9].PT := duration / 3;
 	
 	CASE em.SequenceStep OF
 		10:	IF CmdSim THEN
@@ -137,10 +137,8 @@ END_IF]]></ST>
       <LineId Id="28" Count="1" />
       <LineId Id="42" Count="0" />
       <LineId Id="26" Count="0" />
-      <LineId Id="15" Count="0" />
-      <LineId Id="45" Count="1" />
-      <LineId Id="160" Count="0" />
-      <LineId Id="47" Count="0" />
+      <LineId Id="239" Count="2" />
+      <LineId Id="46" Count="1" />
       <LineId Id="9" Count="0" />
       <LineId Id="141" Count="0" />
       <LineId Id="227" Count="0" />

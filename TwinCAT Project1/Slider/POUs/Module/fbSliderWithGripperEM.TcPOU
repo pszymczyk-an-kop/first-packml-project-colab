@@ -8,6 +8,7 @@ VAR
 	initial: BOOL := TRUE;
 	servo_GO: BOOL;
 	
+	fbSignalSim: fbSignalSimSliderWithGripper;
 END_VAR
 VAR_INPUT
 	
@@ -30,6 +31,11 @@ DATA.give_pos -> moves desired position into SIM or SERVO_HANDLER)
 *)
 
 GetUnCmd();
+fbSignalSim(
+	em := em,
+	EnableSim := EnableSim,
+	CmdSim := CmdSim
+);
 
 IF initial THEN // AFTER START OF PLC ENTER Undefined state
 	state:=0;
@@ -176,6 +182,9 @@ em.Config.Data.Q[3]:=servo_GO;//Q[3] alias
       <LineId Id="537" Count="0" />
       <LineId Id="591" Count="0" />
       <LineId Id="590" Count="0" />
+      <LineId Id="606" Count="1" />
+      <LineId Id="610" Count="1" />
+      <LineId Id="605" Count="0" />
       <LineId Id="574" Count="0" />
       <LineId Id="40" Count="0" />
       <LineId Id="45" Count="0" />

@@ -35,16 +35,18 @@ END_VAR
 // 5 <- Slider
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// All init configuration done here
 IF initialConfig THEN
 	initialConfig := FALSE;
 	// Specifing module type of each module in array
-//	em[1].Config.Functionality := E_Function.eXYMover;
-//	em[2].Config.Functionality := E_Function.eSliderWithGripper;
-//	em[3].Config.Functionality := E_Function.eXYMover;
-//	em[4].Config.Functionality := E_Function.eSlider;
-//	em[5].Config.Functionality := E_Function.eSlider;
+	em[1].Config.Functionality := E_Function.eXYMover;
+	em[2].Config.Functionality := E_Function.eSliderWithGripper;
+	em[3].Config.Functionality := E_Function.eXYMover;
+	em[4].Config.Functionality := E_Function.eSlider;
+	em[5].Config.Functionality := E_Function.eSlider;
 	
-	em[1].Config.Functionality := E_Function.eSlider;
+	// Test em
+//	em[1].Config.Functionality := E_Function.eSlider;
 
 	// FOR loop to specify config for each module
 	FOR declareIterator := 1 TO Counters.packmlEmLast DO
@@ -74,7 +76,6 @@ END_FOR
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-// All init configuration done in FB_init method
 IF cell.Cmd = E_CMD_CELL.STOP AND NOT (State = 100 OR State = 110) THEN
 	State := 100;
 END_IF
@@ -87,7 +88,8 @@ CASE State OF
 	0:	un.Status := E_Status.undefined;
 		State := 5;
 	
-	5:	FOR i := 1 TO Counters.packmlEmLast DO
+	5:	// Waiting for every EM to become idle state
+		FOR i := 1 TO Counters.packmlEmLast DO
 			IF NOT (em[i].Status = E_Status.idle) THEN
 				un.Cmd := E_CMD.reset;
 				RETURN;
@@ -102,13 +104,20 @@ CASE State OF
 			State := 20;
 		END_IF
 	
-	20:	FOR i := 1 TO Counters.packmlEmLast DO
+	20:	// Waiting for every EM to be in execute or starting state
+		FOR i := 1 TO Counters.packmlEmLast DO
 			IF NOT (em[i].Status = E_Status.execute OR em[i].Status = E_Status.starting) THEN
 				un.Cmd := E_CMD.reset;
 				un.Status := E_Status.resetting;
 				State := 0;
+				RETURN;
 			END_IF
 		END_FOR
+		State := 30;
+		
+	30:	// Start of my specific task
+		// input -> XY1 -> SWG -> XY2 -> S1 -> SWG -> S2 -> output
+		
 
 	100:un.Cmd := E_CMD.stop;
 		un.Status := E_Status.stopping;
@@ -167,11 +176,14 @@ END_CASE
       <LineId Id="35" Count="3" />
       <LineId Id="497" Count="0" />
       <LineId Id="436" Count="0" />
+      <LineId Id="537" Count="0" />
       <LineId Id="463" Count="0" />
       <LineId Id="493" Count="0" />
       <LineId Id="501" Count="0" />
       <LineId Id="439" Count="4" />
-      <LineId Id="514" Count="1" />
+      <LineId Id="514" Count="0" />
+      <LineId Id="541" Count="0" />
+      <LineId Id="515" Count="0" />
       <LineId Id="444" Count="15" />
       <LineId Id="462" Count="0" />
       <LineId Id="437" Count="0" />
@@ -183,7 +195,6 @@ END_CASE
       <LineId Id="531" Count="0" />
       <LineId Id="259" Count="0" />
       <LineId Id="431" Count="0" />
-      <LineId Id="104" Count="0" />
       <LineId Id="231" Count="0" />
       <LineId Id="169" Count="0" />
       <LineId Id="171" Count="1" />
@@ -196,6 +207,7 @@ END_CASE
       <LineId Id="186" Count="0" />
       <LineId Id="126" Count="0" />
       <LineId Id="185" Count="0" />
+      <LineId Id="538" Count="0" />
       <LineId Id="113" Count="0" />
       <LineId Id="115" Count="0" />
       <LineId Id="142" Count="0" />
@@ -207,9 +219,16 @@ END_CASE
       <LineId Id="130" Count="1" />
       <LineId Id="129" Count="0" />
       <LineId Id="132" Count="0" />
-      <LineId Id="134" Count="3" />
-      <LineId Id="139" Count="1" />
+      <LineId Id="134" Count="0" />
+      <LineId Id="539" Count="0" />
+      <LineId Id="135" Count="2" />
+      <LineId Id="139" Count="0" />
+      <LineId Id="532" Count="0" />
+      <LineId Id="140" Count="0" />
       <LineId Id="168" Count="0" />
+      <LineId Id="533" Count="2" />
+      <LineId Id="540" Count="0" />
+      <LineId Id="536" Count="0" />
       <LineId Id="173" Count="4" />
       <LineId Id="179" Count="0" />
       <LineId Id="187" Count="1" />

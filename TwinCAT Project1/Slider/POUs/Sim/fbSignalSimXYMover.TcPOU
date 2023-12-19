@@ -6,8 +6,8 @@ VAR_IN_OUT
 	em : ST_EM;
 END_VAR
 VAR_INPUT
-END_VAR
-VAR_OUTPUT
+	EnableSim : BOOL;
+	CmdSim : BOOL := true;
 END_VAR
 VAR
 	Timer1 : TON;

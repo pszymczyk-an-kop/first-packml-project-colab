@@ -10,7 +10,7 @@ END_VAR
 VAR
 	bSliderSide : BOOL;
 	XYMoverActualStep: INT;
-	fbSignalSimSlider : fbSignalSimSlider;
+	fbSignalSim : fbSignalSimSlider;
 END_VAR
 
 VAR RETAIN
@@ -27,7 +27,7 @@ END_VAR]]></Declaration>
 *)
 
 GetUnCmd();
-fbSignalSimSlider(
+fbSignalSim(
 	em := em,
 	EnableSim := EnableSim,
 	UnknownStartPosition := UnknownStartPosition,
