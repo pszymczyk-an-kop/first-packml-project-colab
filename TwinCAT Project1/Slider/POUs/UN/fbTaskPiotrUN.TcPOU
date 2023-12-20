@@ -18,7 +18,12 @@ VAR
 	// Array containing all instances fo fbXYMoverEM with its own iterator
 	XYMoverEM : ARRAY[1..Counters.XYMoverEMNo] OF fbXYMoverEM;
 	iXYMoverEM : DINT := 1;
-	
+	// em[1].Config.Functionality := E_Function.eSliderWithGripper;
+//em[2].Config.Functionality := E_Function.eSliderWithGripper;
+//em[3].Config.Functionality := E_Function.eSliderWithGripper;
+//em[4].Config.Functionality := E_Function.eSlider;
+//em[5].Config.Functionality := E_Function.eSlider;
+//em[6].Config.Functionality := E_Function.eSlider;
 	i : DINT;
 	State : INT := 0;
 	declareIterator : DINT;

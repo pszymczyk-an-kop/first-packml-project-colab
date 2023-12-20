@@ -10,6 +10,7 @@ VAR
 END_VAR
 VAR RETAIN
 	XYMoverActualStep : INT;
+	RecoveryStep: INT;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -27,7 +28,9 @@ IF em.Config.Functionality = E_Function.eXYMover THEN
             IF XYMoverActualStep <> 6 AND XYMoverActualStep <> 7 AND XYMoverActualStep <> 2 AND XYMoverActualStep <> 3 AND XYMoverActualStep <> 4 AND em.Cmd = E_Cmd.ABORT THEN
                    XYMoverActualStep := 5;
            	END_IF
-
+			IF XYMoverActualStep <> 1 AND XYMoverActualStep <> 2 THEN
+				XYMoverActualStep := RecoveryStep;
+			END_IF
 
 CASE XYMoverActualStep OF
 	
@@ -126,7 +129,9 @@ em.SequenceStep := XYMoverActualStep;
       <LineId Id="285" Count="1" />
       <LineId Id="280" Count="0" />
       <LineId Id="270" Count="0" />
-      <LineId Id="148" Count="9" />
+      <LineId Id="148" Count="7" />
+      <LineId Id="325" Count="1" />
+      <LineId Id="156" Count="1" />
       <LineId Id="248" Count="0" />
       <LineId Id="158" Count="0" />
       <LineId Id="160" Count="7" />

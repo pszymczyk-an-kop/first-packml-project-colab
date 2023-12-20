@@ -5,25 +5,20 @@
 VAR
 	un : ST_UN;
 	cell : ST_CELL;
-	fbTaskPiotrUN : fbTaskPiotrUN;
-	
-	fb : fbSliderEM;
+	fbTaskPatrykUN : fbTaskPatrykUN;
 	em : ST_EM;
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[cell.Cmd := E_CMD_CELL.START;
-//fbTaskPiotrUN(un := un, cell := cell, EnableSim := TRUE);
-
-em.Config.Functionality := E_Function.eSlider;
+fbTaskPatrykUN(un := un, cell := cell, EnableSim := TRUE);
 em.Config.Data.I REF= GVL.aInput[1];
 em.Config.Data.Q REF= GVL.aOutput[1];
-fb(em := em, un := un, EnableSim := TRUE, CmdSim := FALSE);]]></ST>
+]]></ST>
     </Implementation>
     <LineIds Name="MAIN">
       <LineId Id="23" Count="0" />
       <LineId Id="5" Count="0" />
-      <LineId Id="31" Count="1" />
       <LineId Id="37" Count="1" />
       <LineId Id="30" Count="0" />
     </LineIds>
