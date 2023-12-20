@@ -62,7 +62,7 @@ IF em.Config.Functionality = E_Function.eSlider THEN
 			em.Config.Data.Q[2] := FALSE;
 			State := 7;
 			
-		10:	em.Status := E_Status.aborted;
+		7:	em.Status := E_Status.aborted;
 			State := 10;
 			
 		10:	IF em.Cmd = E_CMD.clear THEN
