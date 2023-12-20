@@ -86,8 +86,6 @@ CASE State OF
 		em[2].Config.Data.pick_pos := 3;
 		em[2].Config.Data.drop_pos := 2;
 		State := 5;
-		
-	2:	
 	
 	5:	// Waiting for every EM to become idle state
 		FOR i := 1 TO Counters.packmlEmLast DO
@@ -265,8 +263,7 @@ END_CASE
       <LineId Id="46" Count="0" />
       <LineId Id="49" Count="0" />
       <LineId Id="608" Count="1" />
-      <LineId Id="186" Count="0" />
-      <LineId Id="662" Count="1" />
+      <LineId Id="663" Count="0" />
       <LineId Id="126" Count="0" />
       <LineId Id="185" Count="0" />
       <LineId Id="538" Count="0" />

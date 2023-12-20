@@ -87,13 +87,13 @@ END_VAR
 			
 		60:	IF NOT OtherSide AND em.Config.Data.I[1] THEN
 				timers[2](in := NOT timers[2].Q);
+				em.Config.Data.I[1] := FALSE;
+				em.Config.Data.I[2] := FALSE;
 			ELSE
 				timers[3](in := NOT timers[3].Q);
+				em.Config.Data.I[1] := FALSE;
+				em.Config.Data.I[2] := FALSE;
 			END_IF
-			
-			em.Config.Data.I[1] := FALSE;
-			em.Config.Data.I[2] := FALSE;
-			em.Config.Data.I[3] := FALSE;
 			
 			IF timers[2].Q THEN
 				timers[2](in := FALSE);
@@ -103,6 +103,15 @@ END_VAR
 			IF timers[3].Q THEN
 				timers[3](in := FALSE);
 				em.Config.Data.I[1] := TRUE;
+			END_IF
+			
+		70:	IF CmdSim THEN
+				timers[1](in := TRUE);
+				
+				IF timers[1].Q THEN
+					timers[1](in := FALSE);
+					em.Config.Data.I[3] := FALSE;
+				END_IF
 			END_IF
 			
 		200:IF CmdSim THEN
@@ -172,14 +181,22 @@ END_IF]]></ST>
       <LineId Id="56" Count="1" />
       <LineId Id="260" Count="0" />
       <LineId Id="58" Count="0" />
-      <LineId Id="118" Count="3" />
-      <LineId Id="152" Count="0" />
-      <LineId Id="205" Count="4" />
+      <LineId Id="118" Count="1" />
+      <LineId Id="291" Count="1" />
+      <LineId Id="120" Count="1" />
+      <LineId Id="293" Count="1" />
+      <LineId Id="206" Count="0" />
+      <LineId Id="209" Count="0" />
       <LineId Id="65" Count="2" />
       <LineId Id="64" Count="0" />
       <LineId Id="71" Count="0" />
       <LineId Id="73" Count="2" />
       <LineId Id="185" Count="0" />
+      <LineId Id="278" Count="0" />
+      <LineId Id="280" Count="0" />
+      <LineId Id="282" Count="0" />
+      <LineId Id="284" Count="4" />
+      <LineId Id="279" Count="0" />
       <LineId Id="127" Count="0" />
       <LineId Id="167" Count="0" />
       <LineId Id="235" Count="0" />
