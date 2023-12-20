@@ -10,7 +10,7 @@ VAR_INPUT
 	CmdSim : BOOL := true;
 END_VAR
 VAR
-	TimerSim : Array[1..10] OF TON;
+	TimerSim : Array[1..11] OF TON;
 	Elapsed : TIME;
 END_VAR
 ]]></Declaration>
@@ -39,6 +39,15 @@ END_VAR
 				em.Cmd := E_CMD.reset;
 			END_IF
 			TimerSim[2](in := FALSE);
+		END_IF
+		
+	4:	TimerSim[11](PT := T#1S);
+		TimerSim[11](in := TRUE);
+	
+		IF TimerSim[11].Q THEN
+			em.Config.Data.I[1] := TRUE;
+			em.Config.Data.I[3] := TRUE;
+			TimerSim[11](in := FALSE);
 		END_IF
 		
 	5: 	TimerSim[3](PT := T#2S);
@@ -140,6 +149,10 @@ END_IF
       <LineId Id="328" Count="0" />
       <LineId Id="442" Count="0" />
       <LineId Id="329" Count="1" />
+      <LineId Id="465" Count="0" />
+      <LineId Id="467" Count="5" />
+      <LineId Id="476" Count="0" />
+      <LineId Id="466" Count="0" />
       <LineId Id="332" Count="1" />
       <LineId Id="461" Count="1" />
       <LineId Id="336" Count="8" />
