@@ -108,7 +108,7 @@ CASE XYMoverActualStep OF
             XYMoverActualStep := 20;
                         
 END_CASE
-
+END_IF
 em.SequenceStep := XYMoverActualStep;
 ]]></ST>
     </Implementation>
