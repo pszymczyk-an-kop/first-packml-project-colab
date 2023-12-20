@@ -108,7 +108,7 @@ CASE GlobalStep OF
 		END_FOR
 		GlobalStep := 30;
 	
-	30: //
+	30: em[1].SequenceStep
 	
 	31: //
 	
