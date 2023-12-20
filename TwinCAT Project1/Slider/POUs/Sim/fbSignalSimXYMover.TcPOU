@@ -18,8 +18,8 @@ END_VAR
       <ST><![CDATA[IF EnableSim THEN
 	CASE em.SequenceStep OF
 		
-	1: 	TimerSim[1](in := TRUE);
-		TimerSim[1](PT := T#2S);
+	1: 	TimerSim[1](PT := T#2S);
+		TimerSim[1](in := TRUE);
 		
 		IF TimerSim[1].Q THEN
 			em.Config.Data.I[1] := FALSE;
@@ -29,8 +29,8 @@ END_VAR
 			TimerSim[1](in := FALSE);
 		END_IF
 		
-	3: 	TimerSim[2](in := TRUE);
-		TimerSim[2](PT := T#2S);
+	3: 	TimerSim[2](PT := T#2S);
+		TimerSim[2](in := TRUE);
 	
 		IF TimerSim[2].Q THEN
 			em.Config.Data.I[1] := TRUE;
@@ -41,8 +41,8 @@ END_VAR
 			TimerSim[2](in := FALSE);
 		END_IF
 		
-	5: 	TimerSim[3](in := TRUE);
-		TimerSim[3](PT := T#2S);
+	5: 	TimerSim[3](PT := T#2S);
+		TimerSim[3](in := TRUE);
 		
 		IF TimerSim[3].Q THEN
 			em.Config.Data.I[1] := FALSE;
@@ -53,8 +53,8 @@ END_VAR
 		END_IF
 	
 	6:	IF CmdSim THEN
+			TimerSim[4](PT := T#1S);
 			TimerSim[4](in := TRUE);
-			TimerSim[4](PT := T#2S);
 		
 			IF TimerSim[4].Q THEN
 				em.Cmd := E_CMD.clear;
@@ -63,17 +63,16 @@ END_VAR
 		END_IF
 		
 	10: IF CmdSim THEN
+			TimerSim[5](PT := T#1S);
 			TimerSim[5](in := TRUE);
-			TimerSim[5](PT := T#2S);
-		
 			IF TimerSim[5].Q THEN
 				em.Cmd := E_CMD.start;
 				TimerSim[5](in := FALSE);
 			END_IF
 		END_IF
 	
-	20:	TimerSim[6](in := TRUE);
-		TimerSim[6](PT := T#2S);
+	20:	TimerSim[6](PT := T#1S);
+		TimerSim[6](in := TRUE);
 		
 		IF TimerSim[6].Q THEN
 			IF CmdSim THEN
@@ -82,8 +81,8 @@ END_VAR
 			TimerSim[6](in := FALSE);
 		END_IF
 		
-	30: TimerSim[7](in := TRUE);
-		TimerSim[7](PT := T#2S);
+	30: TimerSim[7](PT := T#2S);
+		TimerSim[7](in := TRUE);
 		
 		IF TimerSim[7].Q THEN
 			em.Config.Data.I[1] := FALSE;
@@ -91,8 +90,8 @@ END_VAR
 			TimerSim[7](in := FALSE);
 		END_IF
 	
-	40: TimerSim[8](in := TRUE);
-		TimerSim[8](PT := T#2S);
+	40: TimerSim[8](PT := T#2S);
+		TimerSim[8](in := TRUE);
 		
 		IF TimerSim[8].Q THEN
 			em.Config.Data.I[3] := FALSE;
@@ -101,8 +100,8 @@ END_VAR
 		END_IF
 
 		
-	60:	TimerSim[9](in := TRUE);
-		TimerSim[9](PT := T#2S);
+	60:	TimerSim[9](PT := T#2S);
+		TimerSim[9](in := TRUE);
 		
 		IF TimerSim[9].Q THEN
 			IF CmdSim THEN
@@ -111,15 +110,15 @@ END_VAR
 			TimerSim[9](in := FALSE);
 		END_IF
 	
-	70: TimerSim[10](in := TRUE);
-		TimerSim[10](PT := T#2S);
+	70: TimerSim[10](PT := T#2S);
+		TimerSim[10](in := TRUE);;
 		
-		IF TimerSim[9].Q THEN
+		IF TimerSim[10].Q THEN
 			em.Config.Data.I[1] := TRUE;
 			em.Config.Data.I[3] := TRUE;
 			em.Config.Data.I[2] := FALSE;
 			em.Config.Data.I[4] := FALSE;
-			TimerSim[9](in := FALSE);
+			TimerSim[10](in := FALSE);
 		END_IF
 	
 	
@@ -130,29 +129,46 @@ END_IF
     <LineIds Name="fbSignalSimXYMover">
       <LineId Id="420" Count="0" />
       <LineId Id="305" Count="0" />
-      <LineId Id="308" Count="10" />
+      <LineId Id="308" Count="1" />
+      <LineId Id="464" Count="0" />
+      <LineId Id="311" Count="7" />
       <LineId Id="321" Count="0" />
       <LineId Id="433" Count="0" />
-      <LineId Id="323" Count="4" />
+      <LineId Id="463" Count="0" />
+      <LineId Id="324" Count="3" />
       <LineId Id="441" Count="0" />
       <LineId Id="328" Count="0" />
       <LineId Id="442" Count="0" />
       <LineId Id="329" Count="1" />
-      <LineId Id="332" Count="12" />
+      <LineId Id="332" Count="1" />
+      <LineId Id="461" Count="1" />
+      <LineId Id="336" Count="8" />
+      <LineId Id="459" Count="0" />
       <LineId Id="437" Count="0" />
-      <LineId Id="345" Count="6" />
+      <LineId Id="346" Count="5" />
       <LineId Id="439" Count="0" />
-      <LineId Id="352" Count="0" />
+      <LineId Id="456" Count="0" />
+      <LineId Id="458" Count="0" />
       <LineId Id="440" Count="0" />
-      <LineId Id="353" Count="11" />
+      <LineId Id="355" Count="6" />
+      <LineId Id="454" Count="0" />
+      <LineId Id="363" Count="1" />
       <LineId Id="443" Count="0" />
       <LineId Id="365" Count="0" />
       <LineId Id="444" Count="0" />
-      <LineId Id="366" Count="25" />
+      <LineId Id="366" Count="3" />
+      <LineId Id="453" Count="0" />
+      <LineId Id="371" Count="7" />
+      <LineId Id="452" Count="0" />
+      <LineId Id="380" Count="8" />
+      <LineId Id="450" Count="0" />
+      <LineId Id="390" Count="1" />
       <LineId Id="445" Count="0" />
       <LineId Id="392" Count="0" />
       <LineId Id="446" Count="0" />
-      <LineId Id="393" Count="8" />
+      <LineId Id="393" Count="3" />
+      <LineId Id="449" Count="0" />
+      <LineId Id="398" Count="3" />
       <LineId Id="447" Count="1" />
       <LineId Id="402" Count="5" />
       <LineId Id="9" Count="0" />
