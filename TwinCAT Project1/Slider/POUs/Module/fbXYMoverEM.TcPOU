@@ -24,7 +24,7 @@ IF em.Config.Functionality = E_Function.eXYMover THEN
             IF XYMoverActualStep <> 2 AND XYMoverActualStep <> 3 AND XYMoverActualStep <> 4 AND em.Cmd = E_Cmd.STOP THEN
                    XYMoverActualStep := 1;
             END_IF
-            IF XYMoverActualStep <> 6 AND XYMoverActualStep <> 2 AND XYMoverActualStep <> 3 AND XYMoverActualStep <> 4 AND em.Cmd = E_Cmd.ABORT THEN
+            IF XYMoverActualStep <> 6 AND XYMoverActualStep <> 7 AND XYMoverActualStep <> 2 AND XYMoverActualStep <> 3 AND XYMoverActualStep <> 4 AND em.Cmd = E_Cmd.ABORT THEN
                    XYMoverActualStep := 5;
            	END_IF
 
@@ -65,9 +65,12 @@ CASE XYMoverActualStep OF
             em.Config.Data.Q[2] := FALSE;
             em.Config.Data.Q[3] := FALSE;
             em.Config.Data.Q[4] := FALSE;
-            XYMoverActualStep := 5;
+            XYMoverActualStep := 6;
+			
+	6:		em.Status := E_Status.aborted; 
+            XYMoverActualStep := 7;
                         
-	6:      IF em.Cmd = E_CMD.clear THEN
+	7:      IF em.Cmd = E_CMD.clear THEN
                 em.Status := E_Status.clearing;
                 XYMoverActualStep := 2;
             END_IF
@@ -132,7 +135,11 @@ em.SequenceStep := XYMoverActualStep;
       <LineId Id="180" Count="0" />
       <LineId Id="182" Count="9" />
       <LineId Id="193" Count="0" />
-      <LineId Id="195" Count="6" />
+      <LineId Id="195" Count="4" />
+      <LineId Id="323" Count="0" />
+      <LineId Id="320" Count="0" />
+      <LineId Id="322" Count="0" />
+      <LineId Id="200" Count="1" />
       <LineId Id="203" Count="4" />
       <LineId Id="209" Count="4" />
       <LineId Id="302" Count="0" />
