@@ -101,7 +101,7 @@ IF em.Config.Functionality = E_Function.eSlider THEN
 			
 			// Execute direction
 		50:	em.Status := E_Status.execute;
-			IF bSliderSide THEN
+			IF bSliderSide AND NOT em.Config.Data.I[3] THEN
 				em.Config.Data.Q[2] := TRUE;
 				State := 60;
 			ELSIF em.Config.Data.I[3] THEN
