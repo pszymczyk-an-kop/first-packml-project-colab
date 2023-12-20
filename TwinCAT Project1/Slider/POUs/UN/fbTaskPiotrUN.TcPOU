@@ -74,11 +74,11 @@ END_FOR
 
 
 IF cell.Cmd = E_CMD_CELL.STOP AND NOT (State = 100 OR State = 110) THEN
-	State := 100;
+	State := 1000;
 END_IF
 
 IF cell.Cmd = E_CMD_CELL.ABORT AND NOT (State = 200 OR State = 210) THEN
-	State := 200;
+	State := 2000;
 END_IF
 
 CASE State OF
@@ -116,30 +116,35 @@ CASE State OF
 		// input -> XY1 -> SWG -> XY2 -> S1 -> SWG -> S2 -> output
 		
 
-	100:un.Cmd := E_CMD.stop;
+	1000
+		:un.Cmd := E_CMD.stop;
 		un.Status := E_Status.stopping;
-		State := 110;
+		State := 1010;
 	
-	110:FOR i := 1 TO Counters.packmlEmLast DO
+	1010:
+		FOR i := 1 TO Counters.packmlEmLast DO
 			IF NOT (em[i].Status = E_Status.stopped) THEN
 				un.Status := E_Status.stopped;
 				State := 5;
 			END_IF
 		END_FOR
 	
-	200:un.Cmd := E_CMD.abort;
+	2000:
+		un.Cmd := E_CMD.abort;
 		un.Status := E_Status.aborting;
-		State := 210;
+		State := 2010;
 	
-	210:FOR i := 1 TO Counters.packmlEmLast DO
+	2010:
+		FOR i := 1 TO Counters.packmlEmLast DO
 			IF NOT (em[i].Status = E_Status.aborted) THEN
 				;
 			ELSE
-				State := 220;
+				State := 2020;
 			END_IF
 		END_FOR
 	
-	220:un.Cmd := E_CMD.clear;
+	2020:
+		un.Cmd := E_CMD.clear;
 		State := 5;
 END_CASE
 
@@ -224,17 +229,27 @@ END_CASE
       <LineId Id="533" Count="2" />
       <LineId Id="540" Count="0" />
       <LineId Id="536" Count="0" />
-      <LineId Id="173" Count="4" />
+      <LineId Id="173" Count="1" />
+      <LineId Id="565" Count="0" />
+      <LineId Id="175" Count="2" />
       <LineId Id="179" Count="0" />
+      <LineId Id="566" Count="0" />
       <LineId Id="187" Count="1" />
       <LineId Id="399" Count="0" />
       <LineId Id="184" Count="0" />
       <LineId Id="178" Count="0" />
       <LineId Id="194" Count="0" />
-      <LineId Id="196" Count="7" />
+      <LineId Id="196" Count="0" />
+      <LineId Id="567" Count="0" />
+      <LineId Id="197" Count="3" />
+      <LineId Id="568" Count="0" />
+      <LineId Id="201" Count="2" />
       <LineId Id="205" Count="1" />
       <LineId Id="195" Count="0" />
-      <LineId Id="207" Count="2" />
+      <LineId Id="207" Count="0" />
+      <LineId Id="569" Count="0" />
+      <LineId Id="571" Count="0" />
+      <LineId Id="209" Count="0" />
       <LineId Id="144" Count="22" />
       <LineId Id="40" Count="0" />
       <LineId Id="43" Count="0" />
