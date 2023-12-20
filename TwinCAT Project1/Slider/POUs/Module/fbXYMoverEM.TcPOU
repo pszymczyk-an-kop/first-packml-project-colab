@@ -101,12 +101,14 @@ CASE XYMoverActualStep OF
             	XYMoverActualStep := 70; 
             END_IF 
             
-	70: 	em.Config.Data.Q[3] := TRUE;
+	70: 	em.Config.Data.Q[2] := FALSE;
+			em.Config.Data.Q[4] := FALSE;
+			em.Config.Data.Q[3] := TRUE;
             em.Config.Data.Q[1] := TRUE;
             XYMoverActualStep := 20;
                         
 END_CASE
-END_IF
+
 em.SequenceStep := XYMoverActualStep;
 ]]></ST>
     </Implementation>
@@ -131,7 +133,10 @@ em.SequenceStep := XYMoverActualStep;
       <LineId Id="215" Count="4" />
       <LineId Id="221" Count="3" />
       <LineId Id="226" Count="10" />
-      <LineId Id="238" Count="9" />
+      <LineId Id="238" Count="3" />
+      <LineId Id="301" Count="0" />
+      <LineId Id="300" Count="0" />
+      <LineId Id="242" Count="5" />
       <LineId Id="9" Count="0" />
     </LineIds>
   </POU>

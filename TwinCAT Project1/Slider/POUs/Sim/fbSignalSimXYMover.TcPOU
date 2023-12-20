@@ -117,6 +117,8 @@ END_VAR
 		IF TimerSim[9].Q THEN
 			em.Config.Data.I[1] := TRUE;
 			em.Config.Data.I[3] := TRUE;
+			em.Config.Data.I[2] := FALSE;
+			em.Config.Data.I[4] := FALSE;
 			TimerSim[9](in := FALSE);
 		END_IF
 	
@@ -150,7 +152,9 @@ END_IF
       <LineId Id="445" Count="0" />
       <LineId Id="392" Count="0" />
       <LineId Id="446" Count="0" />
-      <LineId Id="393" Count="14" />
+      <LineId Id="393" Count="8" />
+      <LineId Id="447" Count="1" />
+      <LineId Id="402" Count="5" />
       <LineId Id="9" Count="0" />
     </LineIds>
   </POU>
