@@ -21,10 +21,10 @@ fbSignalSim(
 );
 
 IF em.Config.Functionality = E_Function.eXYMover THEN
-            IF em.Cmd = E_Cmd.STOP THEN
+            IF XYMoverActualStep <> 2 AND XYMoverActualStep <> 3 AND XYMoverActualStep <> 4 AND em.Cmd = E_Cmd.STOP THEN
                    XYMoverActualStep := 1;
             END_IF
-            IF em.Cmd = E_Cmd.ABORT THEN
+            IF XYMoverActualStep <> 6 AND XYMoverActualStep <> 2 AND XYMoverActualStep <> 3 AND XYMoverActualStep <> 4 AND em.Cmd = E_Cmd.ABORT THEN
                    XYMoverActualStep := 5;
            	END_IF
 

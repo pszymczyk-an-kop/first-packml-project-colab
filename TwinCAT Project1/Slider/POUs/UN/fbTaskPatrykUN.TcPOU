@@ -90,13 +90,25 @@ CASE GlobalStep OF
 			END_IF
 		END_FOR
 		un.Status := E_Status.idle;
-		GlobalStep := 10;
+		GlobalStep := 15;
 		
-	15:	//
+	15:	IF cell.Cmd = E_CMD_CELL.START THEN
+			un.Cmd := E_CMD.start;
+			un.Status := E_Status.starting;
+			GlobalStep := 20;
+		END_IF
 	
-	20: //
+	20: FOR i := 1 TO Counters.packmlEmLast DO
+			IF NOT (em[i].Status = E_Status.execute OR em[i].Status = E_Status.starting) THEN
+				un.Cmd := E_CMD.reset;
+				un.Status := E_Status.resetting;
+				GlobalStep := 0;
+				RETURN;
+			END_IF
+		END_FOR
+		GlobalStep := 30;
 	
-	30: //
+	30: em[1].SequenceStep
 	
 	31: //
 	
@@ -136,7 +148,7 @@ CASE GlobalStep OF
 	
 	63: //
 	
-	99: // INIT Check homing for all EM's, check gripper state
+	99: // ??
 	
 	100: 	un.Cmd := E_Cmd.stop;
 			un.Status := E_Status.stopping;
@@ -153,10 +165,20 @@ CASE GlobalStep OF
 		
 	103: // IF Homing OK > back to INIT state
 		
-	200: // Status aborting, reset IO's
+	200: un.Cmd := E_CMD.abort;
+		 un.Status := E_Status.aborting;
+		 GlobalStep := 201;
 		
-	201: // Wait for global clear un.cmd.clear, status clearing, back to #101 state
+	201: FOR i := 1 TO Counters.packmlEmLast DO
+			IF NOT (em[i].Status = E_Status.aborted) THEN
+				;
+			ELSE
+				GlobalStep := 202;
+			END_IF
+		END_FOR
 		
+	202: un.Cmd := E_CMD.clear;
+		 GlobalStep := 10;
 END_CASE
 ]]></ST>
     </Implementation>
@@ -177,8 +199,11 @@ END_CASE
       <LineId Id="51" Count="0" />
       <LineId Id="253" Count="6" />
       <LineId Id="56" Count="1" />
+      <LineId Id="267" Count="3" />
       <LineId Id="64" Count="0" />
-      <LineId Id="103" Count="20" />
+      <LineId Id="103" Count="0" />
+      <LineId Id="271" Count="7" />
+      <LineId Id="104" Count="19" />
       <LineId Id="125" Count="3" />
       <LineId Id="101" Count="0" />
       <LineId Id="132" Count="15" />
@@ -192,8 +217,13 @@ END_CASE
       <LineId Id="98" Count="2" />
       <LineId Id="69" Count="0" />
       <LineId Id="77" Count="1" />
+      <LineId Id="279" Count="1" />
       <LineId Id="81" Count="1" />
-      <LineId Id="89" Count="1" />
+      <LineId Id="281" Count="5" />
+      <LineId Id="89" Count="0" />
+      <LineId Id="287" Count="0" />
+      <LineId Id="90" Count="0" />
+      <LineId Id="288" Count="0" />
       <LineId Id="93" Count="0" />
       <LineId Id="9" Count="0" />
     </LineIds>
