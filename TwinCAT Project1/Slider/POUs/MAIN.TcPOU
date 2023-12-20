@@ -12,9 +12,13 @@ VAR
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[fbTaskPiotrUN(un := un, cell := cell, EnableSim := TRUE);]]></ST>
+      <ST><![CDATA[cell.Cmd := E_CMD_CELL.START; 	// Selected as constant START to work in loop
+cell.PlaceObject := TRUE;		// Selected as constant placing object at input to work in loop
+fbTaskPiotrUN(un := un, cell := cell, EnableSim := TRUE);]]></ST>
     </Implementation>
     <LineIds Name="MAIN">
+      <LineId Id="41" Count="0" />
+      <LineId Id="40" Count="0" />
       <LineId Id="30" Count="0" />
     </LineIds>
   </POU>
