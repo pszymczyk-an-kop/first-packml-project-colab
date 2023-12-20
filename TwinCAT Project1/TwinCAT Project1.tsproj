@@ -995,7 +995,7 @@ External Setpoint Generation:
 		</System>
 		<Plc>
 			<Project GUID="{25334B93-F735-4EF0-B31D-05931480FD9A}" Name="Slider" PrjFilePath="Slider\Slider.plcproj" TmcFilePath="Slider\Slider.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Slider\Slider.tmc" TmcHash="{45A5B88E-EC59-B4A0-5EE2-8A6A238536BC}">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Slider\Slider.tmc" TmcHash="{608058FE-9EF0-8312-15D5-89939AA35C10}">
 					<Name>Slider Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Vars VarGrpType="1">
