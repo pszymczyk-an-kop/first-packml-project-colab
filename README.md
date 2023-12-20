@@ -95,7 +95,7 @@ Folder: DUTs -> Cell:
 TYPE ST_CELL :
 STRUCT
 	Cmd :E_CMD_CELL;
-	PlaceObject : BOOL; 
+	PlaceObject :BOOL; 
 END_STRUCT
 END_TYPE
 ```
