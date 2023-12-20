@@ -74,13 +74,15 @@ END_VAR
 				END_IF
 			END_IF
 
-		50:	IF NOT OtherSide AND em.Config.Data.I[1] THEN
-				timers[1](in := TRUE); 
-			END_IF
-			
-			IF timers[1].Q THEN
-				timers[1](in := FALSE);
-				em.Config.Data.I[3] := TRUE;
+		50:	IF CmdSim THEN
+				IF NOT OtherSide AND em.Config.Data.I[1] THEN
+					timers[1](in := TRUE); 
+				END_IF
+				
+				IF timers[1].Q THEN
+					timers[1](in := FALSE);
+					em.Config.Data.I[3] := TRUE;
+				END_IF
 			END_IF
 			
 		60:	IF NOT OtherSide AND em.Config.Data.I[1] THEN
@@ -163,10 +165,13 @@ END_IF]]></ST>
       <LineId Id="234" Count="0" />
       <LineId Id="48" Count="0" />
       <LineId Id="76" Count="0" />
+      <LineId Id="259" Count="0" />
       <LineId Id="50" Count="1" />
       <LineId Id="53" Count="1" />
       <LineId Id="62" Count="0" />
-      <LineId Id="56" Count="2" />
+      <LineId Id="56" Count="1" />
+      <LineId Id="260" Count="0" />
+      <LineId Id="58" Count="0" />
       <LineId Id="118" Count="3" />
       <LineId Id="152" Count="0" />
       <LineId Id="205" Count="4" />

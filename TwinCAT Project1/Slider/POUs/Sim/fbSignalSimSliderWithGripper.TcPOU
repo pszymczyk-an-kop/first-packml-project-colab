@@ -44,12 +44,14 @@ IF EnableSim THEN
 				
 			
 				//Simulate CMD.clear button
-				
-			IF delay[4].Q THEN
-				delay[4](IN:=FALSE);
-				em.Cmd:=E_CMD.reset;
+			IF CmdSim THEN	
+				IF delay[4].Q THEN
+					delay[4](IN:=FALSE);
+					em.Cmd:=E_CMD.reset;
+				END_IF
+				delay[4](IN:=TRUE);
 			END_IF
-			delay[4](IN:=TRUE);
+				
 				//Simulate movement to PICK_POS 
 			IF em.Config.Data.Q[3]=TRUE THEN
 				delay[3](IN:=TRUE);
@@ -69,13 +71,14 @@ IF EnableSim THEN
 		
 		30:		//IDLE
 				
-				//WAIT FOR CMD					
-			IF delay[6].Q THEN
-				delay[6](IN:=FALSE);
-				em.Cmd:=E_Cmd.start;
+				//WAIT FOR CMD
+			IF CmdSim THEN				
+				IF delay[6].Q THEN
+					delay[6](IN:=FALSE);
+					em.Cmd:=E_Cmd.start;
+				END_IF
+				delay[6](IN:=TRUE);
 			END_IF
-			delay[6](IN:=TRUE);
-			
 			
 		40:		//EXECUTE.1
 				
@@ -133,18 +136,21 @@ IF EnableSim THEN
 			END_IF;
 				
 		65:		//ABORTED
-		
-			IF delay[9].Q THEN
-			delay[9].IN:=FALSE;
-			em.Cmd:=E_Cmd.clear;
-			delay[10].IN:=TRUE;
+			IF CmdSim THEN
+				IF delay[9].Q THEN
+				delay[9].IN:=FALSE;
+				em.Cmd:=E_Cmd.clear;
+				delay[10].IN:=TRUE;
+				END_IF
 			END_IF
 		
 		
 		70:		//STOPPED
-			IF delay[10].Q THEN
-			delay[10].IN:=FALSE;
-			em.Cmd:=E_Cmd.reset;
+			IF CmdSim THEN
+				IF delay[10].Q THEN
+				delay[10].IN:=FALSE;
+				em.Cmd:=E_Cmd.reset;
+				END_IF
 			END_IF
 	END_CASE
 	
@@ -157,6 +163,7 @@ END_IF		]]></ST>
       <LineId Id="650" Count="13" />
       <LineId Id="676" Count="7" />
       <LineId Id="862" Count="0" />
+      <LineId Id="877" Count="1" />
       <LineId Id="684" Count="2" />
       <LineId Id="688" Count="0" />
       <LineId Id="830" Count="0" />
@@ -165,6 +172,7 @@ END_IF		]]></ST>
       <LineId Id="689" Count="4" />
       <LineId Id="721" Count="3" />
       <LineId Id="836" Count="0" />
+      <LineId Id="879" Count="0" />
       <LineId Id="725" Count="4" />
       <LineId Id="851" Count="1" />
       <LineId Id="730" Count="4" />
@@ -177,7 +185,13 @@ END_IF		]]></ST>
       <LineId Id="861" Count="0" />
       <LineId Id="792" Count="0" />
       <LineId Id="796" Count="7" />
-      <LineId Id="810" Count="15" />
+      <LineId Id="810" Count="6" />
+      <LineId Id="880" Count="0" />
+      <LineId Id="817" Count="2" />
+      <LineId Id="881" Count="0" />
+      <LineId Id="820" Count="3" />
+      <LineId Id="882" Count="0" />
+      <LineId Id="824" Count="1" />
       <LineId Id="828" Count="0" />
     </LineIds>
   </POU>

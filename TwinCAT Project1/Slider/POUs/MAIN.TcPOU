@@ -5,19 +5,16 @@
 VAR
 	un : ST_UN;
 	cell : ST_CELL;
-	//fbTaskPiotrUN : fbTaskPiotrUN;
-	fbTaskPatrykUN : fbTaskPatrykUN;
-	fbSignalSimSlider : fbSignalSimSlider;
-	fbSignalSimSliderWithGripper : fbSignalSimSliderWithGripper;
+	fbTaskPiotrUN : fbTaskPiotrUN;
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[//fbTaskPiotrUN(un := un, cell := cell);
-fbTaskPatrykUN(un := un, cell := cell, EnableSim := true);]]></ST>
+      <ST><![CDATA[cell.Cmd := E_CMD_CELL.START;
+fbTaskPiotrUN(un := un, cell := cell, EnableSim := TRUE);]]></ST>
     </Implementation>
     <LineIds Name="MAIN">
+      <LineId Id="23" Count="0" />
       <LineId Id="5" Count="0" />
-      <LineId Id="12" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>
