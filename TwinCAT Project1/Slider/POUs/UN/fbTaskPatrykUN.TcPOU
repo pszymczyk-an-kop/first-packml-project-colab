@@ -80,9 +80,17 @@ IF cell.Cmd = E_CMD_CELL.ABORT THEN
 END_IF
 
 CASE GlobalStep OF
-	0:	// Status Undefined
+	0:	un.Status := E_Status.undefined;
+		GlobalStep := 10;
 		
-	10:	// Global idle
+	10:	FOR i := 1 TO Counters.packmlEmLast DO
+			IF NOT (em[i].Status = E_Status.idle) THEN
+				un.Cmd := E_CMD.reset;
+				RETURN;
+			END_IF
+		END_FOR
+		un.Status := E_Status.idle;
+		GlobalStep := 10;
 		
 	15:	//
 	
@@ -165,7 +173,9 @@ END_CASE
       <LineId Id="201" Count="1" />
       <LineId Id="94" Count="0" />
       <LineId Id="31" Count="9" />
+      <LineId Id="252" Count="0" />
       <LineId Id="51" Count="0" />
+      <LineId Id="253" Count="6" />
       <LineId Id="56" Count="1" />
       <LineId Id="64" Count="0" />
       <LineId Id="103" Count="20" />
