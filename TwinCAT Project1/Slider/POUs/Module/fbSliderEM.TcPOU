@@ -124,8 +124,10 @@ IF em.Config.Functionality = E_Function.eSlider THEN
 			IF em.Config.Data.Q[1] AND em.Config.Data.I[2] THEN
 				em.Config.Data.Q[1] := FALSE;
 				bSliderSide := TRUE;
-				State := 50;
+				State := 70;
 			END_IF
+			
+		70:	State := 50;
 			
 		200:em.Status := E_Status.held;
 			em.Config.Data.Q[1] := FALSE;
@@ -172,7 +174,10 @@ em.SequenceStep := State;
       <LineId Id="841" Count="0" />
       <LineId Id="840" Count="0" />
       <LineId Id="569" Count="0" />
-      <LineId Id="688" Count="111" />
+      <LineId Id="688" Count="91" />
+      <LineId Id="857" Count="0" />
+      <LineId Id="856" Count="0" />
+      <LineId Id="780" Count="19" />
       <LineId Id="232" Count="1" />
       <LineId Id="235" Count="8" />
       <LineId Id="228" Count="0" />
