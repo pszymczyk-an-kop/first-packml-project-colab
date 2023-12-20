@@ -73,13 +73,13 @@ END_FOR
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-IF cell.Cmd = E_CMD_CELL.STOP AND NOT (State = 1010) THEN
+IF cell.Cmd = E_CMD_CELL.STOP AND State < 2000 THEN
 	StoppedState := State;
-	State := 1000;
+	State := 2000;
 END_IF
 
-IF cell.Cmd = E_CMD_CELL.ABORT AND NOT (State = 2010) THEN
-	State := 2000;
+IF cell.Cmd = E_CMD_CELL.ABORT AND State < 1000 THEN
+	State := 1000;
 END_IF
 
 CASE State OF
@@ -122,9 +122,9 @@ CASE State OF
 			State := 40;
 		END_IF
 		
-		IF StoppedState <> 0 THEN
+		IF StoppedState <> 0 AND StoppedState < 1000 THEN
+			State := StoppedState;
 			StoppedState := 0;
-			State := 40;
 		END_IF
 		
 	40:	// XY1 -> SWG -> XY2 -> S1 -> SWG -> S2 -> output
@@ -181,8 +181,24 @@ CASE State OF
 			em[5].Config.Data.I[3] := FALSE;
 			State := 30;
 		END_IF
-
+		
 	1000:
+		un.Cmd := E_CMD.abort;
+		un.Status := E_Status.aborting;
+		FOR i := 1 TO Counters.packmlEmLast DO
+			IF NOT (em[i].Status = E_Status.aborted) THEN
+				RETURN;
+			END_IF
+		END_FOR
+		State := 1010;
+	
+	1010:
+		IF cell.Cmd = E_CMD_CELL.START THEN
+			un.Cmd := E_CMD.clear;
+			State := 2000;
+		END_IF
+
+	2000:
 		un.Cmd := E_CMD.stop;
 		un.Status := E_Status.stopping;
 		FOR i := 1 TO Counters.packmlEmLast DO
@@ -191,28 +207,14 @@ CASE State OF
 			END_IF
 		END_FOR
 		un.Status := E_Status.stopped;
-		State := 1010;
-	
-	1010:
-		IF cell.Cmd = E_CMD_CELL.START THEN
-			State := 5;
-		END_IF	
-		
-	2000:
-		un.Cmd := E_CMD.abort;
-		un.Status := E_Status.aborting;
-		FOR i := 1 TO Counters.packmlEmLast DO
-			IF NOT (em[i].Status = E_Status.aborted) THEN
-				RETURN;
-			END_IF
-		END_FOR
 		State := 2010;
 	
 	2010:
 		IF cell.Cmd = E_CMD_CELL.START THEN
-			un.Cmd := E_CMD.clear;
 			State := 5;
-		END_IF
+		END_IF	
+		
+	
 END_CASE
 
 
@@ -296,8 +298,9 @@ END_CASE
       <LineId Id="601" Count="0" />
       <LineId Id="597" Count="0" />
       <LineId Id="694" Count="1" />
+      <LineId Id="752" Count="0" />
       <LineId Id="698" Count="0" />
-      <LineId Id="696" Count="1" />
+      <LineId Id="697" Count="0" />
       <LineId Id="602" Count="2" />
       <LineId Id="629" Count="1" />
       <LineId Id="605" Count="0" />
@@ -339,6 +342,9 @@ END_CASE
       <LineId Id="673" Count="0" />
       <LineId Id="672" Count="0" />
       <LineId Id="671" Count="0" />
+      <LineId Id="753" Count="0" />
+      <LineId Id="755" Count="13" />
+      <LineId Id="754" Count="0" />
       <LineId Id="173" Count="1" />
       <LineId Id="610" Count="0" />
       <LineId Id="179" Count="0" />
@@ -352,19 +358,6 @@ END_CASE
       <LineId Id="699" Count="0" />
       <LineId Id="701" Count="2" />
       <LineId Id="700" Count="0" />
-      <LineId Id="196" Count="0" />
-      <LineId Id="567" Count="0" />
-      <LineId Id="200" Count="0" />
-      <LineId Id="568" Count="0" />
-      <LineId Id="201" Count="0" />
-      <LineId Id="205" Count="1" />
-      <LineId Id="195" Count="0" />
-      <LineId Id="689" Count="0" />
-      <LineId Id="207" Count="0" />
-      <LineId Id="569" Count="0" />
-      <LineId Id="704" Count="0" />
-      <LineId Id="571" Count="0" />
-      <LineId Id="209" Count="0" />
       <LineId Id="705" Count="0" />
       <LineId Id="144" Count="0" />
       <LineId Id="146" Count="0" />
