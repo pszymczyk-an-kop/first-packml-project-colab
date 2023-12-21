@@ -5,7 +5,7 @@ Poniżej najważniejsze dane wspólne dla każdego
 
 WAŻNE -> Po prezentacji podstawowych struktur i FB przedstawione zostały przykłady tworzenia modułów i unitów
 
-Update: 19.12.2023 - 14:21
+Update: 20.12.2023 - 14:03
 
 ## Struktury
 
@@ -95,6 +95,7 @@ Folder: DUTs -> Cell:
 TYPE ST_CELL :
 STRUCT
 	Cmd :E_CMD_CELL;
+	PlaceObject :BOOL; 
 END_STRUCT
 END_TYPE
 ```

@@ -60,6 +60,9 @@ IF em.Config.Functionality = E_Function.eSlider THEN
 		5:	em.Status := E_Status.aborting;
 			em.Config.Data.Q[1] := FALSE;
 			em.Config.Data.Q[2] := FALSE;
+			State := 7;
+			
+		7:	em.Status := E_Status.aborted;
 			State := 10;
 			
 		10:	IF em.Cmd = E_CMD.clear THEN
@@ -98,7 +101,7 @@ IF em.Config.Functionality = E_Function.eSlider THEN
 			
 			// Execute direction
 		50:	em.Status := E_Status.execute;
-			IF bSliderSide THEN
+			IF bSliderSide AND NOT em.Config.Data.I[3] THEN
 				em.Config.Data.Q[2] := TRUE;
 				State := 60;
 			ELSIF em.Config.Data.I[3] THEN
@@ -176,7 +179,9 @@ em.SequenceStep := State;
       <LineId Id="841" Count="0" />
       <LineId Id="840" Count="0" />
       <LineId Id="569" Count="0" />
-      <LineId Id="688" Count="80" />
+      <LineId Id="688" Count="25" />
+      <LineId Id="881" Count="2" />
+      <LineId Id="714" Count="54" />
       <LineId Id="865" Count="0" />
       <LineId Id="770" Count="4" />
       <LineId Id="776" Count="3" />
