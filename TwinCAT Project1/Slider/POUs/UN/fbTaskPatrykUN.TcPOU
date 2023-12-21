@@ -79,7 +79,21 @@ IF cell.Cmd = E_CMD_CELL.ABORT THEN
 	GlobalStep := 200;
 END_IF
 
+//////////////////////////////////////////////////////////////////////
+//Deklaracja pick oraz drop pozycji
+em[1].Config.Data.drop_pos := 2;
+em[1].Config.Data.pick_pos := 1;
+em[2].Config.Data.pick_pos := 3;
+IF em[6].SequenceStep = 60 THEN
+	em[2].Config.Data.drop_pos := 44;
+	em[3].Config.Data.pick_pos := 54;
+	ELSE
+	em[2].Config.Data.drop_pos := 45;
+	em[3].Config.Data.pick_pos := 55;	
+END_IF
+em[3].Config.Data.drop_pos := 6;
 
+//////////////////////////////////////////////////////////////////////
 CASE GlobalStep OF
 	0:	un.Status := E_Status.undefined;
 		GlobalStep := 10;
@@ -101,104 +115,91 @@ CASE GlobalStep OF
 	
 	20: FOR i := 1 TO Counters.packmlEmLast DO
 			IF NOT (em[i].Status = E_Status.execute OR em[i].Status = E_Status.starting) THEN
-				un.Cmd := E_CMD.reset;
-				un.Status := E_Status.resetting;
-				GlobalStep := 0;
 				RETURN;
 			END_IF
 		END_FOR
 		GlobalStep := 30;
 	
 	30: IF em[1].SequenceStep = 40 AND em[4].SequenceStep = 50 THEN
-			em[1].Config.Data.pick_pos := 1;
-			em[2].Config.Data.pick_pos := 3;
 			em[1].Config.Data.I[3] := TRUE;
 			GlobalStep := 31;
 		END_IF
-	31: IF em[1].SequenceStep = 41 AND em[4].SequenceStep = 50 AND em[2].SequenceStep = 43 THEN
-			em[1].Config.Data.drop_pos := 2;
-			GlobalStep := 32;
-		END_IF
 	
-	32: IF em[1].SequenceStep = 42 AND em[4].SequenceStep = 50 THEN
+	31: IF em[1].SequenceStep = 43 AND em[4].SequenceStep = 50 THEN
 			em[1].Config.Data.I[3] := FALSE;
 			em[4].Config.Data.I[3] := TRUE;
-			IF em[2].SequenceStep = 40 THEN
-				GlobalStep := 40;
-			END_IF
+			GlobalStep := 32;
 		END_IF
 		
-	40: IF em[6].SequenceStep = 60 THEN
-			em[2].Config.Data.drop_pos := 44;
-			em[3].Config.Data.pick_pos := 54;
+	32: IF em[2].SequenceStep = 40 AND em[4].SequenceStep = 70 THEN
+			em[4].Config.Data.I[3] := FALSE;
+			GlobalStep := 40;
+		END_IF
+	
+	40: IF em[2].Config.Data.drop_pos = 44 THEN
 			GlobalStep := 51;
 		ELSE
-			em[2].Config.Data.drop_pos := 45;
-			em[3].Config.Data.pick_pos := 55;
 			GlobalStep := 41;
 		END_IF
 		
-	41: em[4].Config.Data.I[3] := FALSE;
-		IF em[2].SequenceStep = 43 AND em[3].SequenceStep = 43 THEN
+	41: IF em[2].SequenceStep = 40 AND em[3].SequenceStep = 40 THEN
 			em[2].Config.Data.I[3] := TRUE;
 			GlobalStep := 42;
 		END_IF	
 	
-	42: IF em[6].SequenceStep = 50 THEN
+	42: IF em[2].SequenceStep = 43 THEN
 			em[2].Config.Data.I[3] := FALSE;
 			em[6].Config.Data.I[3] := TRUE;
 			GlobalStep := 60;
 		END_IF
 		
-	51: em[4].Config.Data.I[3] := FALSE;
-		IF em[2].SequenceStep = 43 AND em[3].SequenceStep = 43 THEN
+	51: IF em[2].SequenceStep = 40 AND em[3].SequenceStep = 40 THEN
 			em[2].Config.Data.I[3] := TRUE;
 			GlobalStep := 52;
 		END_IF
 	
-	52: IF em[5].SequenceStep = 50 THEN
+	52: IF em[2].SequenceStep = 43 THEN
 			em[2].Config.Data.I[3] := FALSE;
 			em[5].Config.Data.I[3] := TRUE;
 			GlobalStep := 60;
 		END_IF	
 		
-	60: IF em[3].Config.Data.pick_pos = 54 THEN
-			em[5].Config.Data.I[5] := FALSE;
+	60: IF em[6].SequenceStep = 70 THEN
+			em[6].Config.Data.I[3] := FALSE;
 			em[3].Config.Data.I[3] := TRUE;
-			em[3].Config.Data.drop_pos := 6;
 			GlobalStep := 70;
-		ELSIF em[3].Config.Data.pick_pos = 55 THEN
-			em[6].Config.Data.I[6] := FALSE;
+		ELSIF em[5].SequenceStep = 70 THEN
+			em[5].Config.Data.I[3] := FALSE;
 			em[3].Config.Data.I[3] := TRUE;
-			em[3].Config.Data.drop_pos := 6;
 			GlobalStep := 70;
 		END_IF
 		
-	70:	em[3].Config.Data.I[3] := FALSE;
-		GlobalStep := 30;
-	
+	70:	IF em[3].SequenceStep = 43 THEN
+			em[3].Config.Data.I[3] := FALSE;
+			GlobalStep := 30;
+		END_IF
 	100: 	un.Cmd := E_Cmd.stop;
 			un.Status := E_Status.stopping;
 			GlobalStep := 101;		
 	
-	101: 	FOR i := 1 TO Counters.packmlEmLast DO
-			IF NOT (em[i].Status = E_Status.stopped) THEN
-				un.Status := E_Status.stopped;
-				GlobalStep := 10;
-			END_IF
-		END_FOR
-		
+	101: IF em[1].Status = E_Status.stopped AND em[2].Status = E_Status.stopped AND
+			em[3].Status = E_Status.stopped AND em[4].Status = E_Status.stopped AND
+			em[5].Status = E_Status.stopped AND em[6].Status = E_Status.stopped THEN
+			un.Status := E_Status.stopped;
+			GlobalStep := 10;
+		END_IF
+				
 	200: un.Cmd := E_CMD.abort;
 		 un.Status := E_Status.aborting;
 		 GlobalStep := 201;
 		
-	201: FOR i := 1 TO Counters.packmlEmLast DO
-			IF NOT (em[i].Status = E_Status.aborted) THEN
-				;
-			ELSE
-				GlobalStep := 202;
-			END_IF
-		END_FOR
+	201: IF em[1].Status = E_Status.aborted AND em[2].Status =E_Status.aborted AND
+			em[3].Status = E_Status.aborted AND em[4].Status = E_Status.aborted AND
+			em[5].Status = E_Status.aborted AND em[6].Status = E_Status.aborted THEN
+			un.Status := E_Status.aborted;
+			GlobalStep := 202;
+		END_IF
+		
 		
 	202: un.Cmd := E_CMD.clear;
 		 GlobalStep := 10;
@@ -219,7 +220,15 @@ END_CASE
       <LineId Id="201" Count="1" />
       <LineId Id="94" Count="0" />
       <LineId Id="31" Count="6" />
+      <LineId Id="436" Count="0" />
       <LineId Id="333" Count="0" />
+      <LineId Id="437" Count="0" />
+      <LineId Id="439" Count="1" />
+      <LineId Id="444" Count="3" />
+      <LineId Id="449" Count="2" />
+      <LineId Id="443" Count="0" />
+      <LineId Id="463" Count="0" />
+      <LineId Id="438" Count="0" />
       <LineId Id="38" Count="2" />
       <LineId Id="252" Count="0" />
       <LineId Id="51" Count="0" />
@@ -228,35 +237,29 @@ END_CASE
       <LineId Id="267" Count="3" />
       <LineId Id="64" Count="0" />
       <LineId Id="103" Count="0" />
-      <LineId Id="271" Count="7" />
+      <LineId Id="271" Count="1" />
+      <LineId Id="276" Count="2" />
       <LineId Id="104" Count="2" />
-      <LineId Id="323" Count="0" />
-      <LineId Id="331" Count="0" />
       <LineId Id="317" Count="1" />
-      <LineId Id="107" Count="1" />
-      <LineId Id="319" Count="0" />
-      <LineId Id="322" Count="0" />
-      <LineId Id="320" Count="0" />
+      <LineId Id="107" Count="0" />
       <LineId Id="109" Count="1" />
       <LineId Id="328" Count="0" />
       <LineId Id="325" Count="0" />
-      <LineId Id="336" Count="0" />
-      <LineId Id="329" Count="0" />
-      <LineId Id="337" Count="0" />
+      <LineId Id="467" Count="0" />
       <LineId Id="111" Count="0" />
+      <LineId Id="468" Count="0" />
+      <LineId Id="472" Count="0" />
+      <LineId Id="474" Count="0" />
+      <LineId Id="473" Count="0" />
       <LineId Id="338" Count="0" />
+      <LineId Id="469" Count="0" />
       <LineId Id="112" Count="0" />
-      <LineId Id="339" Count="0" />
-      <LineId Id="344" Count="0" />
       <LineId Id="343" Count="0" />
       <LineId Id="113" Count="0" />
-      <LineId Id="340" Count="0" />
-      <LineId Id="345" Count="0" />
       <LineId Id="342" Count="0" />
       <LineId Id="341" Count="0" />
       <LineId Id="351" Count="0" />
       <LineId Id="114" Count="0" />
-      <LineId Id="355" Count="0" />
       <LineId Id="353" Count="0" />
       <LineId Id="356" Count="0" />
       <LineId Id="348" Count="0" />
@@ -265,35 +268,41 @@ END_CASE
       <LineId Id="360" Count="3" />
       <LineId Id="358" Count="0" />
       <LineId Id="102" Count="0" />
-      <LineId Id="354" Count="0" />
       <LineId Id="352" Count="0" />
       <LineId Id="349" Count="1" />
       <LineId Id="364" Count="0" />
       <LineId Id="368" Count="3" />
       <LineId Id="367" Count="0" />
       <LineId Id="366" Count="0" />
-      <LineId Id="375" Count="1" />
-      <LineId Id="372" Count="0" />
-      <LineId Id="384" Count="0" />
+      <LineId Id="375" Count="0" />
+      <LineId Id="464" Count="1" />
       <LineId Id="386" Count="0" />
       <LineId Id="378" Count="0" />
       <LineId Id="380" Count="0" />
-      <LineId Id="379" Count="0" />
-      <LineId Id="383" Count="0" />
+      <LineId Id="466" Count="0" />
       <LineId Id="385" Count="0" />
       <LineId Id="373" Count="0" />
       <LineId Id="388" Count="0" />
       <LineId Id="65" Count="0" />
+      <LineId Id="476" Count="0" />
       <LineId Id="389" Count="0" />
       <LineId Id="387" Count="0" />
       <LineId Id="68" Count="0" />
       <LineId Id="245" Count="1" />
       <LineId Id="97" Count="0" />
-      <LineId Id="247" Count="4" />
-      <LineId Id="98" Count="1" />
+      <LineId Id="430" Count="0" />
+      <LineId Id="432" Count="1" />
+      <LineId Id="428" Count="0" />
+      <LineId Id="248" Count="0" />
+      <LineId Id="251" Count="0" />
+      <LineId Id="422" Count="0" />
       <LineId Id="279" Count="1" />
       <LineId Id="81" Count="1" />
-      <LineId Id="281" Count="5" />
+      <LineId Id="434" Count="1" />
+      <LineId Id="426" Count="0" />
+      <LineId Id="431" Count="0" />
+      <LineId Id="283" Count="0" />
+      <LineId Id="286" Count="0" />
       <LineId Id="89" Count="0" />
       <LineId Id="287" Count="0" />
       <LineId Id="90" Count="0" />
