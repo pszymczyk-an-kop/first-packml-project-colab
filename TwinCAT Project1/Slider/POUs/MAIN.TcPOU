@@ -10,16 +10,13 @@ VAR
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[cell.Cmd := E_CMD_CELL.START;
+      <ST><![CDATA[//cell.Cmd := E_CMD_CELL.START;
 fbTaskPatrykUN(un := un, cell := cell, EnableSim := TRUE);
-em.Config.Data.I REF= GVL.aInput[1];
-em.Config.Data.Q REF= GVL.aOutput[1];
 ]]></ST>
     </Implementation>
     <LineIds Name="MAIN">
       <LineId Id="23" Count="0" />
-      <LineId Id="5" Count="0" />
-      <LineId Id="37" Count="1" />
+      <LineId Id="38" Count="0" />
       <LineId Id="30" Count="0" />
     </LineIds>
   </POU>

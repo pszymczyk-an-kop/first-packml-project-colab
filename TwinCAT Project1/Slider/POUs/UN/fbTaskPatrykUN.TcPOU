@@ -61,13 +61,11 @@ FOR declareIterator := 1 TO Counters.packmlEmLast DO
 			fbEM[declareIterator].fbEM REF= XYMoverEM[iXYMoverEM];
 			iXYMoverEM := iXYMoverEM + 1;
 	END_CASE
-	
-	fbEM[declareIterator].fbEM(em := em[declareIterator], un := un);
 END_FOR
 END_IF
 
 FOR moduleWorkIterator := 1 TO Counters.packmlEmLast DO
-	fbEM[moduleWorkIterator].fbEM(em := em[moduleWorkIterator], un := un);
+	fbEM[moduleWorkIterator].fbEM(em := em[moduleWorkIterator], un := un, EnableSim := EnableSim, CmdSim := FALSE);
 	
 END_FOR
 
@@ -132,17 +130,52 @@ CASE GlobalStep OF
 		
 	40: IF em[6].SequenceStep = 60 THEN
 			em[2].Config.Data.drop_pos := 44;
-			em[3].Config.Data.pick_pos := 44;
+			em[3].Config.Data.pick_pos := 54;
 			GlobalStep := 51;
 		ELSE
 			em[2].Config.Data.drop_pos := 45;
-			em[3].Config.Data.pick_pos := 45;
+			em[3].Config.Data.pick_pos := 55;
 			GlobalStep := 41;
 		END_IF
-	41: // em 3 i em 5
-			
+		
+	41: em[4].Config.Data.I[3] := FALSE;
+		IF em[2].SequenceStep = 43 AND em[3].SequenceStep = 43 THEN
+			em[2].Config.Data.I[3] := TRUE;
+			GlobalStep := 42;
+		END_IF	
 	
-	51: //
+	42: IF em[6].SequenceStep = 50 THEN
+			em[2].Config.Data.I[3] := FALSE;
+			em[6].Config.Data.I[3] := TRUE;
+			GlobalStep := 60;
+		END_IF
+		
+	51: em[4].Config.Data.I[3] := FALSE;
+		IF em[2].SequenceStep = 43 AND em[3].SequenceStep = 43 THEN
+			em[2].Config.Data.I[3] := TRUE;
+			GlobalStep := 52;
+		END_IF
+	
+	52: IF em[5].SequenceStep = 50 THEN
+			em[2].Config.Data.I[3] := FALSE;
+			em[5].Config.Data.I[3] := TRUE;
+			GlobalStep := 60;
+		END_IF	
+		
+	60: IF em[3].Config.Data.pick_pos = 54 THEN
+			em[5].Config.Data.I[5] := FALSE;
+			em[3].Config.Data.I[3] := TRUE;
+			em[3].Config.Data.drop_pos := 6;
+			GlobalStep := 70;
+		ELSIF em[3].Config.Data.pick_pos = 55 THEN
+			em[6].Config.Data.I[6] := FALSE;
+			em[3].Config.Data.I[3] := TRUE;
+			em[3].Config.Data.drop_pos := 6;
+			GlobalStep := 70;
+		END_IF
+		
+	70:	em[3].Config.Data.I[3] := FALSE;
+		GlobalStep := 30;
 	
 	100: 	un.Cmd := E_Cmd.stop;
 			un.Status := E_Status.stopping;
@@ -176,7 +209,8 @@ END_CASE
       <LineId Id="204" Count="0" />
       <LineId Id="210" Count="1" />
       <LineId Id="214" Count="0" />
-      <LineId Id="174" Count="26" />
+      <LineId Id="174" Count="22" />
+      <LineId Id="199" Count="1" />
       <LineId Id="205" Count="0" />
       <LineId Id="213" Count="0" />
       <LineId Id="207" Count="1" />
@@ -220,11 +254,38 @@ END_CASE
       <LineId Id="345" Count="0" />
       <LineId Id="342" Count="0" />
       <LineId Id="341" Count="0" />
+      <LineId Id="351" Count="0" />
       <LineId Id="114" Count="0" />
+      <LineId Id="355" Count="0" />
+      <LineId Id="353" Count="0" />
+      <LineId Id="356" Count="0" />
       <LineId Id="348" Count="0" />
       <LineId Id="115" Count="0" />
+      <LineId Id="357" Count="0" />
+      <LineId Id="360" Count="3" />
+      <LineId Id="358" Count="0" />
       <LineId Id="102" Count="0" />
+      <LineId Id="354" Count="0" />
+      <LineId Id="352" Count="0" />
+      <LineId Id="349" Count="1" />
+      <LineId Id="364" Count="0" />
+      <LineId Id="368" Count="3" />
+      <LineId Id="367" Count="0" />
+      <LineId Id="366" Count="0" />
+      <LineId Id="375" Count="1" />
+      <LineId Id="372" Count="0" />
+      <LineId Id="384" Count="0" />
+      <LineId Id="386" Count="0" />
+      <LineId Id="378" Count="0" />
+      <LineId Id="380" Count="0" />
+      <LineId Id="379" Count="0" />
+      <LineId Id="383" Count="0" />
+      <LineId Id="385" Count="0" />
+      <LineId Id="373" Count="0" />
+      <LineId Id="388" Count="0" />
       <LineId Id="65" Count="0" />
+      <LineId Id="389" Count="0" />
+      <LineId Id="387" Count="0" />
       <LineId Id="68" Count="0" />
       <LineId Id="245" Count="1" />
       <LineId Id="97" Count="0" />
