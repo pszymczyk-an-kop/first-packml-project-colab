@@ -8,6 +8,7 @@ VAR
 	initial: BOOL := TRUE;
 	servo_GO: BOOL;
 	
+	fbSignalSim: fbSignalSimSliderWithGripper;
 END_VAR
 VAR_INPUT
 	
@@ -28,9 +29,17 @@ DATA.drop_pos -> desired drop position
 DATA.act_pos -> actual postition ( resolved in SIM or SERVO_HANDLER)
 DATA.give_pos -> moves desired position into SIM or SERVO_HANDLER)
 *)
+
+GetUnCmd();
+fbSignalSim(
+	em := em,
+	EnableSim := EnableSim,
+	CmdSim := CmdSim
+);
+
 IF initial THEN // AFTER START OF PLC ENTER Undefined state
 	state:=0;
-	em.CMD := E_CMD.powerOn; //// MAKES SENSE?
+	//em.CMD := E_CMD.powerOn; //// MAKES SENSE? <- no it doesnt because you change input 
 	initial:= FALSE;
 	 em.Config.Data.pick_pos:=3; 
 	 em.Config.Data.drop_pos:=2;
@@ -171,6 +180,12 @@ em.Config.Data.Q[3]:=servo_GO;//Q[3] alias
       <LineId Id="316" Count="0" />
       <LineId Id="538" Count="9" />
       <LineId Id="537" Count="0" />
+      <LineId Id="591" Count="0" />
+      <LineId Id="590" Count="0" />
+      <LineId Id="606" Count="1" />
+      <LineId Id="610" Count="1" />
+      <LineId Id="605" Count="0" />
+      <LineId Id="574" Count="0" />
       <LineId Id="40" Count="0" />
       <LineId Id="45" Count="0" />
       <LineId Id="241" Count="0" />

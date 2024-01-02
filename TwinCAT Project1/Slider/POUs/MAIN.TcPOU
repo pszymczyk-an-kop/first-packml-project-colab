@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="MAIN" Id="{093ec517-8a0e-407b-ae13-9436eac09760}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM MAIN
+VAR
+	un : ST_UN;
+	cell : ST_CELL;
+	fbTaskPiotrUN : fbTaskPiotrUN;
+	
+	fb : fbSliderEM;
+	em : ST_EM;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[//cell.Cmd := E_CMD_CELL.START; 	// Selected as constant START to work in loop
+//cell.PlaceObject := TRUE;		// Selected as constant placing object at input to work in loop
+fbTaskPiotrUN(un := un, cell := cell, EnableSim := TRUE);]]></ST>
+    </Implementation>
+    <LineIds Name="MAIN">
+      <LineId Id="41" Count="0" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="30" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

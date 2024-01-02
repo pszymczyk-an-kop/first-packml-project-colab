@@ -2,7 +2,7 @@
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="fbTaskPiotrUN" Id="{e4410345-6b08-4ef7-a94f-07fca8e2946d}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK fbTaskPiotrUN EXTENDS fbUN
-VAR	
+VAR
 	// Arrays with 'em' universal structure and 'fbEM' containing ST_MACHINE structure which contains of references to fbEM function block
 	em : ARRAY[1..Counters.packmlEmLast] OF ST_EM;
 	fbEM : ARRAY[1..Counters.packmlEmLast] OF ST_MACHINE;
@@ -20,91 +20,348 @@ VAR
 	iXYMoverEM : DINT := 1;
 	
 	i : DINT;
-	State : INT;
+	State : INT := 0;
+	StoppedState : INT := 0;
+	declareIterator : DINT;
+	moduleWorkIterator : DINT;
+	initialConfig: BOOL := TRUE;
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[// Method FB_init takes care for initialisation of correct modules
-// fbEM and em array number:
-// 1 <- XYMover
+      <ST><![CDATA[// fbEM and em array number:
+// 1 <- XYMovers
 // 2 <- SliderWithGripper
 // 3 <- XYMover
 // 4 <- Slider
 // 5 <- Slider
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// All init configuration done here
+IF initialConfig THEN
+	initialConfig := FALSE;
+	// Specifing module type of each module in array
+	em[1].Config.Functionality := E_Function.eXYMover;
+	em[2].Config.Functionality := E_Function.eSliderWithGripper;
+	em[3].Config.Functionality := E_Function.eXYMover;
+	em[4].Config.Functionality := E_Function.eSlider;
+	em[5].Config.Functionality := E_Function.eSlider;
+
+	// FOR loop to specify config for each module
+	FOR declareIterator := 1 TO Counters.packmlEmLast DO
+		em[declareIterator].Config.Data.I REF= GVL.aInput[declareIterator];
+		em[declareIterator].Config.Data.Q REF= GVL.aOutput[declareIterator];
+
+		CASE em[declareIterator].Config.Functionality OF
+			E_Function.eSlider:
+				fbEM[declareIterator].fbEM REF= SliderEM[iSliderEM];
+				iSliderEM := iSliderEM + 1;
+			E_Function.eSliderWithGripper:
+				fbEM[declareIterator].fbEM REF= SliderWithGripperEM[iSliderWithGripperEM];
+				iSliderWithGripperEM := iSliderWithGripperEM + 1;
+			E_Function.eXYMover:
+				fbEM[declareIterator].fbEM REF= XYMoverEM[iXYMoverEM];
+				iXYMoverEM := iXYMoverEM + 1;
+		END_CASE
+	END_FOR
+END_IF
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Modules work loop (idk yet if is better to have it at the beggining or bottom of UN)
+FOR moduleWorkIterator := 1 TO Counters.packmlEmLast DO
+	fbEM[moduleWorkIterator].fbEM(em := em[moduleWorkIterator], un := un, EnableSim := EnableSim, CmdSim := FALSE);
+END_FOR
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+IF cell.Cmd = E_CMD_CELL.STOP AND State < 2000 THEN
+	StoppedState := State;
+	State := 2000;
+END_IF
+
+IF cell.Cmd = E_CMD_CELL.ABORT AND State < 1000 THEN
+	State := 1000;
+END_IF
+
 CASE State OF
-	0:	testUN.Status := E_Status.idle;
+	0:	un.Status := E_Status.undefined;
+		em[2].Config.Data.pick_pos := 3;
+		em[2].Config.Data.drop_pos := 2;
+		State := 5;
+	
+	5:	// Waiting for every EM to become idle state
 		FOR i := 1 TO Counters.packmlEmLast DO
-			IF NOT em[i].Status = E_Status.idle THEN
-				em[i].Cmd := E_CMD.reset;
+			IF NOT (em[i].Status = E_Status.idle) THEN
+				un.Cmd := E_CMD.reset;
+				RETURN;
 			END_IF
 		END_FOR
+		un.Status := E_Status.idle;
+		State := 10;
+	
+	10:	IF cell.Cmd = E_CMD_CELL.START THEN
+			un.Cmd := E_CMD.start;
+			un.Status := E_Status.starting;
+			State := 20;
+		END_IF
+	
+	20:	// Waiting for every EM to be in execute or starting state
+		FOR i := 1 TO Counters.packmlEmLast DO
+			IF NOT (em[i].Status = E_Status.execute OR em[i].Status = E_Status.starting) THEN
+				RETURN;
+			END_IF
+		END_FOR
+		State := 30;
+		
+	30:	// Start of my specific task (all modules stays in execute)
+		// input -> XY1 -> SWG -> XY2 -> S1 -> SWG -> S2 -> output
+		IF (em[1].SequenceStep = 20		// XY1
+		AND cell.PlaceObject)			// Object input signal
+		THEN
+			cell.PlaceObject := FALSE;
+			em[1].Config.Data.I[5] := TRUE;
+			State := 40;
+		END_IF
+		
+		IF StoppedState <> 0 AND StoppedState < 1000 THEN
+			State := StoppedState;
+			StoppedState := 0;
+		END_IF
+		
+	40:	// XY1 -> SWG -> XY2 -> S1 -> SWG -> S2 -> output
+		IF em[1].SequenceStep = 60		// XY1
+		AND em[2].SequenceStep = 40		// SWG
+		THEN
+			em[1].Config.Data.I[5] := FALSE;
+			em[2].Config.Data.I[3] := TRUE;
+			State := 50;
+		END_IF
+		
+	50: // SWG -> XY2 -> S1 -> SWG -> S2 -> output
+		IF em[2].SequenceStep = 43		// SWG
+		AND em[3].SequenceStep = 20		// XY2
+		THEN
+			em[2].Config.Data.I[3] := FALSE;
+			em[3].Config.Data.I[5] := TRUE;
+			em[2].Config.Data.pick_pos := 4;
+			State := 60;
+		END_IF
+		
+	60: // XY2 -> S1 -> SWG -> S2 -> output
+		IF em[3].SequenceStep = 60		// XY2
+		AND em[4].SequenceStep = 50		// S1
+		THEN
+			em[3].Config.Data.I[5] := FALSE;
+			em[4].Config.Data.I[3] := TRUE;
+			em[2].Config.Data.drop_pos := 1;
+			State := 70;
+		END_IF
+		
+	70:	// S1 -> SWG -> S2 -> output
+		IF em[2].SequenceStep = 40		// SWG
+		AND em[4].SequenceStep = 70		// S1
+		THEN
+			em[2].Config.Data.I[3] := TRUE;// SWG
+			em[4].Config.Data.I[3] := FALSE;
+			State := 80;
+		END_IF
+		
+	80:	// SWG -> S2 -> output
+		IF em[2].SequenceStep = 43		// SWG
+		AND em[5].SequenceStep = 50		// S2
+		THEN
+			em[2].Config.Data.I[3] := FALSE;
+			em[5].Config.Data.I[3] := TRUE;
+			em[2].Config.Data.pick_pos := 3;
+			State := 90;
+		END_IF
+		
+	90:	// S2 -> output
+		IF em[5].SequenceStep = 70 THEN
+			em[2].Config.Data.drop_pos := 1;
+			em[5].Config.Data.I[3] := FALSE;
+			State := 30;
+		END_IF
+		
+	1000:
+		un.Cmd := E_CMD.abort;
+		un.Status := E_Status.aborting;
+		FOR i := 1 TO Counters.packmlEmLast DO
+			IF NOT (em[i].Status = E_Status.aborted) THEN
+				RETURN;
+			END_IF
+		END_FOR
+		State := 1010;
+	
+	1010:
+		IF cell.Cmd = E_CMD_CELL.START THEN
+			un.Cmd := E_CMD.clear;
+			State := 2000;
+		END_IF
+
+	2000:
+		un.Cmd := E_CMD.stop;
+		un.Status := E_Status.stopping;
+		FOR i := 1 TO Counters.packmlEmLast DO
+			IF em[i].Status <> E_Status.stopped THEN
+				RETURN;
+			END_IF
+		END_FOR
+		un.Status := E_Status.stopped;
+		State := 2010;
+	
+	2010:
+		IF cell.Cmd = E_CMD_CELL.START THEN
+			State := 5;
+		END_IF	
 END_CASE
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ]]></ST>
     </Implementation>
-    <Method Name="FB_init" Id="{561b991e-a2eb-4871-8f3e-ec3979cefce5}">
-      <Declaration><![CDATA[METHOD FB_init : BOOL
-VAR_INPUT
-	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
-	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
-END_VAR
-
-VAR
-	declareIterator : DINT;
-	initIterator : dint;
-END_VAR]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[// Specifing module type of each module in array
-em[1].Config.Functionality := E_Function.eXYMover;
-em[2].Config.Functionality := E_Function.eSliderWithGripper;
-em[3].Config.Functionality := E_Function.eXYMover;
-em[4].Config.Functionality := E_Function.eSlider;
-em[5].Config.Functionality := E_Function.eSlider;
-
-// FOR loop to specify config for each module
-FOR declareIterator := 1 TO Counters.packmlEmLast DO
-	em[declareIterator].Config.Data.I REF= GVL.aInput[declareIterator];
-	em[declareIterator].Config.Data.Q REF= GVL.aOutput[declareIterator];
-
-	CASE em[declareIterator].Config.Functionality OF
-		E_Function.eSlider:
-			fbEM[declareIterator].fbEM REF= SliderEM[iSliderEM];
-			iSliderEM := iSliderEM + 1;
-		E_Function.eSliderWithGripper:
-			fbEM[declareIterator].fbEM REF= SliderWithGripperEM[iSliderWithGripperEM];
-			iSliderWithGripperEM := iSliderWithGripperEM + 1;
-		E_Function.eXYMover:
-			fbEM[declareIterator].fbEM REF= XYMoverEM[iXYMoverEM];
-			iXYMoverEM := iXYMoverEM + 1;
-	END_CASE
-END_FOR
-
-FOR initIterator := 1 TO Counters.packmlEmLast DO
-	fbEM[initIterator].fbEM(em := em[initIterator], un := testUN);
-END_FOR]]></ST>
-      </Implementation>
-    </Method>
     <LineIds Name="fbTaskPiotrUN">
-      <LineId Id="9" Count="0" />
       <LineId Id="31" Count="1" />
       <LineId Id="35" Count="3" />
+      <LineId Id="497" Count="0" />
+      <LineId Id="436" Count="0" />
+      <LineId Id="537" Count="0" />
+      <LineId Id="463" Count="0" />
+      <LineId Id="493" Count="0" />
+      <LineId Id="501" Count="0" />
+      <LineId Id="439" Count="3" />
+      <LineId Id="515" Count="0" />
+      <LineId Id="444" Count="15" />
+      <LineId Id="462" Count="0" />
+      <LineId Id="437" Count="0" />
+      <LineId Id="525" Count="0" />
+      <LineId Id="530" Count="0" />
+      <LineId Id="529" Count="0" />
+      <LineId Id="526" Count="2" />
+      <LineId Id="262" Count="0" />
+      <LineId Id="531" Count="0" />
+      <LineId Id="259" Count="0" />
+      <LineId Id="714" Count="8" />
       <LineId Id="47" Count="0" />
       <LineId Id="46" Count="0" />
       <LineId Id="49" Count="0" />
-      <LineId Id="53" Count="0" />
-      <LineId Id="56" Count="0" />
-      <LineId Id="80" Count="1" />
-      <LineId Id="57" Count="0" />
-      <LineId Id="50" Count="0" />
+      <LineId Id="681" Count="0" />
+      <LineId Id="609" Count="0" />
+      <LineId Id="663" Count="0" />
+      <LineId Id="126" Count="0" />
+      <LineId Id="185" Count="0" />
+      <LineId Id="538" Count="0" />
+      <LineId Id="113" Count="0" />
+      <LineId Id="115" Count="0" />
+      <LineId Id="142" Count="0" />
+      <LineId Id="116" Count="0" />
+      <LineId Id="114" Count="0" />
+      <LineId Id="433" Count="1" />
+      <LineId Id="118" Count="1" />
+      <LineId Id="128" Count="0" />
+      <LineId Id="130" Count="1" />
+      <LineId Id="129" Count="0" />
+      <LineId Id="132" Count="0" />
+      <LineId Id="134" Count="0" />
+      <LineId Id="539" Count="0" />
+      <LineId Id="135" Count="0" />
+      <LineId Id="532" Count="0" />
+      <LineId Id="140" Count="0" />
+      <LineId Id="168" Count="0" />
+      <LineId Id="533" Count="2" />
+      <LineId Id="540" Count="0" />
+      <LineId Id="536" Count="0" />
+      <LineId Id="627" Count="1" />
+      <LineId Id="596" Count="0" />
+      <LineId Id="598" Count="0" />
+      <LineId Id="601" Count="0" />
+      <LineId Id="597" Count="0" />
+      <LineId Id="694" Count="1" />
+      <LineId Id="752" Count="0" />
+      <LineId Id="698" Count="0" />
+      <LineId Id="697" Count="0" />
+      <LineId Id="602" Count="2" />
+      <LineId Id="629" Count="1" />
+      <LineId Id="605" Count="0" />
+      <LineId Id="607" Count="0" />
+      <LineId Id="611" Count="0" />
+      <LineId Id="606" Count="0" />
+      <LineId Id="612" Count="2" />
+      <LineId Id="631" Count="1" />
+      <LineId Id="615" Count="0" />
+      <LineId Id="617" Count="0" />
+      <LineId Id="680" Count="0" />
+      <LineId Id="620" Count="0" />
+      <LineId Id="616" Count="0" />
+      <LineId Id="621" Count="1" />
+      <LineId Id="624" Count="0" />
+      <LineId Id="634" Count="1" />
+      <LineId Id="625" Count="0" />
+      <LineId Id="636" Count="0" />
+      <LineId Id="678" Count="0" />
+      <LineId Id="637" Count="0" />
+      <LineId Id="626" Count="0" />
+      <LineId Id="638" Count="1" />
+      <LineId Id="648" Count="0" />
+      <LineId Id="665" Count="0" />
+      <LineId Id="643" Count="0" />
+      <LineId Id="641" Count="0" />
+      <LineId Id="644" Count="1" />
+      <LineId Id="642" Count="0" />
+      <LineId Id="646" Count="1" />
+      <LineId Id="650" Count="3" />
+      <LineId Id="655" Count="0" />
+      <LineId Id="684" Count="0" />
+      <LineId Id="656" Count="0" />
+      <LineId Id="649" Count="0" />
+      <LineId Id="657" Count="0" />
+      <LineId Id="660" Count="0" />
+      <LineId Id="668" Count="0" />
+      <LineId Id="685" Count="0" />
+      <LineId Id="673" Count="0" />
+      <LineId Id="672" Count="0" />
+      <LineId Id="671" Count="0" />
+      <LineId Id="753" Count="0" />
+      <LineId Id="755" Count="13" />
+      <LineId Id="754" Count="0" />
+      <LineId Id="173" Count="1" />
+      <LineId Id="610" Count="0" />
+      <LineId Id="179" Count="0" />
+      <LineId Id="566" Count="0" />
+      <LineId Id="187" Count="0" />
+      <LineId Id="399" Count="0" />
+      <LineId Id="184" Count="0" />
+      <LineId Id="724" Count="1" />
+      <LineId Id="178" Count="0" />
+      <LineId Id="194" Count="0" />
+      <LineId Id="699" Count="0" />
+      <LineId Id="701" Count="2" />
+      <LineId Id="144" Count="0" />
+      <LineId Id="146" Count="0" />
+      <LineId Id="706" Count="0" />
+      <LineId Id="148" Count="18" />
       <LineId Id="40" Count="0" />
       <LineId Id="43" Count="0" />
       <LineId Id="39" Count="0" />
-    </LineIds>
-    <LineIds Name="fbTaskPiotrUN.FB_init">
-      <LineId Id="84" Count="26" />
-      <LineId Id="70" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>

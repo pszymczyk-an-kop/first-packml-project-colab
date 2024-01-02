@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="E_CMD_CELL" Id="{bcc4df79-890f-45ab-b800-18ca7a40ba4e}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE E_CMD_CELL :
+(
+	STOP := 0,
+	START,
+	ABORT
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

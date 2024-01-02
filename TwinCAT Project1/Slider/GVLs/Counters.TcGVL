@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <GVL Name="Counters" Id="{7aa1b933-f473-443b-9eb0-69c4c379c9fc}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+VAR_GLOBAL CONSTANT
+	SliderEMNo : INT := 2;
+	SliderWithGripperEMNo : INT := 1;
+	XYMoverEMNo : INT := 2;
+	
+	packmlUnLast : INT := 1;
+	packmlEmLast : INT := SliderEMNo + SliderWithGripperEMNo + XYMoverEMNo;
+END_VAR]]></Declaration>
+  </GVL>
+</TcPlcObject>
