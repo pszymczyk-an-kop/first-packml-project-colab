@@ -215,7 +215,7 @@ CASE State OF
 		END_IF	
 END_CASE
 
-// Do not write anything here, it will execute everytime due to RETURN command used in case
+// Do not write anything here, it will not execute everytime due to RETURN command used in case
 
 
 
