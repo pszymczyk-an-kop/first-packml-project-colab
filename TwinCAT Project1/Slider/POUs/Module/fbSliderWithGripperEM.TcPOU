@@ -39,10 +39,10 @@ fbSignalSim(
 
 IF initial THEN // AFTER START OF PLC ENTER Undefined state
 	state:=0;
-	//em.CMD := E_CMD.powerOn; //// MAKES SENSE? <- no it doesnt because you change input 
+	
 	initial:= FALSE;
-	 em.Config.Data.pick_pos:=3; 
-	 em.Config.Data.drop_pos:=2;
+	 //em.Config.Data.pick_pos:=3; 
+	 //em.Config.Data.drop_pos:=2;    it is set in UN 
 	
 END_IF
 

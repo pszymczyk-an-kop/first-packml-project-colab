@@ -25,6 +25,7 @@ VAR
 	declareIterator : DINT;
 	moduleWorkIterator : DINT;
 	initialConfig: BOOL := TRUE;
+	
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -114,12 +115,47 @@ CASE State OF
 		
 	30:	// Start of my specific task (all modules stays in execute)
 		// input -> XY1 -> SWG -> XY2 -> S1 -> SWG -> S2 -> output
-		IF (em[1].SequenceStep = 20		// XY1
-		AND cell.PlaceObject)			// Object input signal
+		IF em[1].SequenceStep = 30		// XY1
+		AND (cell.PlaceObject[1] OR em[1].Config.Data.I[5] = TRUE)			// Object input signal 1
 		THEN
-			cell.PlaceObject := FALSE;
-			em[1].Config.Data.I[5] := TRUE;
+			cell.PlaceObject[1] := FALSE;
+			em[1].Config.Data.I[5] := TRUE; 
 			State := 40;
+		END_IF
+
+
+
+		IF em[2].SequenceStep = 40			// SWG
+		AND (cell.PlaceObject[2] OR em[2].Config.Data.I[3] = TRUE)			// Object input signal 2
+		THEN
+			cell.PlaceObject[2] := FALSE;
+			em[2].Config.Data.I[3] := TRUE;
+			State := 50;
+		END_IF
+
+
+		IF em[3].SequenceStep = 30			// XY2
+		AND (cell.PlaceObject[3] OR em[3].Config.Data.I[5] = TRUE)			// Object input signal 3
+		THEN
+			cell.PlaceObject[3] := FALSE;
+			em[3].Config.Data.I[5] := TRUE;
+			State := 60;
+		END_IF
+
+		IF em[4].SequenceStep = 60			// S1
+		AND (cell.PlaceObject[4] OR em[4].Config.Data.I[3] = TRUE)			// Object input signal 4 
+		THEN
+			cell.PlaceObject[4] := FALSE;
+			em[4].Config.Data.I[3] := TRUE;
+			State := 70;
+		END_IF
+		
+		IF em[5].SequenceStep = 60		// S2
+		AND (cell.PlaceObject[5] OR em[5].Config.Data.I[3] = TRUE)			// Object input signal 5 or pp at S2
+		THEN
+			cell.PlaceObject[5] := FALSE;
+			em[5].Config.Data.I[3] := TRUE;
+			State := 90;
 		END_IF
 		
 		IF StoppedState <> 0 AND StoppedState < 1000 THEN
@@ -288,12 +324,17 @@ END_CASE
       <LineId Id="140" Count="0" />
       <LineId Id="168" Count="0" />
       <LineId Id="533" Count="2" />
-      <LineId Id="540" Count="0" />
-      <LineId Id="536" Count="0" />
-      <LineId Id="627" Count="1" />
-      <LineId Id="596" Count="0" />
-      <LineId Id="598" Count="0" />
-      <LineId Id="601" Count="0" />
+      <LineId Id="830" Count="6" />
+      <LineId Id="800" Count="3" />
+      <LineId Id="823" Count="4" />
+      <LineId Id="845" Count="0" />
+      <LineId Id="804" Count="2" />
+      <LineId Id="817" Count="5" />
+      <LineId Id="807" Count="1" />
+      <LineId Id="810" Count="5" />
+      <LineId Id="794" Count="0" />
+      <LineId Id="816" Count="0" />
+      <LineId Id="837" Count="5" />
       <LineId Id="597" Count="0" />
       <LineId Id="694" Count="1" />
       <LineId Id="752" Count="0" />

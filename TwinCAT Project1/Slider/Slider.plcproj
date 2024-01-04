@@ -106,6 +106,9 @@
     <Compile Include="POUs\UN\fbTaskPiotrUN.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="POUs\UN\fbTaskMichalUN.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="POUs\UN\fbUN.TcPOU">
       <SubType>Code</SubType>
     </Compile>

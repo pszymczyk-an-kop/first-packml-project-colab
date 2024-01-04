@@ -11,6 +11,8 @@ STRUCT
 	drop_pos: INT ;						// Q CMD to where gripper moves for drop
 	act_pos: INT;						// I actual position from of gripper
 	give_pos: INT;						// writes value to servo_handle // simulator 
+	takeObject : BOOL;
+	objectSensor : BOOL;
 END_STRUCT
 END_TYPE]]></Declaration>
   </DUT>
