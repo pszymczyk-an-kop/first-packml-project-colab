@@ -159,7 +159,7 @@ END_CASE
 em.SequenceStep:=state;       //pass sequence step outside to SimSignal
 
 em.Config.Data.Q[3]:=servo_GO;//Q[3] alias
-
+em.Config.Data.objectSensor REF= em.Config.Data.I[3];
 
 
 

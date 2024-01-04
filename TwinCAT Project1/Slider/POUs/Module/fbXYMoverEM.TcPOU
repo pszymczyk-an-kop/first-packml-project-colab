@@ -117,7 +117,24 @@ CASE XYMoverActualStep OF
                         
 END_CASE
 END_IF
+
 em.SequenceStep := XYMoverActualStep;
+em.Config.Data.objectSensor REF= em.Config.Data.I[5];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ]]></ST>
     </Implementation>
     <LineIds Name="fbXYMoverEM">
@@ -159,8 +176,12 @@ em.SequenceStep := XYMoverActualStep;
       <LineId Id="242" Count="0" />
       <LineId Id="308" Count="1" />
       <LineId Id="307" Count="0" />
-      <LineId Id="244" Count="3" />
+      <LineId Id="244" Count="2" />
+      <LineId Id="350" Count="0" />
+      <LineId Id="247" Count="0" />
       <LineId Id="9" Count="0" />
+      <LineId Id="335" Count="14" />
+      <LineId Id="334" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>

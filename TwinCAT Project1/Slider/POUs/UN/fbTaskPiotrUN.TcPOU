@@ -20,13 +20,21 @@ VAR
 	iXYMoverEM : DINT := 1;
 	
 	i : DINT;
+	j : DINT;
 	State : INT := 0;
 	StoppedState : INT := 0;
 	declareIterator : DINT;
 	moduleWorkIterator : DINT;
 	initialConfig: BOOL := TRUE;
 	svTime : TIME := T#15S;
+	oTime : TIME := T#1S;
 	supervisionTimer: TON;
+	objectTimer: TON;
+	objectWhichStopped : DINT := 0;
+	takeObjectCounter : USINT;
+	stoppedBy : STRING := '';
+	stoppedByTemp : STRING;
+	oneAlarm: BOOL;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -67,6 +75,7 @@ IF initialConfig THEN
 	END_FOR
 	
 	supervisionTimer.PT := svTime;
+	objectTimer.PT := oTime;
 END_IF
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -77,11 +86,33 @@ END_FOR
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-fbSignalSimPiotr(EnableSim := FALSE);
+fbSignalSimPiotr(EnableSim := TRUE);
 
 IF supervisionTimer.Q THEN
+	stoppedBy := 'Supervision';
 	supervisionTimer(IN := FALSE);
 	cell.Cmd := E_CMD_CELL.STOP;
+END_IF
+
+FOR j := 1 TO Counters.packmlEmLast DO
+	IF NOT em[j].Config.Data.takeObject AND em[j].Config.Data.objectSensor THEN
+		objectTimer(IN := TRUE);
+		objectWhichStopped := j;
+	ELSIF objectWhichStopped = j
+	AND ((em[j].Config.Data.takeObject AND em[j].Config.Data.objectSensor)
+	OR (NOT em[j].Config.Data.takeObject AND NOT em[j].Config.Data.objectSensor)) THEN
+		objectWhichStopped := 0;
+		objectTimer(IN := FALSE);
+		oneAlarm := FALSE;
+	END_IF
+END_FOR
+
+IF objectTimer.Q THEN
+	cell.Cmd := E_CMD_CELL.STOP;
+	IF NOT oneAlarm THEN
+		stoppedBy := CONCAT('Object at em: ', DINT_TO_STRING(ObjectWhichStopped));
+		oneAlarm := TRUE;
+	END_IF
 END_IF
 
 IF cell.Cmd = E_CMD_CELL.STOP AND State < 2000 THEN
@@ -90,6 +121,8 @@ IF cell.Cmd = E_CMD_CELL.STOP AND State < 2000 THEN
 END_IF
 
 IF cell.Cmd = E_CMD_CELL.ABORT AND State < 1000 THEN
+	stoppedBy := 'ABORT Button';
+	StoppedState := 0;
 	State := 1000;
 END_IF
 
@@ -110,6 +143,7 @@ CASE State OF
 		State := 10;
 	
 	10:	IF cell.Cmd = E_CMD_CELL.START THEN
+			stoppedBy := '';
 			un.Cmd := E_CMD.start;
 			un.Status := E_Status.starting;
 			State := 20;
@@ -129,7 +163,7 @@ CASE State OF
 		AND cell.PlaceObject)			// Object input signal
 		THEN
 			cell.PlaceObject := FALSE;
-			em[1].Config.Data.I[5] := TRUE;
+			em[1].Config.Data.takeObject := TRUE;
 			State := 40;
 		END_IF
 		
@@ -144,8 +178,9 @@ CASE State OF
 		IF em[1].SequenceStep = 60		// XY1
 		AND em[2].SequenceStep = 40		// SWG
 		THEN
-			em[1].Config.Data.I[5] := FALSE;
-			em[2].Config.Data.I[3] := TRUE;
+			em[1].Config.Data.takeObject := FALSE;
+			em[2].Config.Data.takeObject := TRUE;
+			
 			State := 50;
 			supervisionTimer(IN := FALSE);
 		END_IF
@@ -156,8 +191,9 @@ CASE State OF
 		IF em[2].SequenceStep = 43		// SWG
 		AND em[3].SequenceStep = 20		// XY2
 		THEN
-			em[2].Config.Data.I[3] := FALSE;
-			em[3].Config.Data.I[5] := TRUE;
+			em[2].Config.Data.takeObject := FALSE;
+			em[3].Config.Data.takeObject := TRUE;
+			
 			em[2].Config.Data.pick_pos := 4;
 			State := 60;
 			supervisionTimer(IN := FALSE);
@@ -169,8 +205,9 @@ CASE State OF
 		IF em[3].SequenceStep = 60		// XY2
 		AND em[4].SequenceStep = 50		// S1
 		THEN
-			em[3].Config.Data.I[5] := FALSE;
-			em[4].Config.Data.I[3] := TRUE;
+			em[3].Config.Data.takeObject := FALSE;
+			em[4].Config.Data.takeObject := TRUE;
+			
 			em[2].Config.Data.drop_pos := 1;
 			State := 70;
 			supervisionTimer(IN := FALSE);
@@ -182,8 +219,9 @@ CASE State OF
 		IF em[2].SequenceStep = 40		// SWG
 		AND em[4].SequenceStep = 70		// S1
 		THEN
-			em[2].Config.Data.I[3] := TRUE;// SWG
-			em[4].Config.Data.I[3] := FALSE;
+			em[4].Config.Data.takeObject := FALSE;
+			em[2].Config.Data.takeObject := TRUE;
+			
 			State := 80;
 			supervisionTimer(IN := FALSE);
 		END_IF
@@ -194,8 +232,9 @@ CASE State OF
 		IF em[2].SequenceStep = 43		// SWG
 		AND em[5].SequenceStep = 50		// S2
 		THEN
-			em[2].Config.Data.I[3] := FALSE;
-			em[5].Config.Data.I[3] := TRUE;
+			em[2].Config.Data.takeObject := FALSE;
+			em[5].Config.Data.takeObject := TRUE;
+			
 			em[2].Config.Data.pick_pos := 3;
 			State := 90;
 			supervisionTimer(IN := FALSE);
@@ -205,9 +244,14 @@ CASE State OF
 		supervisionTimer(IN := TRUE);
 		IF em[5].SequenceStep = 70 THEN
 			em[2].Config.Data.drop_pos := 1;
-			em[5].Config.Data.I[3] := FALSE;
-			State := 30;
+			State := 100;
 			supervisionTimer(IN := FALSE);
+		END_IF
+		
+	100: // output
+		IF NOT em[5].Config.Data.objectSensor THEN
+			em[5].Config.Data.takeObject := FALSE;
+			State := 30;
 		END_IF
 		
 	1000:
@@ -229,6 +273,8 @@ CASE State OF
 	2000:
 		un.Cmd := E_CMD.stop;
 		un.Status := E_Status.stopping;
+		supervisionTimer(IN := FALSE);
+		objectTimer(IN := FALSE);
 		FOR i := 1 TO Counters.packmlEmLast DO
 			IF em[i].Status <> E_Status.stopped THEN
 				RETURN;
@@ -274,18 +320,41 @@ VAR_INPUT
 END_VAR
 VAR
 	timers : ARRAY[1..10] OF TON;
+	sim : BOOL := TRUE;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF EnableSim THEN
 	CASE State OF
-		30:	timers[1](in := TRUE);
-				
-			IF timers[1].Q THEN
-				timers[1](in := FALSE);
-				em[1].Config.Data.I[5] := FALSE;
+		40:	IF em[1].Config.Data.takeObject AND NOT em[1].Config.Data.objectSensor THEN
+				em[1].Config.Data.objectSensor := TRUE;
 			END_IF
-		
-		//40:	
+			
+		50:	IF em[2].Config.Data.takeObject AND NOT em[2].Config.Data.objectSensor THEN
+				em[1].Config.Data.objectSensor := FALSE;
+				em[2].Config.Data.objectSensor := TRUE;
+			END_IF
+			
+		60:	IF em[3].Config.Data.takeObject AND NOT em[3].Config.Data.objectSensor THEN
+				em[2].Config.Data.objectSensor := FALSE;
+				em[3].Config.Data.objectSensor := TRUE;
+			END_IF
+			
+		70:	IF em[4].Config.Data.takeObject AND NOT em[4].Config.Data.objectSensor THEN
+				em[3].Config.Data.objectSensor := FALSE;
+				em[4].Config.Data.objectSensor := TRUE;
+			END_IF
+			
+		80:	IF em[2].Config.Data.takeObject AND NOT em[2].Config.Data.objectSensor THEN
+				em[4].Config.Data.objectSensor := FALSE;
+				em[2].Config.Data.objectSensor := TRUE;
+			END_IF
+			
+		90:	IF em[5].Config.Data.takeObject AND NOT em[5].Config.Data.objectSensor THEN
+				em[2].Config.Data.objectSensor := FALSE;
+				em[5].Config.Data.objectSensor := TRUE;
+			END_IF
+			
+		100:em[5].Config.Data.objectSensor := FALSE;
 	END_CASE
 END_IF]]></ST>
       </Implementation>
@@ -305,6 +374,7 @@ END_IF]]></ST>
       <LineId Id="462" Count="0" />
       <LineId Id="796" Count="0" />
       <LineId Id="820" Count="1" />
+      <LineId Id="900" Count="0" />
       <LineId Id="525" Count="0" />
       <LineId Id="530" Count="0" />
       <LineId Id="529" Count="0" />
@@ -314,9 +384,32 @@ END_IF]]></ST>
       <LineId Id="259" Count="0" />
       <LineId Id="856" Count="1" />
       <LineId Id="822" Count="1" />
+      <LineId Id="958" Count="0" />
       <LineId Id="833" Count="0" />
-      <LineId Id="824" Count="1" />
-      <LineId Id="714" Count="7" />
+      <LineId Id="954" Count="0" />
+      <LineId Id="825" Count="0" />
+      <LineId Id="881" Count="3" />
+      <LineId Id="902" Count="0" />
+      <LineId Id="897" Count="0" />
+      <LineId Id="920" Count="1" />
+      <LineId Id="903" Count="0" />
+      <LineId Id="898" Count="0" />
+      <LineId Id="953" Count="0" />
+      <LineId Id="885" Count="0" />
+      <LineId Id="875" Count="0" />
+      <LineId Id="924" Count="1" />
+      <LineId Id="928" Count="0" />
+      <LineId Id="949" Count="0" />
+      <LineId Id="959" Count="0" />
+      <LineId Id="952" Count="0" />
+      <LineId Id="951" Count="0" />
+      <LineId Id="923" Count="0" />
+      <LineId Id="714" Count="0" />
+      <LineId Id="913" Count="0" />
+      <LineId Id="716" Count="4" />
+      <LineId Id="909" Count="0" />
+      <LineId Id="905" Count="0" />
+      <LineId Id="721" Count="0" />
       <LineId Id="813" Count="0" />
       <LineId Id="47" Count="0" />
       <LineId Id="46" Count="0" />
@@ -334,6 +427,7 @@ END_IF]]></ST>
       <LineId Id="114" Count="0" />
       <LineId Id="433" Count="1" />
       <LineId Id="118" Count="1" />
+      <LineId Id="918" Count="0" />
       <LineId Id="128" Count="0" />
       <LineId Id="130" Count="1" />
       <LineId Id="129" Count="0" />
@@ -362,7 +456,8 @@ END_IF]]></ST>
       <LineId Id="604" Count="0" />
       <LineId Id="629" Count="1" />
       <LineId Id="605" Count="0" />
-      <LineId Id="607" Count="0" />
+      <LineId Id="858" Count="0" />
+      <LineId Id="890" Count="0" />
       <LineId Id="611" Count="0" />
       <LineId Id="799" Count="0" />
       <LineId Id="606" Count="0" />
@@ -372,7 +467,8 @@ END_IF]]></ST>
       <LineId Id="614" Count="0" />
       <LineId Id="631" Count="1" />
       <LineId Id="615" Count="0" />
-      <LineId Id="617" Count="0" />
+      <LineId Id="859" Count="0" />
+      <LineId Id="889" Count="0" />
       <LineId Id="680" Count="0" />
       <LineId Id="620" Count="0" />
       <LineId Id="801" Count="0" />
@@ -383,7 +479,8 @@ END_IF]]></ST>
       <LineId Id="624" Count="0" />
       <LineId Id="634" Count="1" />
       <LineId Id="625" Count="0" />
-      <LineId Id="636" Count="0" />
+      <LineId Id="860" Count="0" />
+      <LineId Id="888" Count="0" />
       <LineId Id="678" Count="0" />
       <LineId Id="637" Count="0" />
       <LineId Id="803" Count="0" />
@@ -395,14 +492,17 @@ END_IF]]></ST>
       <LineId Id="665" Count="0" />
       <LineId Id="643" Count="0" />
       <LineId Id="641" Count="0" />
-      <LineId Id="644" Count="1" />
+      <LineId Id="861" Count="0" />
+      <LineId Id="887" Count="0" />
+      <LineId Id="645" Count="0" />
       <LineId Id="805" Count="0" />
       <LineId Id="642" Count="0" />
       <LineId Id="646" Count="1" />
       <LineId Id="828" Count="0" />
       <LineId Id="855" Count="0" />
       <LineId Id="650" Count="3" />
-      <LineId Id="655" Count="0" />
+      <LineId Id="862" Count="0" />
+      <LineId Id="886" Count="0" />
       <LineId Id="684" Count="0" />
       <LineId Id="656" Count="0" />
       <LineId Id="807" Count="0" />
@@ -412,16 +512,19 @@ END_IF]]></ST>
       <LineId Id="808" Count="0" />
       <LineId Id="668" Count="0" />
       <LineId Id="685" Count="0" />
-      <LineId Id="673" Count="0" />
       <LineId Id="672" Count="0" />
       <LineId Id="826" Count="0" />
       <LineId Id="671" Count="0" />
+      <LineId Id="929" Count="3" />
+      <LineId Id="934" Count="0" />
+      <LineId Id="933" Count="0" />
       <LineId Id="753" Count="0" />
       <LineId Id="755" Count="13" />
       <LineId Id="754" Count="0" />
       <LineId Id="173" Count="1" />
       <LineId Id="610" Count="0" />
       <LineId Id="179" Count="0" />
+      <LineId Id="916" Count="1" />
       <LineId Id="566" Count="0" />
       <LineId Id="187" Count="0" />
       <LineId Id="399" Count="0" />
@@ -442,9 +545,23 @@ END_IF]]></ST>
     <LineIds Name="fbTaskPiotrUN.fbSignalSimPiotr">
       <LineId Id="5" Count="0" />
       <LineId Id="7" Count="0" />
-      <LineId Id="14" Count="4" />
-      <LineId Id="9" Count="0" />
-      <LineId Id="19" Count="1" />
+      <LineId Id="17" Count="2" />
+      <LineId Id="21" Count="3" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="27" Count="2" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="32" Count="2" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="37" Count="2" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="42" Count="2" />
+      <LineId Id="41" Count="0" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="47" Count="0" />
       <LineId Id="10" Count="0" />
       <LineId Id="8" Count="0" />
     </LineIds>

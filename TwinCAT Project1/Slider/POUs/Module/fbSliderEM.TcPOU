@@ -153,7 +153,7 @@ IF em.Config.Functionality = E_Function.eSlider THEN
 END_IF
 
 em.SequenceStep := State;
-
+em.Config.Data.objectSensor REF= em.Config.Data.I[3];
 
 
 
