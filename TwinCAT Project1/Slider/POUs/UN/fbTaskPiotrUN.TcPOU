@@ -19,7 +19,7 @@ VAR
 	XYMoverEM : ARRAY[1..Counters.XYMoverEMNo] OF fbXYMoverEM;
 	iXYMoverEM : DINT := 1;
 	
-	visu : VisuMapPiotrUN;
+	fbSignalSimPiotr : fbSignalSimPiotr;
 	
 	i : DINT;
 	j : DINT;
@@ -81,7 +81,6 @@ IF initialConfig THEN
 	
 	supervisionTimer.PT := svTime;
 	objectTimer.PT := oTime;
-	visu(em := em, cell := cell);
 END_IF
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -92,7 +91,7 @@ END_FOR
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-fbSignalSimPiotr(EnableSim := TRUE);
+fbSignalSimPiotr(em := em, State := State, EnableSim := EnableSim);
 
 IF supervisionTimer.Q THEN
 	stoppedBy := 'Supervision';
@@ -319,52 +318,6 @@ END_CASE
 
 ]]></ST>
     </Implementation>
-    <Method Name="fbSignalSimPiotr" Id="{f9a1b717-f0a4-4290-b491-ba351cdc9ac1}">
-      <Declaration><![CDATA[METHOD fbSignalSimPiotr : BOOL
-VAR_INPUT
-	EnableSim : BOOL;
-END_VAR
-VAR
-	timers : ARRAY[1..10] OF TON;
-	sim : BOOL := TRUE;
-END_VAR]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[IF EnableSim THEN
-	CASE State OF
-		40:	IF em[1].Config.Data.takeObject AND NOT em[1].Config.Data.objectSensor THEN
-				em[1].Config.Data.objectSensor := TRUE;
-			END_IF
-			
-		50:	IF em[2].Config.Data.takeObject AND NOT em[2].Config.Data.objectSensor THEN
-				em[1].Config.Data.objectSensor := FALSE;
-				em[2].Config.Data.objectSensor := TRUE;
-			END_IF
-			
-		60:	IF em[3].Config.Data.takeObject AND NOT em[3].Config.Data.objectSensor THEN
-				em[2].Config.Data.objectSensor := FALSE;
-				em[3].Config.Data.objectSensor := TRUE;
-			END_IF
-			
-		70:	IF em[4].Config.Data.takeObject AND NOT em[4].Config.Data.objectSensor THEN
-				em[3].Config.Data.objectSensor := FALSE;
-				em[4].Config.Data.objectSensor := TRUE;
-			END_IF
-			
-		80:	IF em[2].Config.Data.takeObject AND NOT em[2].Config.Data.objectSensor THEN
-				em[4].Config.Data.objectSensor := FALSE;
-				em[2].Config.Data.objectSensor := TRUE;
-			END_IF
-			
-		90:	IF em[5].Config.Data.takeObject AND NOT em[5].Config.Data.objectSensor THEN
-				em[2].Config.Data.objectSensor := FALSE;
-				em[5].Config.Data.objectSensor := TRUE;
-			END_IF
-			
-		100:em[5].Config.Data.objectSensor := FALSE;
-	END_CASE
-END_IF]]></ST>
-      </Implementation>
-    </Method>
     <LineIds Name="fbTaskPiotrUN">
       <LineId Id="31" Count="1" />
       <LineId Id="35" Count="3" />
@@ -382,7 +335,6 @@ END_IF]]></ST>
       <LineId Id="999" Count="2" />
       <LineId Id="820" Count="1" />
       <LineId Id="900" Count="0" />
-      <LineId Id="960" Count="0" />
       <LineId Id="525" Count="0" />
       <LineId Id="530" Count="0" />
       <LineId Id="529" Count="0" />
@@ -549,29 +501,6 @@ END_IF]]></ST>
       <LineId Id="40" Count="0" />
       <LineId Id="43" Count="0" />
       <LineId Id="39" Count="0" />
-    </LineIds>
-    <LineIds Name="fbTaskPiotrUN.fbSignalSimPiotr">
-      <LineId Id="5" Count="0" />
-      <LineId Id="7" Count="0" />
-      <LineId Id="17" Count="2" />
-      <LineId Id="21" Count="3" />
-      <LineId Id="20" Count="0" />
-      <LineId Id="25" Count="0" />
-      <LineId Id="27" Count="2" />
-      <LineId Id="26" Count="0" />
-      <LineId Id="30" Count="0" />
-      <LineId Id="32" Count="2" />
-      <LineId Id="31" Count="0" />
-      <LineId Id="35" Count="0" />
-      <LineId Id="37" Count="2" />
-      <LineId Id="36" Count="0" />
-      <LineId Id="40" Count="0" />
-      <LineId Id="42" Count="2" />
-      <LineId Id="41" Count="0" />
-      <LineId Id="45" Count="0" />
-      <LineId Id="47" Count="0" />
-      <LineId Id="10" Count="0" />
-      <LineId Id="8" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>

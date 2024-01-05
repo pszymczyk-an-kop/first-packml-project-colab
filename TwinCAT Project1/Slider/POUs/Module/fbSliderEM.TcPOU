@@ -36,7 +36,7 @@ fbSignalSim(
 	StartOnOtherSide := StartOnOtherSide,
 	CmdSim := CmdSim
 );
-timer(PT := timerPT); 
+timer(PT := timerPT);
 
 IF em.Config.Functionality = E_Function.eSlider THEN
 	IF State >= 15 AND em.Cmd = E_CMD.abort THEN
@@ -48,8 +48,11 @@ IF em.Config.Functionality = E_Function.eSlider THEN
 	END_IF
 
 	CASE State OF
-		0:	IF em.Config.Data.I[1] OR em.Config.Data.I[2] THEN
+		0:	em.StatusHMI.isMoving := FALSE;
+			em.StatusHMI.undefined := TRUE;
+			IF em.Config.Data.I[1] OR em.Config.Data.I[2] THEN
 				State := 1;
+				em.StatusHMI.undefined := FALSE;
 			ELSE
 				em.Status := E_Status.undefined;
 				State := 20;
@@ -57,12 +60,17 @@ IF em.Config.Functionality = E_Function.eSlider THEN
 			
 		1:	IF em.Config.Data.I[2] THEN
 				bSliderSide := TRUE;
+				em.StatusHMI.currentPosition := 2;
+			ELSE
+				em.StatusHMI.currentPosition := 1;
 			END_IF
 			State := 40;
 		
 		5:	em.Status := E_Status.aborting;
 			em.Config.Data.Q[1] := FALSE;
 			em.Config.Data.Q[2] := FALSE;
+			em.StatusHMI.isMoving := FALSE;
+			em.StatusHMI.undefined := TRUE;
 			State := 7;
 			
 		7:	em.Status := E_Status.aborted;
@@ -70,12 +78,15 @@ IF em.Config.Functionality = E_Function.eSlider THEN
 			
 		10:	IF em.Cmd = E_CMD.clear THEN
 				em.Status := E_Status.clearing;
+				em.StatusHMI.undefined := FALSE;
 				State := 20;
 			END_IF
 			
 		15: em.Status := E_Status.stopping;
 			em.Config.Data.Q[1] := FALSE;
 			em.Config.Data.Q[2] := FALSE;
+			em.StatusHMI.isMoving := FALSE;
+			em.StatusHMI.undefined := FALSE;
 			State := 20;
 			
 		20:	em.Status := E_Status.stopped;
@@ -85,10 +96,14 @@ IF em.Config.Functionality = E_Function.eSlider THEN
 				em.Status := E_Status.resetting;
 				em.Config.Data.Q[1] := FALSE;
 				em.Config.Data.Q[2] := TRUE;
+				em.StatusHMI.isMoving := TRUE;
+				em.StatusHMI.movingDirection := E_DIRECTION.Upstream;
+				em.StatusHMI.movingToPosition := 1;
 				State := 35;
 			END_IF
 			
 		35:	IF em.Config.Data.I[1] THEN
+				em.StatusHMI.isMoving := FALSE;
 				em.Config.Data.Q[2] := FALSE;
 				bSliderSide := FALSE;
 				State := 40;
@@ -113,12 +128,18 @@ IF em.Config.Functionality = E_Function.eSlider THEN
 			END_IF
 			
 		52: IF timer.Q THEN
+				em.StatusHMI.movingDirection := E_DIRECTION.Upstream;
+				em.StatusHMI.movingToPosition := 1;
+				em.StatusHMI.undefined := FALSE;
 				timer(IN := FALSE);
 				em.Config.Data.Q[2] := TRUE;
 				State := 60;
 			END_IF	
 			
 		55: IF timer.Q THEN
+				em.StatusHMI.movingDirection := E_DIRECTION.Downstream;
+				em.StatusHMI.movingToPosition := 2;
+				em.StatusHMI.undefined := FALSE;
 				timer(IN := FALSE);
 				em.Config.Data.Q[1] := TRUE;
 				State := 60;
@@ -126,9 +147,11 @@ IF em.Config.Functionality = E_Function.eSlider THEN
 			
 			// Main execute
 		60:	IF em.Cmd = E_CMD.hold THEN
+				em.StatusHMI.undefined := TRUE;
 				em.Status := E_Status.holding;
 				State := 200;
 			ELSIF em.Cmd = E_CMD.suspend THEN
+				em.StatusHMI.undefined := TRUE;
 				em.Status := E_Status.suspending;
 				State := 300;
 			END_IF
@@ -152,6 +175,7 @@ IF em.Config.Functionality = E_Function.eSlider THEN
 		200:em.Status := E_Status.held;
 			em.Config.Data.Q[1] := FALSE;
 			em.Config.Data.Q[2] := FALSE;
+			em.StatusHMI.undefined := TRUE;
 			IF em.Cmd = E_CMD.unhold THEN
 				em.Status := E_Status.unholding;
 				State := 50;
@@ -160,6 +184,7 @@ IF em.Config.Functionality = E_Function.eSlider THEN
 		300:em.Status := E_Status.suspended;
 			em.Config.Data.Q[1] := FALSE;
 			em.Config.Data.Q[2] := FALSE;
+			em.StatusHMI.undefined := TRUE;
 			IF em.Cmd = E_CMD.unsuspend THEN
 				em.Status := E_Status.unsuspending;
 				State := 50;
@@ -170,9 +195,33 @@ END_IF
 em.SequenceStep := State;
 em.Config.Data.objectSensor REF= em.Config.Data.I[3];
 
+IF em.Config.Data.Q[1] XOR em.Config.Data.Q[2] THEN
+	em.StatusHMI.isMoving := TRUE;
+ELSIF em.Config.Data.Q[1] AND em.Config.Data.Q[2] THEN
+	em.StatusHmi.isMoving := FALSE;
+	em.StatusHMI.undefined := TRUE;
+	em.StatusHMI.alarm := TRUE;
+	em.StatusHMI.alarmText := 'Both actuators are operating';
+ELSE
+	em.StatusHmi.isMoving := FALSE;
+	em.StatusHMI.undefined := FALSE;
+	em.StatusHMI.alarm := FALSE;
+	em.StatusHMI.alarmText := '';
+END_IF
 
+IF em.Config.Data.I[3] THEN
+	em.StatusHMI.hasObject := TRUE;
+ELSE
+	em.StatusHMI.hasObject := FALSE;
+END_IF
 
-
+IF em.Config.Data.I[1] THEN
+	em.StatusHMI.currentPosition := 1;
+ELSIF em.Config.Data.I[2] THEN
+	em.StatusHMI.currentPosition := 2;
+ELSE
+	em.StatusHMI.currentPosition := 0;
+END_IF
 
 
 
@@ -195,21 +244,50 @@ em.Config.Data.objectSensor REF= em.Config.Data.I[3];
       <LineId Id="840" Count="0" />
       <LineId Id="899" Count="0" />
       <LineId Id="569" Count="0" />
-      <LineId Id="688" Count="25" />
+      <LineId Id="688" Count="10" />
+      <LineId Id="945" Count="0" />
+      <LineId Id="919" Count="0" />
+      <LineId Id="699" Count="0" />
+      <LineId Id="946" Count="0" />
+      <LineId Id="700" Count="6" />
+      <LineId Id="960" Count="2" />
+      <LineId Id="707" Count="5" />
+      <LineId Id="957" Count="1" />
+      <LineId Id="713" Count="0" />
       <LineId Id="881" Count="2" />
-      <LineId Id="714" Count="40" />
+      <LineId Id="714" Count="2" />
+      <LineId Id="959" Count="0" />
+      <LineId Id="717" Count="5" />
+      <LineId Id="947" Count="1" />
+      <LineId Id="723" Count="8" />
+      <LineId Id="921" Count="2" />
+      <LineId Id="732" Count="3" />
+      <LineId Id="924" Count="0" />
+      <LineId Id="736" Count="17" />
+      <LineId Id="930" Count="0" />
       <LineId Id="900" Count="0" />
       <LineId Id="756" Count="1" />
       <LineId Id="912" Count="0" />
-      <LineId Id="914" Count="3" />
+      <LineId Id="914" Count="0" />
+      <LineId Id="936" Count="0" />
+      <LineId Id="933" Count="0" />
+      <LineId Id="955" Count="0" />
+      <LineId Id="915" Count="2" />
       <LineId Id="913" Count="0" />
       <LineId Id="758" Count="0" />
+      <LineId Id="937" Count="0" />
+      <LineId Id="939" Count="0" />
       <LineId Id="903" Count="0" />
+      <LineId Id="956" Count="0" />
       <LineId Id="910" Count="0" />
       <LineId Id="908" Count="1" />
       <LineId Id="905" Count="0" />
       <LineId Id="904" Count="0" />
-      <LineId Id="759" Count="9" />
+      <LineId Id="759" Count="1" />
+      <LineId Id="943" Count="0" />
+      <LineId Id="761" Count="2" />
+      <LineId Id="944" Count="0" />
+      <LineId Id="764" Count="4" />
       <LineId Id="865" Count="0" />
       <LineId Id="770" Count="4" />
       <LineId Id="776" Count="3" />
@@ -218,9 +296,29 @@ em.Config.Data.objectSensor REF= em.Config.Data.I[3];
       <LineId Id="859" Count="0" />
       <LineId Id="864" Count="0" />
       <LineId Id="856" Count="0" />
-      <LineId Id="780" Count="19" />
+      <LineId Id="780" Count="2" />
+      <LineId Id="952" Count="0" />
+      <LineId Id="783" Count="7" />
+      <LineId Id="954" Count="0" />
+      <LineId Id="791" Count="8" />
       <LineId Id="232" Count="1" />
-      <LineId Id="235" Count="8" />
+      <LineId Id="992" Count="0" />
+      <LineId Id="965" Count="4" />
+      <LineId Id="978" Count="0" />
+      <LineId Id="980" Count="2" />
+      <LineId Id="979" Count="0" />
+      <LineId Id="964" Count="0" />
+      <LineId Id="971" Count="0" />
+      <LineId Id="970" Count="0" />
+      <LineId Id="972" Count="0" />
+      <LineId Id="974" Count="0" />
+      <LineId Id="977" Count="0" />
+      <LineId Id="973" Count="0" />
+      <LineId Id="235" Count="1" />
+      <LineId Id="983" Count="0" />
+      <LineId Id="985" Count="3" />
+      <LineId Id="984" Count="0" />
+      <LineId Id="237" Count="6" />
       <LineId Id="228" Count="0" />
     </LineIds>
   </POU>

@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="STATUS_HMI" Id="{53bf5917-e8a8-4455-8e2e-715ee8c35218}">
+    <Declaration><![CDATA[TYPE STATUS_HMI :
+STRUCT
+	isMoving : BOOL;
+	movingToPosition : INT;
+	currentPosition : INT;
+	movingDirection : E_DIRECTION;
+	hasObject : BOOL;
+	alarm : BOOL;
+	alarmText : STRING;
+	undefined : BOOL;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="fbSignalSimPiotr" Id="{d1df1a94-3f01-4237-b835-151f8fad3727}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK fbSignalSimPiotr
+VAR_IN_OUT
+	em : ARRAY[1..Counters.packmlEmLast] OF ST_EM;
+	State : INT;
+END_VAR
+VAR_INPUT
+	EnableSim : BOOL;
+END_VAR
+VAR
+	timers : ARRAY[1..10] OF TON;
+	sim : BOOL := TRUE;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF EnableSim THEN
+	CASE State OF
+		40:	IF em[1].Config.Data.takeObject AND NOT em[1].Config.Data.objectSensor THEN
+				em[1].Config.Data.objectSensor := TRUE;
+			END_IF
+			
+		50:	IF em[2].Config.Data.takeObject AND NOT em[2].Config.Data.objectSensor THEN
+				em[1].Config.Data.objectSensor := FALSE;
+				em[2].Config.Data.objectSensor := TRUE;
+			END_IF
+			
+		60:	IF em[3].Config.Data.takeObject AND NOT em[3].Config.Data.objectSensor THEN
+				em[2].Config.Data.objectSensor := FALSE;
+				em[3].Config.Data.objectSensor := TRUE;
+			END_IF
+			
+		70:	IF em[4].Config.Data.takeObject AND NOT em[4].Config.Data.objectSensor THEN
+				em[3].Config.Data.objectSensor := FALSE;
+				em[4].Config.Data.objectSensor := TRUE;
+			END_IF
+			
+		80:	IF em[2].Config.Data.takeObject AND NOT em[2].Config.Data.objectSensor THEN
+				em[4].Config.Data.objectSensor := FALSE;
+				em[2].Config.Data.objectSensor := TRUE;
+			END_IF
+			
+		90:	IF em[5].Config.Data.takeObject AND NOT em[5].Config.Data.objectSensor THEN
+				em[2].Config.Data.objectSensor := FALSE;
+				em[5].Config.Data.objectSensor := TRUE;
+			END_IF
+			
+		100:em[5].Config.Data.objectSensor := FALSE;
+	END_CASE
+END_IF]]></ST>
+    </Implementation>
+    <LineIds Name="fbSignalSimPiotr">
+      <LineId Id="10" Count="32" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="E_DIRECTION" Id="{daf3dd57-a111-4a64-a5d5-b2e7b9afec97}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE E_DIRECTION :
+(
+	Left,
+	Right,
+	Up,
+	Down,
+	Downstream,
+	Upstream
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>
