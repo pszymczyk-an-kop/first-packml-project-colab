@@ -56,6 +56,8 @@ CASE XYMoverActualStep OF
                  em.Status := E_Status.resetting;
                  em.Config.Data.Q[1] := TRUE;
                  em.Config.Data.Q[3] := TRUE;
+				 em.Config.Data.Q[2] := FALSE;
+				 em.Config.Data.Q[4] := FALSE;
                  XYMoverActualStep := 4;
             END_IF
                         
@@ -138,7 +140,10 @@ em.SequenceStep := XYMoverActualStep;
       <LineId Id="169" Count="6" />
       <LineId Id="177" Count="1" />
       <LineId Id="180" Count="0" />
-      <LineId Id="182" Count="9" />
+      <LineId Id="182" Count="2" />
+      <LineId Id="339" Count="0" />
+      <LineId Id="338" Count="0" />
+      <LineId Id="185" Count="6" />
       <LineId Id="193" Count="0" />
       <LineId Id="195" Count="4" />
       <LineId Id="323" Count="0" />

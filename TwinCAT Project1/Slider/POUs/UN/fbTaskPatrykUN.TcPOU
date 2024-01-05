@@ -21,10 +21,12 @@ VAR
 	
 	i : DINT;
 	GlobalStep : INT := 0;
+	NewStep : INT := 0;
 	declareIterator : DINT;
 	moduleWorkIterator : DINT;
 	initIterator: DINT := 1;
 	initialConfig: BOOL := TRUE;
+	TimerOnSensor : TON;
 	
 	fbSignalSimXYMover : fbSignalSimXYMover;
 	fbSignalSimSlider : fbSignalSimSlider;
@@ -93,6 +95,21 @@ IF em[6].SequenceStep = 60 THEN
 END_IF
 em[3].Config.Data.drop_pos := 6;
 
+IF em[1].SequenceStep = 40 AND em[1].Config.Data.act_pos = 1 THEN
+		TimerOnSensor(PT := T#1S);
+		TimerOnSensor(IN := TRUE);
+		IF TimerOnSensor.Q THEN
+			em[1].Config.Data.I[3] := TRUE;
+			TimerOnSensor(IN := FALSE);
+		END_IF
+END_IF
+
+IF em[1].SequenceStep = 43 AND em[4].SequenceStep = 50 THEN
+			em[1].Config.Data.I[3] := FALSE;
+			em[4].Config.Data.I[3] := TRUE;
+			GlobalStep := 32;
+		END_IF
+
 //////////////////////////////////////////////////////////////////////
 CASE GlobalStep OF
 	0:	un.Status := E_Status.undefined;
@@ -118,12 +135,12 @@ CASE GlobalStep OF
 				RETURN;
 			END_IF
 		END_FOR
-		GlobalStep := 30;
+		GlobalStep := 31;
 	
-	30: IF em[1].SequenceStep = 40 AND em[4].SequenceStep = 50 THEN
-			em[1].Config.Data.I[3] := TRUE;
-			GlobalStep := 31;
-		END_IF
+	//30: IF em[1].SequenceStep = 40 AND em[4].SequenceStep = 50 THEN
+			//em[1].Config.Data.I[3] := TRUE;
+			//GlobalStep := 31;
+		//END_IF
 	
 	31: IF em[1].SequenceStep = 43 AND em[4].SequenceStep = 50 THEN
 			em[1].Config.Data.I[3] := FALSE;
@@ -176,7 +193,7 @@ CASE GlobalStep OF
 		
 	70:	IF em[3].SequenceStep = 43 THEN
 			em[3].Config.Data.I[3] := FALSE;
-			GlobalStep := 30;
+			GlobalStep := 20;
 		END_IF
 	100: 	un.Cmd := E_Cmd.stop;
 			un.Status := E_Status.stopping;
@@ -193,7 +210,7 @@ CASE GlobalStep OF
 		 un.Status := E_Status.aborting;
 		 GlobalStep := 201;
 		
-	201: IF em[1].Status = E_Status.aborted AND em[2].Status =E_Status.aborted AND
+	201: IF em[1].Status = E_Status.aborted AND em[2].Status = E_Status.aborted AND
 			em[3].Status = E_Status.aborted AND em[4].Status = E_Status.aborted AND
 			em[5].Status = E_Status.aborted AND em[6].Status = E_Status.aborted THEN
 			un.Status := E_Status.aborted;
@@ -228,6 +245,16 @@ END_CASE
       <LineId Id="449" Count="2" />
       <LineId Id="443" Count="0" />
       <LineId Id="463" Count="0" />
+      <LineId Id="479" Count="0" />
+      <LineId Id="481" Count="0" />
+      <LineId Id="484" Count="0" />
+      <LineId Id="486" Count="1" />
+      <LineId Id="482" Count="0" />
+      <LineId Id="491" Count="0" />
+      <LineId Id="490" Count="0" />
+      <LineId Id="480" Count="0" />
+      <LineId Id="493" Count="4" />
+      <LineId Id="492" Count="0" />
       <LineId Id="438" Count="0" />
       <LineId Id="38" Count="2" />
       <LineId Id="252" Count="0" />

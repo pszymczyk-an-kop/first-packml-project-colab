@@ -35,6 +35,8 @@ END_VAR
 		IF TimerSim[2].Q THEN
 			em.Config.Data.I[1] := TRUE;
 			em.Config.Data.I[3] := TRUE;
+			em.Config.Data.I[2] := FALSE;
+			em.Config.Data.I[4] := FALSE;
 			IF CmdSim THEN
 				em.Cmd := E_CMD.reset;
 			END_IF
@@ -152,6 +154,7 @@ END_IF
       <LineId Id="433" Count="0" />
       <LineId Id="463" Count="0" />
       <LineId Id="324" Count="3" />
+      <LineId Id="499" Count="1" />
       <LineId Id="441" Count="0" />
       <LineId Id="328" Count="0" />
       <LineId Id="442" Count="0" />
