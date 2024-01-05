@@ -4,8 +4,10 @@
     <Declaration><![CDATA[TYPE STATUS_HMI :
 STRUCT
 	isMoving : BOOL;
+	isMovingWithObject : BOOL;
 	movingToPosition : INT;
 	currentPosition : INT;
+	currentPositionWithObject : INT;
 	movingDirection : E_DIRECTION;
 	hasObject : BOOL;
 	alarm : BOOL;

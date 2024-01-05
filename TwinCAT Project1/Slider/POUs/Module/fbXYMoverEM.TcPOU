@@ -53,6 +53,8 @@ CASE XYMoverActualStep OF
                  em.Status := E_Status.resetting;
                  em.Config.Data.Q[1] := TRUE;
                  em.Config.Data.Q[3] := TRUE;
+				 em.Config.Data.Q[2] := FALSE;
+				 em.Config.Data.Q[4] := FALSE;
                  XYMoverActualStep := 4;
             END_IF
                         
@@ -143,40 +145,9 @@ em.Config.Data.objectSensor REF= em.Config.Data.I[5];
       <LineId Id="285" Count="1" />
       <LineId Id="280" Count="0" />
       <LineId Id="270" Count="0" />
-      <LineId Id="148" Count="9" />
-      <LineId Id="248" Count="0" />
-      <LineId Id="158" Count="0" />
-      <LineId Id="160" Count="7" />
-      <LineId Id="169" Count="6" />
-      <LineId Id="177" Count="1" />
-      <LineId Id="180" Count="0" />
-      <LineId Id="182" Count="9" />
-      <LineId Id="193" Count="0" />
-      <LineId Id="195" Count="4" />
-      <LineId Id="323" Count="0" />
-      <LineId Id="320" Count="0" />
-      <LineId Id="322" Count="0" />
-      <LineId Id="200" Count="1" />
-      <LineId Id="203" Count="4" />
-      <LineId Id="209" Count="4" />
-      <LineId Id="302" Count="0" />
-      <LineId Id="216" Count="3" />
-      <LineId Id="221" Count="0" />
-      <LineId Id="303" Count="0" />
-      <LineId Id="222" Count="0" />
-      <LineId Id="304" Count="0" />
-      <LineId Id="223" Count="1" />
-      <LineId Id="226" Count="0" />
-      <LineId Id="306" Count="0" />
-      <LineId Id="305" Count="0" />
-      <LineId Id="228" Count="8" />
-      <LineId Id="238" Count="3" />
-      <LineId Id="301" Count="0" />
-      <LineId Id="300" Count="0" />
-      <LineId Id="242" Count="0" />
-      <LineId Id="308" Count="1" />
-      <LineId Id="307" Count="0" />
-      <LineId Id="244" Count="2" />
+      <LineId Id="148" Count="8" />
+      <LineId Id="361" Count="87" />
+      <LineId Id="245" Count="1" />
       <LineId Id="350" Count="0" />
       <LineId Id="247" Count="0" />
       <LineId Id="9" Count="0" />

@@ -223,6 +223,29 @@ ELSE
 	em.StatusHMI.currentPosition := 0;
 END_IF
 
+IF em.StatusHMI.isMoving AND em.StatusHMI.hasObject THEN
+	em.StatusHMI.isMovingWithObject := TRUE;
+ELSE
+	em.StatusHMI.isMovingWithObject := FALSE;
+END_IF
+
+IF em.StatusHMI.hasObject THEN
+	em.StatusHMI.currentPositionWithObject := em.StatusHMI.currentPosition;
+ELSE
+	em.StatusHMI.currentPositionWithObject := 0;
+END_IF
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -318,7 +341,17 @@ END_IF
       <LineId Id="983" Count="0" />
       <LineId Id="985" Count="3" />
       <LineId Id="984" Count="0" />
-      <LineId Id="237" Count="6" />
+      <LineId Id="237" Count="1" />
+      <LineId Id="1009" Count="0" />
+      <LineId Id="1011" Count="1" />
+      <LineId Id="1010" Count="0" />
+      <LineId Id="239" Count="1" />
+      <LineId Id="1028" Count="0" />
+      <LineId Id="1030" Count="1" />
+      <LineId Id="1029" Count="0" />
+      <LineId Id="241" Count="1" />
+      <LineId Id="1013" Count="14" />
+      <LineId Id="243" Count="0" />
       <LineId Id="228" Count="0" />
     </LineIds>
   </POU>
