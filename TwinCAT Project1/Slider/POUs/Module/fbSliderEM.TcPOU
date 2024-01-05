@@ -11,6 +11,8 @@ VAR
 	bSliderSide : BOOL;
 	XYMoverActualStep: INT;
 	fbSignalSim : fbSignalSimSlider;
+	timer : TON;
+	timerPT : TIME := T#2S;
 END_VAR
 
 VAR RETAIN
@@ -34,6 +36,7 @@ fbSignalSim(
 	StartOnOtherSide := StartOnOtherSide,
 	CmdSim := CmdSim
 );
+timer(PT := timerPT); 
 
 IF em.Config.Functionality = E_Function.eSlider THEN
 	IF State >= 15 AND em.Cmd = E_CMD.abort THEN
@@ -102,12 +105,24 @@ IF em.Config.Functionality = E_Function.eSlider THEN
 			// Execute direction
 		50:	em.Status := E_Status.execute;
 			IF bSliderSide AND NOT em.Config.Data.I[3] THEN
+				timer(IN := TRUE);
+				State := 52;
+			ELSIF em.Config.Data.I[3] THEN
+				timer(IN := TRUE);
+				State := 55;
+			END_IF
+			
+		52: IF timer.Q THEN
+				timer(IN := FALSE);
 				em.Config.Data.Q[2] := TRUE;
 				State := 60;
-			ELSIF em.Config.Data.I[3] THEN
+			END_IF	
+			
+		55: IF timer.Q THEN
+				timer(IN := FALSE);
 				em.Config.Data.Q[1] := TRUE;
 				State := 60;
-			END_IF
+			END_IF	
 			
 			// Main execute
 		60:	IF em.Cmd = E_CMD.hold THEN
@@ -178,10 +193,23 @@ em.Config.Data.objectSensor REF= em.Config.Data.I[3];
       <LineId Id="836" Count="3" />
       <LineId Id="841" Count="0" />
       <LineId Id="840" Count="0" />
+      <LineId Id="899" Count="0" />
       <LineId Id="569" Count="0" />
       <LineId Id="688" Count="25" />
       <LineId Id="881" Count="2" />
-      <LineId Id="714" Count="54" />
+      <LineId Id="714" Count="40" />
+      <LineId Id="900" Count="0" />
+      <LineId Id="756" Count="1" />
+      <LineId Id="912" Count="0" />
+      <LineId Id="914" Count="3" />
+      <LineId Id="913" Count="0" />
+      <LineId Id="758" Count="0" />
+      <LineId Id="903" Count="0" />
+      <LineId Id="910" Count="0" />
+      <LineId Id="908" Count="1" />
+      <LineId Id="905" Count="0" />
+      <LineId Id="904" Count="0" />
+      <LineId Id="759" Count="9" />
       <LineId Id="865" Count="0" />
       <LineId Id="770" Count="4" />
       <LineId Id="776" Count="3" />

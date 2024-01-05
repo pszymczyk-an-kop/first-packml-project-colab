@@ -19,6 +19,8 @@ VAR
 	XYMoverEM : ARRAY[1..Counters.XYMoverEMNo] OF fbXYMoverEM;
 	iXYMoverEM : DINT := 1;
 	
+	visu : VisuMapPiotrUN;
+	
 	i : DINT;
 	j : DINT;
 	State : INT := 0;
@@ -74,8 +76,12 @@ IF initialConfig THEN
 		END_CASE
 	END_FOR
 	
+	em[2].Config.Data.pick_pos := 3;
+	em[2].Config.Data.drop_pos := 2;
+	
 	supervisionTimer.PT := svTime;
 	objectTimer.PT := oTime;
+	visu(em := em, cell := cell);
 END_IF
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -243,7 +249,7 @@ CASE State OF
 	90:	// S2 -> output
 		supervisionTimer(IN := TRUE);
 		IF em[5].SequenceStep = 70 THEN
-			em[2].Config.Data.drop_pos := 1;
+			em[2].Config.Data.drop_pos := 2;
 			State := 100;
 			supervisionTimer(IN := FALSE);
 		END_IF
@@ -373,8 +379,10 @@ END_IF]]></ST>
       <LineId Id="444" Count="15" />
       <LineId Id="462" Count="0" />
       <LineId Id="796" Count="0" />
+      <LineId Id="999" Count="2" />
       <LineId Id="820" Count="1" />
       <LineId Id="900" Count="0" />
+      <LineId Id="960" Count="0" />
       <LineId Id="525" Count="0" />
       <LineId Id="530" Count="0" />
       <LineId Id="529" Count="0" />
@@ -511,7 +519,7 @@ END_IF]]></ST>
       <LineId Id="660" Count="0" />
       <LineId Id="808" Count="0" />
       <LineId Id="668" Count="0" />
-      <LineId Id="685" Count="0" />
+      <LineId Id="998" Count="0" />
       <LineId Id="672" Count="0" />
       <LineId Id="826" Count="0" />
       <LineId Id="671" Count="0" />
