@@ -115,7 +115,7 @@ END_FOR
 IF objectTimer.Q THEN
 	cell.Cmd := E_CMD_CELL.STOP;
 	IF NOT oneAlarm THEN
-		stoppedBy := CONCAT('Object at em: ', DINT_TO_STRING(ObjectWhichStopped));
+		stoppedBy := CONCAT('Unexpected object occured at em: ', DINT_TO_STRING(ObjectWhichStopped));
 		oneAlarm := TRUE;
 	END_IF
 END_IF
