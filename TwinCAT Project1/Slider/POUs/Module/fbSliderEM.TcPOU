@@ -195,6 +195,8 @@ END_IF
 em.SequenceStep := State;
 em.Config.Data.objectSensor REF= em.Config.Data.I[3];
 
+
+// STATUS_HMI variable mapping
 IF em.Config.Data.Q[1] XOR em.Config.Data.Q[2] THEN
 	em.StatusHMI.isMoving := TRUE;
 ELSIF em.Config.Data.Q[1] AND em.Config.Data.Q[2] THEN
@@ -324,6 +326,7 @@ END_IF
       <LineId Id="783" Count="7" />
       <LineId Id="954" Count="0" />
       <LineId Id="791" Count="8" />
+      <LineId Id="1032" Count="1" />
       <LineId Id="232" Count="1" />
       <LineId Id="992" Count="0" />
       <LineId Id="965" Count="4" />
